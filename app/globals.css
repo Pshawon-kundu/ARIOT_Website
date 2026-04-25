@@ -1,0 +1,221 @@
+@import 'tailwindcss';
+
+/* ============================================================================
+   ARIOT — Design tokens
+   Source of truth: docs/DESIGN_SYSTEM.md
+   Mirror in TypeScript: lib/design-tokens.ts (keep both in sync per commit)
+   Never use raw hex/rgb/hsl in components. Reference these tokens via
+   the Tailwind utilities defined in @theme below, or via var(--token).
+   ============================================================================ */
+
+:root {
+  /* Backgrounds */
+  --bg-base: #08090b;
+  --bg-raised: #0e1014;
+  --bg-elevated: #15181e;
+  --bg-overlay: rgba(8, 9, 11, 0.72);
+  --bg-grid: rgba(255, 255, 255, 0.04);
+
+  /* Steel scale (foreground + borders) */
+  --steel-50: #f5f7fa;
+  --steel-100: #e4e8ee;
+  --steel-200: #c7cdd6;
+  --steel-300: #a3abb7;
+  --steel-400: #7c8593;
+  --steel-500: #5b6472;
+  --steel-600: #3f4753;
+  --steel-700: #2a3038;
+  --steel-800: #1b1f25;
+  --steel-900: #11141a;
+
+  /* Cyan accent */
+  --cyan-300: #7ce9ff;
+  --cyan-400: #3dd8f7;
+  --cyan-500: #10b6d9;
+  --cyan-600: #0c8daa;
+  --cyan-faint: rgba(61, 216, 247, 0.08);
+
+  /* Semantic states */
+  --success: #34d399;
+  --success-bg: rgba(52, 211, 153, 0.1);
+  --success-border: rgba(52, 211, 153, 0.3);
+  --warning: #f5b449;
+  --warning-bg: rgba(245, 180, 73, 0.1);
+  --warning-border: rgba(245, 180, 73, 0.3);
+  --danger: #f26b6b;
+  --danger-bg: rgba(242, 107, 107, 0.1);
+  --danger-border: rgba(242, 107, 107, 0.3);
+  --info: var(--cyan-400);
+
+  /* Spacing scale (8-pt) */
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+  --space-11: 12rem;
+
+  /* Layout constants */
+  --container-max: 80rem;
+  --container-wide: 90rem;
+  --content-prose: 72ch;
+  --header-h: 4.5rem;
+  --header-h-mobile: 3.75rem;
+
+  /* Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --shadow-3: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --shadow-cyan: 0 0 24px rgba(61, 216, 247, 0.35);
+  --shadow-cyan-strong: 0 0 24px rgba(61, 216, 247, 0.45);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
+  /* Easing */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Duration */
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+  --dur-3: 320ms;
+  --dur-4: 480ms;
+  --dur-5: 800ms;
+  --dur-6: 1200ms;
+}
+
+/* ============================================================================
+   Tailwind v4 token bridge
+   Maps our :root variables into named Tailwind utilities. After this block,
+   classes like `bg-bg-base`, `text-steel-100`, `text-cyan-400`,
+   `font-display`, `shadow-cyan`, `rounded-lg` resolve to the tokens above.
+   ============================================================================ */
+
+@theme inline {
+  --color-bg-base: var(--bg-base);
+  --color-bg-raised: var(--bg-raised);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-overlay: var(--bg-overlay);
+
+  --color-steel-50: var(--steel-50);
+  --color-steel-100: var(--steel-100);
+  --color-steel-200: var(--steel-200);
+  --color-steel-300: var(--steel-300);
+  --color-steel-400: var(--steel-400);
+  --color-steel-500: var(--steel-500);
+  --color-steel-600: var(--steel-600);
+  --color-steel-700: var(--steel-700);
+  --color-steel-800: var(--steel-800);
+  --color-steel-900: var(--steel-900);
+
+  --color-cyan-300: var(--cyan-300);
+  --color-cyan-400: var(--cyan-400);
+  --color-cyan-500: var(--cyan-500);
+  --color-cyan-600: var(--cyan-600);
+  --color-cyan-faint: var(--cyan-faint);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  /* Fonts — variables come from next/font/google in app/layout.tsx */
+  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, Menlo, monospace;
+
+  /* Radius */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+
+  /* Shadows */
+  --shadow-1: var(--shadow-1);
+  --shadow-2: var(--shadow-2);
+  --shadow-3: var(--shadow-3);
+  --shadow-cyan: var(--shadow-cyan);
+  --shadow-cyan-strong: var(--shadow-cyan-strong);
+  --shadow-inset: var(--shadow-inset);
+
+  /* Easing */
+  --ease-out-quart: var(--ease-out-quart);
+  --ease-out-expo: var(--ease-out-expo);
+  --ease-in-out-cubic: var(--ease-in-out-cubic);
+}
+
+/* ============================================================================
+   Base styles
+   ============================================================================ */
+
+html {
+  background-color: var(--bg-base);
+  color: var(--steel-100);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+  background-color: var(--bg-base);
+  color: var(--steel-100);
+  min-height: 100dvh;
+}
+
+::selection {
+  background-color: var(--cyan-400);
+  color: var(--bg-base);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--cyan-400);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--steel-700);
+  border: 3px solid var(--bg-base);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--steel-600);
+}
+
+/* Reduced motion — non-essential motion collapses to near-instant. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

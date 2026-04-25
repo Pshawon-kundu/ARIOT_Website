@@ -1,0 +1,24 @@
+# Build artifacts
+.next
+out
+build
+coverage
+.vercel
+
+# Dependencies
+node_modules
+pnpm-lock.yaml
+
+# Static assets (handled separately)
+public
+
+# Generated
+next-env.d.ts
+*.tsbuildinfo
+
+# Markdown is authored by humans + AI agents; do not auto-format
+*.md
+
+# Env
+.env*
+!.env.example
