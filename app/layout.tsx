@@ -90,7 +90,7 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="bg-bg-base text-steel-100 min-h-dvh font-sans antialiased">
+      <body className="bg-bg-base text-steel-100 flex min-h-dvh flex-col font-sans antialiased">
         {children}
         <Analytics />
       </body>

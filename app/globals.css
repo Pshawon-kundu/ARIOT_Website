@@ -84,6 +84,9 @@
   --shadow-cyan-strong: 0 0 24px rgba(61, 216, 247, 0.45);
   --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
+  /* Gradients (component-specific, see DESIGN_SYSTEM §7.2) */
+  --gradient-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+
   /* Easing */
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
