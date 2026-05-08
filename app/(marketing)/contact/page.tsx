@@ -1,17 +1,13 @@
 import type { Metadata } from 'next';
-import { Mail, MessageCircle, Phone, Send, Newspaper } from 'lucide-react';
+import { Mail, MessageCircle, Newspaper, Phone } from 'lucide-react';
+import { ContactForm } from '@/features/forms/contact-form';
 import { FeatureCard } from '@/components/marketing/feature-card';
 import { FeatureGrid } from '@/components/marketing/feature-grid';
 import { HeroShell } from '@/components/marketing/hero-shell';
 import { SectionHeader } from '@/components/marketing/section-header';
-import { Button } from '@/components/ui/button';
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/ui/container';
-import { FormField } from '@/components/ui/form-field';
-import { Input } from '@/components/ui/input';
 import { Section } from '@/components/ui/section';
-import { Select } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { siteConfig } from '@/lib/seo/site';
 import { defineMetadata } from '@/lib/seo/metadata';
 
@@ -83,43 +79,7 @@ export default function ContactPage() {
               <CardTitle>Contact form</CardTitle>
             </CardHeader>
             <CardBody>
-              <form className="grid grid-cols-1 gap-5" aria-label="Contact form placeholder">
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  <FormField label="Name" required>
-                    {(fieldProps) => <Input {...fieldProps} placeholder="[Your name]" />}
-                  </FormField>
-                  <FormField label="Company">
-                    {(fieldProps) => <Input {...fieldProps} placeholder="[Company name]" />}
-                  </FormField>
-                </div>
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                  <FormField label="Email" required>
-                    {(fieldProps) => <Input {...fieldProps} type="email" placeholder="[name@company.com]" />}
-                  </FormField>
-                  <FormField label="Topic" required>
-                    {(fieldProps) => (
-                      <Select {...fieldProps} defaultValue="">
-                        <option value="">[Select topic]</option>
-                        <option value="sales">Sales</option>
-                        <option value="support">Support</option>
-                        <option value="partnership">Partnership</option>
-                        <option value="press">Press</option>
-                        <option value="other">Other</option>
-                      </Select>
-                    )}
-                  </FormField>
-                </div>
-                <FormField label="Message" required helper="[Static UI only — no backend submission in Phase 1.]">
-                  {(fieldProps) => <Textarea {...fieldProps} rows={6} placeholder="[Tell us what you need.]" />}
-                </FormField>
-                <FormField label="Attachment">
-                  {(fieldProps) => <Input {...fieldProps} type="file" />}
-                </FormField>
-                <Button type="button" size="lg" variant="primary" className="w-fit">
-                  <Send className="h-4 w-4" />
-                  Send placeholder message
-                </Button>
-              </form>
+              <ContactForm />
             </CardBody>
           </Card>
 

@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
 import { Separator } from '@/components/ui/separator';
+import { NewsletterForm } from '@/features/forms/newsletter-form';
 import { siteConfig } from '@/lib/seo/site';
 import { cn } from '@/lib/utils/cn';
 
@@ -57,7 +58,7 @@ const footerLinkClass = cn(
 
 /**
  * SiteFooter — public-website footer (DESIGN_SYSTEM §13 + PAGE_BLUEPRINTS §13).
- * Pure server component. Newsletter form lands in Sub-turn 5.
+ * Server component shell with a small client island for the newsletter form.
  */
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -114,6 +115,17 @@ export function SiteFooter() {
               {siteConfig.contact.phone}
             </p>
           </div>
+        </div>
+
+        <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-[1.1fr_1fr] md:items-end">
+          <div className="flex flex-col gap-2">
+            <FooterColumnTitle>Newsletter</FooterColumnTitle>
+            <p className="max-w-md text-sm text-steel-300">
+              Quiet engineering notes from the ARIOT team — build logs, IoT
+              field notes, and the occasional product update.
+            </p>
+          </div>
+          <NewsletterForm source="footer" variant="footer" />
         </div>
 
         <Separator className="my-10" />

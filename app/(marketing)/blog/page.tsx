@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { ArrowRight, BookOpen, Calendar, Clock, FlaskConical, Newspaper, Wifi } from 'lucide-react';
-import { CtaBand } from '@/components/marketing/cta-band';
 import { FeatureCard } from '@/components/marketing/feature-card';
 import { FeatureGrid } from '@/components/marketing/feature-grid';
 import { HeroShell } from '@/components/marketing/hero-shell';
@@ -10,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardBody } from '@/components/ui/card';
 import { Container } from '@/components/ui/container';
 import { Section } from '@/components/ui/section';
+import { NewsletterForm } from '@/features/forms/newsletter-form';
 import { defineMetadata } from '@/lib/seo/metadata';
 
 const categories = [
@@ -161,13 +161,30 @@ export default function BlogPage() {
         </Container>
       </Section>
 
-      <CtaBand
-        eyebrow="Newsletter"
-        title="Get engineering notes when they ship"
-        subtitle="[Newsletter submission is UI-only in Phase 1. Backend subscription handling lands later.]"
-        primary={{ label: 'Contact the team', href: '/contact' }}
-        secondary={{ label: 'Explore products', href: '/products' }}
-      />
+      <Section bg="raised" spacing="default" className="relative isolate overflow-hidden">
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-0 -z-10"
+          style={{
+            background:
+              'radial-gradient(ellipse 70% 50% at 50% 0%, var(--cyan-faint) 0%, transparent 60%)',
+          }}
+        />
+        <Container>
+          <div className="mx-auto flex max-w-2xl flex-col items-center gap-5 text-center">
+            <p className="text-cyan-400 font-mono text-[12px] font-medium tracking-[0.18em] uppercase">
+              Newsletter
+            </p>
+            <h2 className="text-steel-100 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl md:text-5xl">
+              Get engineering notes when they ship
+            </h2>
+            <p className="text-steel-300 max-w-xl text-base sm:text-lg">
+              Build logs, IoT field notes, and the occasional teardown — sent only when there&apos;s something engineered worth reading.
+            </p>
+            <NewsletterForm source="blog" variant="inline" className="mt-2 w-full max-w-lg" />
+          </div>
+        </Container>
+      </Section>
     </>
   );
 }
