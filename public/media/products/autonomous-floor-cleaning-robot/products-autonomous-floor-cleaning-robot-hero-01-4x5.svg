@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#08090B"/>
+      <stop offset="100%" stop-color="#0E1014"/>
+    </linearGradient>
+    <radialGradient id="cyanGlow" cx="0.5" cy="0.4" r="0.4">
+      <stop offset="0%" stop-color="#3DD8F7" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#08090B" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.2"/>
+    </pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <rect width="1080" height="1350" fill="url(#grid)"/>
+  <rect width="1080" height="1350" fill="url(#cyanGlow)"/>
+  <!-- Robot puck -->
+  <ellipse cx="540" cy="800" rx="260" ry="60" fill="#1B1F25" stroke="#2A3038" stroke-width="2"/>
+  <ellipse cx="540" cy="790" rx="230" ry="48" fill="#15181E"/>
+  <ellipse cx="540" cy="780" rx="200" ry="35" fill="#2A3038" opacity="0.4"/>
+  <!-- LiDAR turret -->
+  <rect x="510" y="680" width="60" height="100" rx="6" fill="#1B1F25" stroke="#2A3038" stroke-width="1.5"/>
+  <circle cx="540" cy="680" r="30" fill="#15181E" stroke="#2A3038" stroke-width="1.5"/>
+  <circle cx="540" cy="680" r="12" fill="#3DD8F7" opacity="0.3" filter="url(#glow)"/>
+  <!-- Cyan status ring -->
+  <ellipse cx="540" cy="780" rx="200" ry="35" fill="none" stroke="#3DD8F7" stroke-width="2" opacity="0.4"/>
+  <!-- Floor reflection -->
+  <ellipse cx="540" cy="900" rx="180" ry="25" fill="#3DD8F7" opacity="0.03" filter="url(#glow)"/>
+  <span class="text-steel-500">[CONCEPT — IN R&amp;D]</span>
+</svg>

@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "B",
+  "prompt": "Editorial flat-lay on dark surface: open notebook with hand-drawn circuit sketch, microcontroller dev board, small tools arranged neatly, single cyan accent element, hairline grid undertone, clean minimal composition, text will be overlaid in HTML, 16x9 wide format",
+  "negativePrompt": "People, cartoon, bright daylight, neon overload, text painted in image, watermarks, white background, clutter",
+  "seed": 1234567932,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "16x9",
+  "pixelTarget": "1920x1080",
+  "outputs": [
+    "public/media/blog/blog-cover-tutorial-01-16x9.avif",
+    "public/media/blog/blog-cover-tutorial-01-16x9.webp"
+  ]
+}

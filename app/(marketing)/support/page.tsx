@@ -21,93 +21,115 @@ import { Container } from '@/components/ui/container';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import { Section } from '@/components/ui/section';
+import { BreadcrumbList } from '@/components/seo/breadcrumb-list';
+import { FaqPage } from '@/components/seo/faq-page';
 import { defineMetadata } from '@/lib/seo/metadata';
 
 const supportCategories = [
   {
     icon: BookOpen,
-    title: '[Getting started]',
-    description: '[First setup, unboxing, account basics, and safe power-on checks.]',
+    title: 'Getting started',
+    description: 'First setup, unboxing, account basics, and safe power-on checks for new devices.',
   },
   {
     icon: Settings2,
-    title: '[Setup & install]',
-    description: '[Mounting, wiring, calibration, and deployment preparation.]',
+    title: 'Setup & install',
+    description: 'Mounting, wiring, calibration, and deployment preparation for ARIOT hardware.',
   },
   {
     icon: Wifi,
-    title: '[Connectivity]',
-    description: '[Wi-Fi, Bluetooth, MQTT, gateway, and network troubleshooting.]',
+    title: 'Connectivity',
+    description: 'Wi-Fi, Bluetooth, MQTT, gateway, and network troubleshooting guidance.',
   },
   {
     icon: Download,
-    title: '[Firmware]',
-    description: '[Version notes, update preparation, and recovery guidance.]',
+    title: 'Firmware',
+    description: 'Version notes, update preparation, and recovery guidance for device firmware.',
   },
   {
     icon: MessageCircle,
-    title: '[Troubleshooting]',
-    description: '[Symptom-led guidance for common device and app issues.]',
+    title: 'Troubleshooting',
+    description: 'Symptom-led guidance for common device and app issues encountered in the field.',
   },
   {
     icon: ShieldCheck,
-    title: '[Warranty & returns]',
-    description: '[Coverage, service flow, repair windows, and return requirements.]',
+    title: 'Warranty & returns',
+    description: 'Coverage information, service flow, repair windows, and return requirements.',
   },
 ] as const;
 
 const faqs = [
   {
-    question: '[How do I find the right manual?]',
-    answer: '[Search by product name, SKU, or setup task. Public manuals are placeholders until real PDFs ship.]',
+    question: 'How do I find the right manual?',
+    answer:
+      'Manuals are listed below by product. Search by product name or setup task. Full PDF documentation ships with each product.',
   },
   {
-    question: '[How do firmware updates work?]',
-    answer: '[Firmware release notes and files will live in the support hub after the device-management phase.]',
+    question: 'How do firmware updates work?',
+    answer:
+      'Firmware release notes and update files will be hosted here once device-management workflows are established. Check back after receiving your device.',
   },
   {
-    question: '[Can I open a support ticket here?]',
-    answer: '[Ticket creation is intentionally deferred. For now, use the contact or quote forms as static UI.]',
+    question: 'Can I open a support ticket?',
+    answer:
+      'Ticket creation is in development. Use the contact form for now — support questions are routed to the right team within one business day.',
   },
 ] as const;
 
 const downloads = [
-  '[Autonomous floor-cleaning robot datasheet (PDF, size pending)]',
-  '[IoT home safety device installation guide (PDF, size pending)]',
-  '[Smart appliance control wiring guide (PDF, size pending)]',
-  '[Education robotics kit curriculum outline (PDF, size pending)]',
+  'Autonomous floor-cleaning robot datasheet',
+  'IoT home safety device installation guide',
+  'Smart appliance control wiring guide',
+  'Education robotics kit curriculum outline',
 ] as const;
 
 export const metadata: Metadata = defineMetadata({
   title: 'Support hub',
   description:
-    'Find ARIOT manuals, setup guidance, firmware placeholders, FAQs, and support contact paths.',
+    'Find ARIOT manuals, setup guidance, firmware notes, FAQs, and support contact paths.',
   path: '/support',
 });
 
 export default function SupportPage() {
   return (
     <>
+      <BreadcrumbList
+        items={[
+          { name: 'Home', url: '/' },
+          { name: 'Support', url: '/support' },
+        ]}
+      />
+      <FaqPage
+        items={faqs.map((faq) => ({
+          question: faq.question,
+          answer: faq.answer,
+        }))}
+      />
+
       <HeroShell>
         <Section bg="base" spacing="loose">
           <Container className="flex flex-col gap-8">
-            <p className="text-cyan-400 font-mono text-[12px] font-medium tracking-[0.18em] uppercase">
-              [SUPPORT]
+            <p className="font-mono text-[12px] font-medium tracking-[0.18em] text-cyan-400 uppercase">
+              Support
             </p>
             <div className="max-w-4xl">
-              <h1 className="text-steel-100 font-display text-4xl font-semibold leading-[1.04] tracking-tight text-balance sm:text-5xl md:text-6xl">
-                [Help, fast.]
+              <h1 className="text-steel-100 font-display text-4xl leading-[1.04] font-semibold tracking-tight text-balance sm:text-5xl md:text-6xl">
+                Help and documentation
               </h1>
               <p className="text-steel-200 mt-5 max-w-2xl text-base sm:text-lg md:text-xl">
-                [Search manuals, setup notes, firmware placeholders, and troubleshooting paths for ARIOT hardware.]
+                Manuals, setup guides, firmware notes, and troubleshooting paths for ARIOT hardware.
+                Search or browse by category.
               </p>
             </div>
-            <FormField label="Search support" helper="[Static search UI — support search lands in a later phase.]">
+            <FormField
+              label="Search support"
+              helper="Full-text search is being built — browse categories below."
+            >
               {(fieldProps) => (
                 <div className="relative max-w-2xl">
                   <Search
                     aria-hidden
-                    className="text-steel-500 pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2"
+                    className="text-steel-500 pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2"
                   />
                   <Input
                     {...fieldProps}
@@ -126,7 +148,7 @@ export default function SupportPage() {
           <SectionHeader
             eyebrow="Top categories"
             title="Start with the task you are trying to finish"
-            subhead="[Category pages and articles are placeholders until support content lands.]"
+            subhead="Browse by category to find the right documentation or support path."
           />
           <FeatureGrid columns={3}>
             {supportCategories.map((category) => (
@@ -140,9 +162,13 @@ export default function SupportPage() {
         <Container className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Manuals & downloads</CardTitle>
+              <CardTitle>Manuals &amp; downloads</CardTitle>
             </CardHeader>
             <CardBody>
+              <p className="text-steel-400 mb-4 text-sm">
+                Documentation PDFs are linked here once finalized for each product. Use the contact
+                page to request a document directly.
+              </p>
               <ul className="flex flex-col gap-3">
                 {downloads.map((download) => (
                   <li key={download}>
@@ -160,12 +186,15 @@ export default function SupportPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>FAQ placeholder</CardTitle>
+              <CardTitle>Frequently asked questions</CardTitle>
             </CardHeader>
             <CardBody>
               <dl className="flex flex-col gap-5">
                 {faqs.map((faq) => (
-                  <div key={faq.question} className="border-steel-800 border-b pb-5 last:border-b-0 last:pb-0">
+                  <div
+                    key={faq.question}
+                    className="border-steel-800 border-b pb-5 last:border-b-0 last:pb-0"
+                  >
                     <dt className="text-steel-100 font-display text-lg font-semibold">
                       {faq.question}
                     </dt>
@@ -180,8 +209,8 @@ export default function SupportPage() {
 
       <CtaBand
         eyebrow="Still stuck?"
-        title="Talk to support before the issue grows"
-        subtitle="[Ticketing is scheduled for a later phase. For now, route support questions through contact.]"
+        title="Reach support directly"
+        subtitle="Use the contact form to describe your issue. Support messages are routed within one business day."
         primary={{ label: 'Contact support', href: '/contact' }}
         secondary={{ label: 'Request a quote', href: '/quote' }}
       />

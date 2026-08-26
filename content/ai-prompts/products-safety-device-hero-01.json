@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "A",
+  "prompt": "3/4 wall-mounted view of IoT home safety disk device, satin-white front bezel, cyan LED ring lit, soft top rim lighting, mounted on dark wall, dramatic studio lighting, product is the sole subject, 4x5 portrait format",
+  "negativePrompt": "People, bright daylight, neon overload, text, watermarks, cartoon, plasticky, white background",
+  "seed": 1234567951,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "4x5",
+  "pixelTarget": "1080x1350",
+  "outputs": [
+    "public/media/products/iot-home-safety-device/products-iot-home-safety-device-hero-01-4x5.avif",
+    "public/media/products/iot-home-safety-device/products-iot-home-safety-device-hero-01-4x5.webp"
+  ]
+}

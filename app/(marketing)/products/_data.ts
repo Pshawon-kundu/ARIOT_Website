@@ -1,12 +1,4 @@
-import {
-  Bot,
-  Cpu,
-  GraduationCap,
-  PlugZap,
-  ShieldCheck,
-  Wifi,
-  type LucideIcon,
-} from 'lucide-react';
+import { Bot, Cpu, GraduationCap, PlugZap, ShieldCheck, Wifi, type LucideIcon } from 'lucide-react';
 
 export interface ProductSpecGroup {
   title: string;
@@ -38,6 +30,68 @@ export const PRODUCT_CATEGORIES = [
   '[Education]',
   '[Custom]',
 ] as const;
+
+export interface ProductCategory {
+  slug: string;
+  name: string;
+  tagline: string;
+  description: string;
+}
+
+export const CATEGORIES: ReadonlyArray<ProductCategory> = [
+  {
+    slug: 'robotics',
+    name: 'Industrial robotics',
+    tagline: '[Autonomous platforms for structured commercial environments.]',
+    description:
+      '[Compact autonomous robots designed for scheduled floor operations, material handling, and field sensing in offices, small factories, and institutions.]',
+  },
+  {
+    slug: 'smart-city',
+    name: 'Smart-city IoT',
+    tagline: '[Sensor networks and gateway nodes for outdoor infrastructure.]',
+    description:
+      '[Connected hardware for environmental monitoring, asset tracking, and field telemetry across urban deployments and public infrastructure.]',
+  },
+  {
+    slug: 'smart-building',
+    name: 'Smart-building IoT',
+    tagline: '[Safety, energy, and control devices for connected buildings.]',
+    description:
+      '[Wall-mounted safety nodes, appliance controllers, and energy meters for homes, offices, and small commercial buildings.]',
+  },
+  {
+    slug: 'prosumer',
+    name: 'Prosumer',
+    tagline: '[Capable consumer devices for technically-aware households.]',
+    description:
+      '[IoT hardware positioned between consumer and professional — designed for hands-on users who want configurability and real data.]',
+  },
+  {
+    slug: 'education',
+    name: 'Education',
+    tagline: '[Robotics kits and lab hardware for institutions and workshops.]',
+    description:
+      '[Modular robotics kits, curriculum-paired hardware, and classroom-friendly platforms for schools, universities, and engineering training programmes.]',
+  },
+  {
+    slug: 'custom',
+    name: 'Custom',
+    tagline: '[Purpose-built hardware for specific deployment requirements.]',
+    description:
+      '[Prototype-to-production engineering engagements for teams building new products or deploying hardware in non-standard environments.]',
+  },
+] as const;
+
+export function getCategoryBySlug(slug: string): ProductCategory | undefined {
+  return CATEGORIES.find((category) => category.slug === slug);
+}
+
+export function getProductsByCategory(slug: string): ReadonlyArray<ProductSummary> {
+  return PRODUCTS.filter((product) =>
+    product.category.toLowerCase().includes(slug.replace(/-/g, ' ')),
+  );
+}
 
 export const PRODUCT_USE_CASES = [
   '[Factory]',
@@ -276,7 +330,10 @@ export const PRODUCTS: ReadonlyArray<ProductSummary> = [
         ],
       },
     ],
-    downloads: ['[R&D intake checklist (PDF, size pending)]', '[NDA / procurement pack (PDF, size pending)]'],
+    downloads: [
+      '[R&D intake checklist (PDF, size pending)]',
+      '[NDA / procurement pack (PDF, size pending)]',
+    ],
   },
 ] as const;
 

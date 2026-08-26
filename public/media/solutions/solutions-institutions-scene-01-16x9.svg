@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#08090B"/><stop offset="100%" stop-color="#0E1014"/></linearGradient>
+    <pattern id="g" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M 48 0 L 0 0 0 48" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.15"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <!-- Lab table -->
+  <rect x="0" y="650" width="1920" height="430" fill="#0E1014"/>
+  <line x1="0" y1="650" x2="1920" y2="650" stroke="#1B1F25" stroke-width="1"/>
+  <!-- Robotics education kit on table -->
+  <rect x="400" y="560" width="250" height="90" rx="5" fill="#1B1F25" stroke="#2A3038" stroke-width="1.5"/>
+  <rect x="410" y="570" width="230" height="30" rx="3" fill="#15181E"/>
+  <circle cx="460" cy="620" r="15" fill="#2A3038"/>
+  <circle cx="520" cy="620" r="15" fill="#2A3038"/>
+  <circle cx="580" cy="620" r="15" fill="#2A3038"/>
+  <circle cx="460" cy="620" r="5" fill="#3DD8F7" opacity="0.4" filter="url(#glow)"/>
+  <!-- Laptop with IDE open -->
+  <rect x="900" y="450" width="350" height="200" rx="8" fill="#0A0C0E" stroke="#1B1F25" stroke-width="1"/>
+  <rect x="910" y="460" width="330" height="180" rx="4" fill="#08090B"/>
+  <g opacity="0.3">
+    <rect x="925" y="480" width="200" height="12" rx="2" fill="#1B1F25"/>
+    <rect x="925" y="500" width="250" height="8" rx="2" fill="#1B1F25"/>
+    <rect x="925" y="520" width="220" height="8" rx="2" fill="#1B1F25"/>
+    <rect x="925" y="540" width="240" height="8" rx="2" fill="#1B1F25"/>
+    <rect x="925" y="560" width="300" height="8" rx="2" fill="#1B1F25"/>
+  </g>
+  <!-- Sensor modules -->
+  <rect x="150" y="580" width="120" height="70" rx="4" fill="#15181E" stroke="#2A3038" stroke-width="1"/>
+  <rect x="160" y="590" width="40" height="20" rx="2" fill="#1B1F25"/>
+  <rect x="210" y="590" width="40" height="20" rx="2" fill="#1B1F25"/>
+  <!-- Annotation arrows overlay -->
+  <g opacity="0.2">
+    <line x1="400" y1="550" x2="350" y2="500" stroke="#3DD8F7" stroke-width="1"/>
+    <circle cx="350" cy="500" r="10" fill="none" stroke="#3DD8F7" stroke-width="0.5"/>
+  </g>
+</svg>

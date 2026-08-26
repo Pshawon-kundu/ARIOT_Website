@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "A",
+  "prompt": "Macro PCB shot with ICs labeled with hairline blueprint callouts, cyan trace highlighted in the signal path, shallow depth of field highlighting one specific component, dark graphite background, engineering-focused editorial composition, 16x9 wide format",
+  "negativePrompt": "People, bright daylight, neon overload, text, watermarks, cartoon, plasticky, white background",
+  "seed": 1234567902,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "16x9",
+  "pixelTarget": "1920x1080",
+  "outputs": [
+    "public/media/home/home-engineering-embedded-01-16x9.avif",
+    "public/media/home/home-engineering-embedded-01-16x9.webp"
+  ]
+}

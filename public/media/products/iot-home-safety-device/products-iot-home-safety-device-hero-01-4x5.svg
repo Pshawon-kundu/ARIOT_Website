@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#08090B"/><stop offset="100%" stop-color="#0E1014"/></linearGradient>
+    <radialGradient id="gl" cx="0.5" cy="0.35" r="0.4"><stop offset="0%" stop-color="#3DD8F7" stop-opacity="0.06"/><stop offset="100%" stop-color="#08090B" stop-opacity="0"/></radialGradient>
+    <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.2"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <rect width="1080" height="1350" fill="url(#g)"/>
+  <rect width="1080" height="1350" fill="url(#gl)"/>
+  <!-- Wall-mounted disk device -->
+  <circle cx="540" cy="650" r="150" fill="#1B1F25" stroke="#2A3038" stroke-width="2"/>
+  <circle cx="540" cy="650" r="130" fill="#15181E"/>
+  <circle cx="540" cy="650" r="100" fill="#2A3038" opacity="0.3"/>
+  <circle cx="540" cy="650" r="60" fill="#3DD8F7" opacity="0.08" filter="url(#glow)"/>
+  <circle cx="540" cy="650" r="8" fill="#3DD8F7" filter="url(#glow)"/>
+  <!-- Wall mount hint -->
+  <rect x="520" y="500" width="40" height="20" rx="3" fill="#1B1F25" opacity="0.5"/>
+  <!-- Vents -->
+  <g opacity="0.15">
+    <line x1="480" y1="600" x2="600" y2="600" stroke="#2A3038" stroke-width="2"/>
+    <line x1="485" y1="610" x2="595" y2="610" stroke="#2A3038" stroke-width="2"/>
+    <line x1="485" y1="620" x2="595" y2="620" stroke="#2A3038" stroke-width="2"/>
+  </g>
+  <!-- Floor reflection -->
+  <ellipse cx="540" cy="900" rx="140" ry="20" fill="#3DD8F7" opacity="0.02" filter="url(#glow)"/>
+</svg>

@@ -58,11 +58,11 @@ Phase boundaries are *commitments to the user*, not bureaucracy. If a phase boun
 
 **Goal**: replace the seeded product/blog source with an admin-managed CMS, run by the ARIOT team without engineering help.
 
-### Scope
+### Scope (original — categories 2.1–2.9)
 
 - Database: Prisma schema for `Product`, `ProductImage`, `ProductVideo`, `ProductDownload`, `Category`, `BlogPost`, `BlogCategory`, `MediaAsset`, `Admin`, `Role`, `AuditLog`.
 - Migrations + seed scripts.
-- Auth for admin (Auth.js / Clerk / custom — decision made in this phase).
+- Auth for admin (Better Auth, decision D-035).
 - RBAC: `super_admin`, `content_admin` (others reserved).
 - `(admin)` route group with layout, sidebar, top bar, theme.
 - Admin pages:
@@ -79,12 +79,30 @@ Phase boundaries are *commitments to the user*, not bureaucracy. If a phase boun
 - Storage adapter: signed-URL uploads via S3-compatible bucket.
 - ISR + on-demand revalidation wired to admin publishing.
 
+### Scope (extended — categories 2.10–2.16, post-planning freeze)
+
+Additional modules added to Phase 2 scope (see `IMPLEMENTATION_MASTER_PLAN.md` for step-level detail):
+
+- **R&D Management** (2.10): Admin management of R&D projects, status updates, and public milestone publishing to `/research`.
+- **Structured Homepage CMS** (2.11): Fully editable homepage with structured section fields, draft/preview/publish workflow, revision history, and rollback. No arbitrary HTML/CSS injection.
+- **Central Promotions Engine** (2.12): One promotion system serving all public pages — announcements, discounts, workspace offers, component deals. Placement rules, coupon management, time-bound scheduling.
+- **Workspace Plans & Online Booking** (2.13): Admin management of workspace plans, facilities, availability rules. Stage 1: booking requests with manual confirmation. Stage 2: real-time confirmation + payment.
+- **Component Catalog & Inventory** (2.14): Component product management (same Product model, component-category-filtered), standalone inventory management with stock adjustment and movement history.
+- **SEO Management** (2.15): Per-page SEO editor, redirect management, global SEO settings.
+- **Content Expansion** (2.16): News content type, custom pages, navigation management, FAQ management.
+
 ### Out of scope (Phase 2)
 
 - No customer accounts (admin only).
 - No cart / checkout.
-- No payment.
-- No support tickets.
+- No payment (except Stage 2 workspace booking payment — in Phase 2 extended or early Phase 3).
+- No support ticket system (Phase 4).
+
+### Corrective prerequisites (C.1, C.2)
+
+Phase 2 extended modules require two corrective steps before any new Prisma schema migration:
+- **C.1** — Permission wildcard mismatch: `CONTENT_ADMIN` carries `'products.*'` which does NOT match `requirePermission('products.read')` (exact matching). Resolve before CONTENT_ADMIN can access any page beyond what SUPER_ADMIN tests.
+- **C.2** — I-019 migration drift: `searchVector Unsupported("tsvector")` on Product/BlogPost causes `ALTER ... DROP DEFAULT` failures in future migrations. Must be resolved before any new schema change is applied.
 
 ### Exit criteria
 
@@ -93,6 +111,10 @@ Phase boundaries are *commitments to the user*, not bureaucracy. If a phase boun
 - Image variants serve via the configured CDN/storage path.
 - Audit log shows every admin mutation with `actor`, `action`, `entityType`, `entityId`, `before`, `after`.
 - Role-gated routes verified — a `content_admin` cannot reach orders or roles.
+- Homepage is editable via admin without code changes.
+- At least one active promotion renders on the public homepage.
+- Workspace plan is publicly visible and bookable (Stage 1 at minimum).
+- R&D projects are manageable and publishable to `/research`.
 
 ---
 
@@ -150,7 +172,7 @@ Phase boundaries are *commitments to the user*, not bureaucracy. If a phase boun
 
 ### Scope
 
-- Database: `SupportTicket`, `TicketMessage`, `TicketEvent`, `SupportArticle`, `SupportCategory`, `SupportFeedback`.
+- Database: `SupportTicket`, `TicketMessage`, `TicketStatusHistory`, `TicketAttachment`, `SLAPolicy`, `SLABreach`, `SupportArticle`, `SupportCategory`, `SupportFeedback`.
 - Public KB:
   - Search across articles, manuals, firmware.
   - Article voting ("Was this helpful?") with anonymous telemetry.
@@ -182,38 +204,41 @@ Phase boundaries are *commitments to the user*, not bureaucracy. If a phase boun
 
 ---
 
-## Phase 5 — Customer Dashboard + IoT-Ready Hooks
+## Phase 5 — Customer Dashboard + IoT
 
-**Goal**: the platform becomes useful *after* purchase, opening the door to IoT product features.
+**Goal**: the platform becomes useful *after* purchase, with full IoT device management and B2B account features.
 
 ### Scope
 
-- `/account/devices` — registered IoT devices list.
-- Device pairing flow (QR or activation code) — placeholder UX with stubbed backend.
-- Telemetry ingest endpoint at `/api/devices/telemetry` (rate-limited, signed by device cert).
-- Per-device telemetry view (charts, recent events).
-- Firmware OTA placeholder UI (no actual delivery yet — version listing + manual download).
-- Customer notifications: device offline, firmware update available.
+- `/account/devices` — registered IoT devices list with claim flow (serial number + claim token).
+- Device dashboard: real-time sensor data (SSE streaming), command interface, device logs.
+- Firmware management: upload, deploy OTA updates with rollout controls, monitoring, rollback.
+- Customer notifications: device offline, firmware update available, weekly health summary.
 - Admin device management:
-  - Devices list (per-customer).
-  - Bulk firmware promotion (placeholder).
+  - Device list with filters, bulk actions (reboot, firmware apply, factory reset).
+  - Fleet overview with health KPIs.
+  - IoT dashboard with alerts (offline, battery, error).
 - B2B account features:
-  - Multi-user accounts with seat roles (owner, member).
+  - Multi-user accounts with seat roles (owner, member, viewer).
   - Account-level price tiers (activate the placeholder field from Phase 3).
 - Developer portal (`/developers`) `[evaluate based on demand]`:
-  - API docs.
-  - SDKs index.
+  - API docs placeholder.
+  - SDKs index placeholder.
 
 ### Out of scope (Phase 5)
 
-- No production OTA delivery (defer to a later, dedicated phase).
-- No real-time streaming (telemetry is store-and-fetch; live channels deferred).
+- No live chat or phone integration (support tickets only).
+- No multi-warehouse logistics.
+- No subscription / recurring billing.
 
 ### Exit criteria
 
-- A customer registers a device, sees telemetry, downloads firmware.
-- Multi-user B2B account verified with role-gated views.
-- Admin can promote a firmware version without redeploying the site.
+- Customer registers a device, views real-time sensor data, sends commands.
+- OTA firmware update deployed end-to-end with monitoring and rollback.
+- Multi-user B2B account verified with role-gated views and seat limits.
+- Account-level price tiers display correctly in catalog and checkout.
+- Admin can manage device fleet with bulk operations.
+- Device health monitoring alerts fire for offline, low battery, errors.
 
 ---
 

@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "B",
+  "prompt": "Compact in-wall controller module beside a translucent energy-readout card on dark editorial surface, cyan trace lines suggesting current flow, clean minimal composition, hairline grid background, single cyan light source, 1:1 square format",
+  "negativePrompt": "Cartoon, plasticky, flat lighting, oversaturated, neon overload, text, watermarks, melted geometry, bright daylight, white background",
+  "seed": 1234567893,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "1x1",
+  "pixelTarget": "1080x1080",
+  "outputs": [
+    "public/media/home/home-product-appliance-control-01-1x1.avif",
+    "public/media/home/home-product-appliance-control-01-1x1.webp"
+  ]
+}

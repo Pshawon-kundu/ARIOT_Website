@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "A",
+  "prompt": "Lab joint closeup showing a robotic arm joint with engineering tape and hand-written annotation, cyan rim lighting on brushed steel, dark graphite background, cinematic composition, subject in left third for title overlay, text will be overlaid in HTML, 16x9 wide format",
+  "negativePrompt": "Cartoon, plasticky, text painted in image, watermarks, bright daylight, white background, neon overload",
+  "seed": 1234567930,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "16x9",
+  "pixelTarget": "1920x1080",
+  "outputs": [
+    "public/media/blog/blog-cover-rd-01-16x9.avif",
+    "public/media/blog/blog-cover-rd-01-16x9.webp"
+  ]
+}

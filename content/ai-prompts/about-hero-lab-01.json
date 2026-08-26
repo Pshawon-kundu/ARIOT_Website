@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "A",
+  "prompt": "Workshop interior at night — long bench with oscilloscopes glowing cyan, neat tools rack, PCB under inspection, no people, lived-in not staged, dark graphite base tones, dramatic cyan rim lighting, 4x3 format for about page hero card",
+  "negativePrompt": "People, bright daylight, neon overload, text, watermarks, stock-photo energy, white background, cartoon, plasticky",
+  "seed": 1234567940,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "4x3",
+  "pixelTarget": "1600x1200",
+  "outputs": [
+    "public/media/about/about-hero-lab-01-4x3.avif",
+    "public/media/about/about-hero-lab-01-4x3.webp"
+  ]
+}

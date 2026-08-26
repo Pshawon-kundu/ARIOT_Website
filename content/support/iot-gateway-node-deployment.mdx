@@ -1,0 +1,86 @@
+## Pre-deployment checklist
+
+Complete this checklist before leaving the office for a field deployment:
+
+- Confirm 4G signal strength at the target mount height is ≥ −90 dBm (test with a phone
+  on the same carrier before ordering a site visit)
+- Confirm a power source (mains socket or PoE) within 10 m of the target mount location
+- Record the node serial number, IMEI, and provisioned SIM ICCID in the deployment log
+- Download the node firmware package for the model being deployed
+- Bring a spare SIM from the provisioned pool in case the primary SIM has a fault
+- Confirm the MQTT broker endpoint, credentials, and topic prefix are ready to enter on site
+
+## Mounting the enclosure
+
+The IP65 enclosure is designed for outdoor vertical-surface mounting.
+
+**Orientation**: mount vertically with the cable glands facing downward. This ensures water
+drains away from the gland seals. Horizontal mounting is not supported.
+
+**Antenna position**: the LTE antenna is internal. The enclosure must have a clear sky view or
+be oriented toward an open window. Avoid mounting:
+
+- Behind reinforced concrete walls or metal panels
+- Inside a metal cabinet or meter box
+- Adjacent to large metal HVAC or conduit runs
+
+**Fasteners**: use M6 stainless bolts with nylon washers. The mounting plate is pre-drilled at
+[hole pattern pending]. Torque to [Nm pending]. Do not over-tighten — the ABS body will crack.
+
+## SIM and connectivity configuration
+
+1. Open the enclosure using the captive M4 screws (included hex key required).
+2. Insert the provisioned SIM card into the LTE slot. The card orientation is marked on the SIM
+   holder — gold contacts facing down, notch facing left.
+3. Close the enclosure and secure the lid screws to the torque specified on the lid label.
+4. Connect power.
+
+**LED status during boot:**
+
+<table>
+  <thead>
+    <tr>
+      <th>Pattern</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Fast blink (4 Hz)</td>
+      <td>Searching for LTE network</td>
+    </tr>
+    <tr>
+      <td>Slow blink (1 Hz)</td>
+      <td>LTE registered, no data session</td>
+    </tr>
+    <tr>
+      <td>Steady on</td>
+      <td>Data session active</td>
+    </tr>
+    <tr>
+      <td>Double blink</td>
+      <td>Firmware boot, pre-network</td>
+    </tr>
+  </tbody>
+</table>
+
+Allow 60 seconds for LTE registration. If the LED does not reach steady-on within 90 seconds,
+check SIM seating and signal strength.
+
+## MQTT endpoint configuration
+
+After the unit is online, connect to the provisioning access point to configure the cloud endpoint:
+
+1. On a phone or laptop, connect to the Wi-Fi SSID: `ARIOT-NODE-[SERIAL]` using the default
+   password printed on the label inside the lid.
+2. Open a browser and navigate to `192.168.4.1`.
+3. Navigate to **Settings → Cloud → MQTT**.
+4. Enter:
+   - **Broker**: `[BROKER ADDRESS PENDING]`
+   - **Port**: `[PORT PENDING]` (TLS recommended)
+   - **Username**: `[CREDENTIAL FORMAT PENDING]`
+   - **Password**: from the provisioning portal
+   - **Topic prefix**: `[FORMAT PENDING]/[SERIAL]/`
+5. Tap **Save and restart**. The node will reboot and connect to the broker within 30 seconds.
+6. Verify by checking the broker topic in the monitoring dashboard — you should see a heartbeat
+   message within 60 seconds of restart.

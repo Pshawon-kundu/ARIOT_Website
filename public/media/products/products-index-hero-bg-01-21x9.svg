@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2520 1080" width="2520" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#08090B"/>
+      <stop offset="100%" stop-color="#0E1014"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#3DD8F7" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#08090B" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M 64 0 L 0 0 0 64" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.25"/>
+    </pattern>
+  </defs>
+  <rect width="2520" height="1080" fill="url(#bg)"/>
+  <rect width="2520" height="1080" fill="url(#grid)"/>
+  <rect width="2520" height="1080" fill="url(#rim)"/>
+  <g opacity="0.06">
+    <rect x="200" y="200" width="8" height="680" fill="#2A3038"/>
+    <rect x="600" y="200" width="8" height="680" fill="#2A3038"/>
+    <rect x="1000" y="200" width="8" height="680" fill="#2A3038"/>
+    <rect x="1400" y="200" width="8" height="680" fill="#2A3038"/>
+    <rect x="1800" y="200" width="8" height="680" fill="#2A3038"/>
+    <rect x="200" y="200" width="1608" height="8" fill="#2A3038"/>
+  </g>
+</svg>

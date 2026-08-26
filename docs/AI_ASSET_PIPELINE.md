@@ -195,9 +195,9 @@ public/
 
 ### 6.2 Admin-uploaded assets (Phase 2+)
 
-- Stored in S3-compatible bucket via `server/storage/`.
-- Public assets served via CDN URL recorded in `MediaAsset.cdnUrl`.
-- Private assets (firmware, customer-only manuals) served via short-lived signed URLs.
+- Stored via the media storage provider under `server/storage/` (D-068, 2026-08-18). Working default is the **local filesystem provider** (`MEDIA_STORAGE_PROVIDER=local`, persistent root via `MEDIA_LOCAL_ROOT`); Cloudflare R2 is the opt-in alternative (`MEDIA_STORAGE_PROVIDER=r2`). See `docs/LOCAL_MEDIA_STORAGE.md` and `docs/CLOUDFLARE_R2.md`.
+- Public assets served via the provider's public URL (local: `/media/...`; R2: custom-domain CDN URL recorded in `MediaAsset.cdnUrl`).
+- Private assets (firmware, customer-only manuals) served via short-lived signed URLs (deferred per D-067).
 
 ### 6.3 Source masters (NOT committed)
 

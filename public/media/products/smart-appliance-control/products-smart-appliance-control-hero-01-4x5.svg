@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#08090B"/><stop offset="100%" stop-color="#0E1014"/></linearGradient>
+    <radialGradient id="gl" cx="0.5" cy="0.4" r="0.4"><stop offset="0%" stop-color="#3DD8F7" stop-opacity="0.06"/><stop offset="100%" stop-color="#08090B" stop-opacity="0"/></radialGradient>
+    <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.2"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <rect width="1080" height="1350" fill="url(#g)"/>
+  <rect width="1080" height="1350" fill="url(#gl)"/>
+  <!-- In-wall module -->
+  <rect x="390" y="520" width="300" height="180" rx="8" fill="#1B1F25" stroke="#2A3038" stroke-width="2"/>
+  <rect x="410" y="540" width="260" height="140" rx="5" fill="#15181E"/>
+  <!-- Screen display area -->
+  <rect x="430" y="555" width="100" height="60" rx="3" fill="#08090B" stroke="#2A3038" stroke-width="1"/>
+  <text x="445" y="585" font-family="monospace" font-size="10" fill="#3DD8F7" opacity="0.6">ON</text>
+  <!-- Control buttons -->
+  <circle cx="470" cy="645" r="12" fill="#2A3038"/>
+  <circle cx="510" cy="645" r="12" fill="#2A3038"/>
+  <circle cx="550" cy="645" r="12" fill="#2A3038"/>
+  <circle cx="590" cy="645" r="12" fill="#3DD8F7" opacity="0.4" filter="url(#glow)"/>
+  <!-- Energy meter display -->
+  <rect x="555" y="555" width="100" height="60" rx="3" fill="#08090B" stroke="#2A3038" stroke-width="1"/>
+  <path d="M 570 590 L 580 580 L 590 585 L 600 575 L 610 580 L 620 570 L 630 575" fill="none" stroke="#3DD8F7" stroke-width="1.5" opacity="0.5"/>
+  <!-- Wall background -->
+  <rect x="0" y="0" width="1080" height="520" fill="#0A0C0E"/>
+</svg>

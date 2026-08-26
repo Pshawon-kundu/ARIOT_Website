@@ -86,6 +86,13 @@ A view/extension of `User` for ecommerce-specific fields. Created lazily on firs
 | phone | string | |
 | isDefaultShipping, isDefaultBilling | boolean | |
 | createdAt, updatedAt | | |
+### Phase 2 auth additions (Step 2.2.2, Better Auth)
+
+- `User` gained `emailVerified Boolean @default(false)` (Better Auth flag) and retains `emailVerifiedAt DateTime?` (business field). `avatarUrl String?` maps to Better Auth `image`.
+- `Session` gained `updatedAt`, Better Auth's logical `token` maps to `tokenHash`, `ipAddress` maps to `ip`.
+- Added `Account` model (Better Auth shape: `accountId`, `providerId`, `accessToken`, `refreshToken`, `idToken`, `*ExpiresAt`, `scope`, `password`). `User.accounts Account[]`.
+- Added `Verification` model (Better Auth shape: `identifier`, `value`, `expiresAt`). Renamed from the earlier Auth.js `VerificationToken`.
+- **Migration status**: these changes are captured in `prisma/migrations/20260710081202_auth_better_auth_foundation` (GENERATED + APPLIED to LOCAL dev DB; runtime verified locally). Two spurious `searchVector` `DROP DEFAULT` statements were omitted from that migration (generated-column drift, tracked as I-019). Field mappings verified: `user.image→avatarUrl`, `session.token→tokenHash`, `session.ipAddress→ip`; all Better Auth logical fields map to the Prisma columns listed above.
 
 ---
 
@@ -147,15 +154,17 @@ Indices: `slug` unique, `sku` unique, `categoryId`, `status`, `publishedAt`. FTS
 |---|---|---|
 | id | string | PK |
 | productId | string | FK `Product` |
-| sku | string | unique |
+| sku | string | unique, **global** (all variants incl. archived + active products); normalized **uppercase** (trim + collapse whitespace, D-069) |
 | name | string | "Black, 12V" |
-| optionValues | json | `{ color: 'black', voltage: '12V' }` |
-| priceMinor | bigint? | overrides product price if set |
-| currency | enum | inherits product if null |
-| stock | int | |
+| optionValues | json | `{ color: 'black', voltage: '12V' }` — **free-form** key/value map (no option-group table); trimmed server-side (≤20 keys, key ≤40, value ≤100); combination uniqueness per product is **order-independent** via `optionCombinationKey` (sorted-key fingerprint, active only) |
+| priceMinor | bigint? | overrides product price if set; non-negative digits only |
+| currency | enum | inherits product if null (BDT/USD) |
+| stock | int | non-negative; plain field only (inventory movements tracked in `StockMovement`, Step 2.4.6) |
 | barcode | string? | EAN/UPC |
-| isDefault | boolean | |
-| createdAt, updatedAt, deletedAt | | |
+| isDefault | boolean | at most one active default per product; setting true clears the others |
+| createdAt, updatedAt, deletedAt | | archive = soft-delete (`deletedAt`); archived SKU stays reserved |
+
+Implemented in Step 2.4.5 (✅ 2026-08-18): `/admin/products/[id]/variants` + `POST /api/admin/products/variants`; concurrency via `Product.updatedAt` token; per-mutation AuditLog (entityType `Product`). No Prisma change (model already present). See decision D-069.
 
 ### `ProductImage`
 | Field | Type | Notes |
@@ -369,18 +378,22 @@ Tree.
 | id | string | PK |
 | slug | string | unique |
 | title | string | |
-| summary | string? | |
+| excerpt | string? | |
 | body | mdx | rich content |
 | categoryId | string | FK |
-| productIds | json | denormalized array of related product ids |
+| tags | json | array of strings |
+| products | json | denormalized array of related product ids |
+| author | string? | |
 | status | enum | `DRAFT` \| `PUBLISHED` \| `ARCHIVED` |
 | publishedAt | datetime? | |
-| helpfulYes, helpfulNo | int | denormalized counters |
+| viewCount | int | default 0 |
+| helpfulCount | int | denormalized counter |
+| notHelpfulCount | int | denormalized counter |
 | seoTitle, seoDescription | string? | |
-| createdAt, updatedAt, deletedAt | | |
+| createdAt, updatedAt | | |
 | createdBy, updatedBy | string? | |
 
-Indices: `slug` unique, `categoryId`, `status`. FTS on title + body.
+Indices: `slug` unique, `categoryId`, `status`. FTS on `title` + `excerpt` + `body`.
 
 ### `SupportFeedback`
 Anonymous helpful-vote events for analytics.
@@ -402,15 +415,21 @@ Anonymous helpful-vote events for analytics.
 | userId | string? | nullable for guest tickets (rare) |
 | email | string | snapshot |
 | subject | string | |
+| categoryId | string? | FK `SupportCategory` — ticket classification |
 | relatedProductId | string? | FK |
 | relatedOrderId | string? | FK |
-| priority | enum | `LOW` \| `NORMAL` \| `HIGH` \| `URGENT` |
-| status | enum | `NEW` \| `OPEN` \| `PENDING_CUSTOMER` \| `RESOLVED` \| `CLOSED` \| `REOPENED` |
+| priority | enum | `LOW` \| `MEDIUM` \| `HIGH` \| `URGENT` |
+| status | enum | `OPEN` \| `TRIAGED` \| `IN_PROGRESS` \| `WAITING_CUSTOMER` \| `RESOLVED` \| `CLOSED` |
 | assignedToId | string? | FK `User` (support_admin) |
-| slaDeadlineAt | datetime? | computed |
+| slaResponseDeadlineAt | datetime? | computed from SLA policy |
+| slaResolutionDeadlineAt | datetime? | computed from SLA policy |
 | firstResponseAt | datetime? | |
 | resolvedAt, closedAt | datetime? | |
+| csatScore | int? | 1-5 stars |
+| csatComment | string? | |
 | createdAt, updatedAt | | |
+
+Indices: `status`, `priority`, `categoryId`, `assignedToId`, `userId`, `createdAt`.
 
 ### `TicketMessage`
 | Field | Type | Notes |
@@ -421,20 +440,66 @@ Anonymous helpful-vote events for analytics.
 | authorRole | enum | `CUSTOMER` \| `AGENT` \| `SYSTEM` |
 | body | mdx | |
 | internal | boolean | true = agent-only |
-| attachments | json | array of media ids |
 | createdAt | | |
 
-### `TicketEvent`
-Status changes, assignments, SLA breaches.
+### `TicketAttachment`
+Separate table for file attachments on messages.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| messageId | string | FK `TicketMessage` |
+| mediaId | string | FK `MediaAsset` |
+| fileName | string | original filename |
+| fileSize | bigint | bytes |
+| mimeType | string | validated against allow-list |
+| createdAt | | |
+
+Indices: `messageId`.
+
+### `TicketStatusHistory`
+Append-only log of all status changes, assignments, priority changes.
 
 | Field | Type | Notes |
 |---|---|---|
 | id | string | PK |
 | ticketId | string | FK |
-| kind | enum | `STATUS_CHANGED` \| `ASSIGNED` \| `PRIORITY_CHANGED` \| `SLA_BREACHED` \| `ESCALATED` |
+| kind | enum | `STATUS_CHANGED` \| `ASSIGNED` \| `PRIORITY_CHANGED` \| `SLA_WARNING` \| `SLA_BREACHED` \| `ESCALATED` \| `MERGED` |
+| beforeValue | json? | previous state |
+| afterValue | json? | new state |
 | metadata | json | |
 | actorId | string? | FK `User` |
 | createdAt | | |
+
+Indices: `ticketId`, `createdAt`.
+
+### `SLAPolicy`
+Defines response and resolution deadlines per priority level.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| priority | enum | `LOW` \| `MEDIUM` \| `HIGH` \| `URGENT` |
+| responseDeadlineMinutes | int | business hours |
+| resolutionDeadlineMinutes | int | business hours |
+| isActive | boolean | |
+| createdAt, updatedAt | | |
+
+### `SLABreach`
+Tracks when tickets breach SLA thresholds.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| ticketId | string | FK |
+| severity | enum | `WARNING` (75%) \| `BREACHED` (100%) |
+| breachType | enum | `RESPONSE` \| `RESOLUTION` |
+| deadlineAt | datetime | the deadline that was breached |
+| breachedAt | datetime | when breach occurred |
+| notifiedAt | datetime? | when alert was sent |
+| createdAt | | |
+
+Indices: `ticketId`, `severity`, `breachedAt`.
 
 ---
 
@@ -482,7 +547,7 @@ Indices: `slug` unique, `categoryId`, `status`, `publishedAt`. FTS on title + bo
 ## 7. Media
 
 ### `MediaAsset`
-The single registry for every uploaded file. Public-bucket assets carry a `cdnUrl`; private assets serve via signed URL.
+The single registry for every uploaded file. Public assets carry a `cdnUrl`; private assets serve via signed URL. **No schema change was needed for the D-068 local storage provider (2026-08-18)**: `storageKey` stores the provider-neutral key (`tmp/uploads/...` / `public/products/...`), and `cdnUrl` is set when the active provider produces a CDN/absolute URL (R2 custom domain) or left null for the local provider's site-relative `/media/...` delivery. The active provider is resolved at runtime via `server/storage/get-media-storage-provider.ts` (D-068); local runbook `docs/LOCAL_MEDIA_STORAGE.md`, R2 runbook `docs/CLOUDFLARE_R2.md`.
 
 | Field | Type | Notes |
 |---|---|---|
@@ -555,25 +620,443 @@ Single-row store for site-level configuration that is admin-editable (currencies
 
 ---
 
-## 9. IoT (Phase 5, sketch)
-
-Reserved tables; not built in Phase 1–4. Documented now to lock relationships.
+## 9. IoT (Phase 5)
 
 ### `Device`
-`id`, `serialNumber` (unique), `productId` FK, `customerId` FK, `firmwareVersion`, `lastSeenAt`, `status`, audit fields.
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| serialNumber | string | unique |
+| name | string | customer-assigned display name |
+| productId | string | FK `Product` |
+| customerId | string | FK `User` |
+| firmwareVersion | string | current installed version |
+| status | enum | `ONLINE` \| `OFFLINE` \| `SLEEPING` \| `UPDATING` \| `ERROR` |
+| lastSeenAt | datetime? | from device telemetry |
+| batteryLevel | int? | percentage |
+| signalStrength | int? | dBm or percentage |
+| apiKey | string | hashed, for device auth |
+| createdAt, updatedAt | | audit fields |
 
-### `DeviceTelemetry`
-Time-series. `id`, `deviceId` FK, `recordedAt`, `metrics` (json), partitioned monthly.
+Indices: `serialNumber` unique, `customerId`, `status`, `lastSeenAt`.
 
-### `FirmwareRelease`
-`id`, `productId` FK, `version`, `releaseNotes` (mdx), `mediaId` FK, `isStable`, `publishedAt`.
+### `DeviceClaim`
+Used during device registration/claiming flow.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| deviceId | string | FK `Device` |
+| serialNumber | string | for lookup |
+| claimToken | string | one-time use, time-boxed |
+| claimedByUserId | string? | FK `User` — set after claim |
+| claimedAt | datetime? | |
+| expiresAt | datetime | |
+| createdAt | | |
+
+### `DeviceCommand`
+Commands sent from customer/admin to device.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| deviceId | string | FK `Device` |
+| command | string | e.g., `START`, `STOP`, `REBOOT` |
+| params | json? | command-specific parameters |
+| status | enum | `PENDING` \| `SENT` \| `ACKNOWLEDGED` \| `COMPLETED` \| `FAILED` \| `TIMEOUT` |
+| sentByUserId | string? | FK `User` |
+| sentAt | datetime? | |
+| acknowledgedAt | datetime? | |
+| completedAt | datetime? | |
+| result | json? | device response |
+| createdAt, updatedAt | | |
+
+Indices: `deviceId`, `status`, `createdAt`.
+
+### `DeviceEvent`
+All events from devices: telemetry, status changes, command acknowledgements.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| deviceId | string | FK `Device` |
+| kind | enum | `TELEMETRY` \| `STATUS_CHANGE` \| `COMMAND_ACK` \| `FIRMWARE_CHECK` \| `ERROR` |
+| payload | json | event-specific data |
+| recordedAt | datetime | device timestamp |
+| ingestedAt | datetime | server timestamp |
+| createdAt | | |
+
+Indices: `deviceId`, `kind`, `recordedAt`. Partitioned monthly for large volumes.
+
+### `DeviceSensorReading`
+Time-series sensor data.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| deviceId | string | FK `Device` |
+| sensorType | string | e.g., `temperature`, `humidity`, `battery`, `signal` |
+| value | json | numeric or complex reading |
+| unit | string | e.g., `°C`, `%`, `dBm` |
+| recordedAt | datetime | device timestamp |
+| ingestedAt | datetime | server timestamp |
+| createdAt | | |
+
+Indices: `deviceId`, `sensorType`, `recordedAt`. Partitioned monthly.
+
+Retention: raw data 30 days, aggregated data 1 year.
+
+### `FirmwareVersion`
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| version | string | semver |
+| productId | string | FK `Product` |
+| model | string | device model identifier |
+| channel | enum | `ALPHA` \| `BETA` \| `STABLE` |
+| changelog | mdx | release notes |
+| fileUrl | string | signed URL to firmware binary |
+| fileSize | bigint | bytes |
+| checksum | string | SHA-256 |
+| minHardwareRevision | string? | minimum HW required |
+| status | enum | `DRAFT` \| `AVAILABLE` \| `DEPRECATED` |
+| publishedAt | datetime? | |
+| createdAt, updatedAt | | |
+
+Indices: `productId`, `model`, `channel`, `status`.
+
+### `FirmwareDeployment`
+Tracks OTA update deployments.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| firmwareVersionId | string | FK `FirmwareVersion` |
+| targetDeviceIds | json | array of device IDs or `"all"` |
+| rolloutPercentage | int | 0-100 |
+| status | enum | `PENDING` \| `IN_PROGRESS` \| `COMPLETED` \| `ROLLED_BACK` |
+| startedAt | datetime? | |
+| completedAt | datetime? | |
+| successCount | int | default 0 |
+| failureCount | int | default 0 |
+| createdByUserId | string? | FK `User` |
+| createdAt, updatedAt | | |
+
+### `DeviceLog`
+Device log entries viewable by customer and admin.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| deviceId | string | FK `Device` |
+| level | enum | `INFO` \| `WARN` \| `ERROR` |
+| source | string | e.g., `firmware`, `network`, `sensor` |
+| message | string | |
+| metadata | json? | additional context |
+| recordedAt | datetime | device timestamp |
+| createdAt | | |
+
+Indices: `deviceId`, `level`, `recordedAt`.
+
+Retention: 30 days.
 
 ---
 
-## 10. Conventions checklist
+## 10. B2B Accounts (Phase 5)
+
+### `Account`
+Multi-user B2B account.
+Multi-user B2B account.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| name | string | company name |
+| taxId | string? | BIN/VAT for invoices |
+| segment | enum | `B2B` \| `EDU` |
+| defaultPriceTierId | string? | FK `PriceTier` |
+| seatLimit | int | max members |
+| createdAt, updatedAt | | |
+
+### `AccountMember`
+Join table for users belonging to an account.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| accountId | string | FK `Account` |
+| userId | string | FK `User` |
+| role | enum | `OWNER` \| `MEMBER` \| `VIEWER` |
+| joinedAt | datetime | |
+| createdAt, updatedAt | | |
+
+PK: composite (`accountId`, `userId`).
+
+Indices: `accountId`, `userId`.
+
+### `PriceTier`
+Account-level pricing.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| name | string | display name |
+| slug | string | unique |
+| description | string? | |
+| isActive | boolean | |
+| createdAt, updatedAt | | |
+
+### `PriceTierPrice`
+Per-product/variant tier-specific pricing.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| priceTierId | string | FK `PriceTier` |
+| productId | string | FK `Product` |
+| variantId | string? | FK `ProductVariant` |
+| priceMinor | bigint | tier-specific price |
+| currency | enum | `BDT` \| `USD` |
+| createdAt, updatedAt | | |
+
+PK: composite (`priceTierId`, `productId`, `variantId`).
+
+---
+
+## 11. Conventions checklist
 
 - All FK relationships have `onDelete` policy explicitly set (`Restrict` for finance-related, `Cascade` for child rows under parent — e.g., `OrderItem` under `Order` only when the order is hard-deleted, never via soft delete).
 - Soft delete entities default-scope to `deletedAt: null` everywhere.
 - Money displayed via the formatter in `lib/format/currency.ts` (BDT primary, USD secondary). DB stores canonical only.
 - `slug` columns are immutable after publish; renaming generates a 301 redirect entry (table TBD with the SEO subsystem).
 - All `json` columns have a TS type alongside the schema (`type ProductSpecs = ...`) and are validated with Zod on write.
+
+---
+
+## 12. Planned Models — Phase 2 Extended
+
+> **NOTE (updated 2026-07-10)**: I-019 is now **RESOLVED** by corrective C.2. `searchVector` columns were dropped from Product and BlogPost. `prisma migrate dev` is unblocked. New planned models below may now be implemented. I-025 (permission wildcard) should still be resolved (C.1) before CONTENT_ADMIN role is used in production.
+
+### `RdProject` (planned — Step 2.10.1)
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK cuid |
+| slug | string | unique |
+| title | string | |
+| description | string? | MDX |
+| status | enum | `CONCEPT \| ACTIVE \| PAUSED \| COMPLETED \| ARCHIVED` |
+| isPublic | bool | controls visibility on /research |
+| seoTitle, seoDescription | string? | |
+| createdAt, updatedAt, deletedAt | | standard |
+| createdBy, updatedBy | string? | FK User |
+
+Relations: `updates: RdUpdate[]`, `milestones: RdMilestone[]`
+
+### `RdUpdate` (planned — Step 2.10.1)
+
+| Field | Type | Notes |
+|---|---|---|
+| id, projectId, title, body (MDX), publishedAt, isPublic, createdAt, updatedAt | | |
+
+### `HomepageConfig` (planned — Step 2.11.1)
+
+Singleton (only one active config at a time).
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| version | int | incremented on publish |
+| sections | json | ordered array of `HomepageSection` typed objects |
+| publishedAt | datetime? | null = draft |
+| publishedBy | string? | FK User |
+| createdAt, updatedAt | | |
+
+`HomepageSection` (JSON type):
+```ts
+type HomepageSection = {
+  id: string;         // stable section key
+  sectionType: HomepageSectionType; // enum
+  enabled: boolean;
+  order: number;
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+  imageId?: string;   // FK MediaAsset
+  ctaLabel?: string;
+  ctaHref?: string;
+  featuredEntityIds?: string[];
+  bgStyle?: 'base' | 'raised' | 'accent';
+};
+```
+
+`HomepageSectionType` enum (planning):
+`ANNOUNCEMENT | HERO | HOT_PROMOTIONS | BUSINESS_AREAS | RND_FEATURE | WORKSPACE | COMPONENTS | PRODUCTS | IOT_SOLUTIONS | ENGINEERING | BLOG | FINAL_CTA`
+
+### `HomepageRevision` (planned — Step 2.11.1)
+
+Append-only history for rollback.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| sections | json | snapshot of HomepageConfig.sections at publish |
+| publishedAt | datetime | |
+| publishedBy | string? | FK User |
+
+### `Promotion` (planned — Step 2.12.1)
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| name | string | internal label |
+| title | string | public headline |
+| description | string? | |
+| badge | string? | e.g., "Save 20%" |
+| imageId | string? | FK MediaAsset |
+| ctaLabel | string? | |
+| ctaHref | string? | |
+| promotionType | enum | `ANNOUNCEMENT \| DISCOUNT \| OFFER \| CAMPAIGN \| EVENT` |
+| discountType | enum | `NONE \| PERCENTAGE \| FIXED_AMOUNT \| FREE_DURATION \| CUSTOM_OFFER` |
+| discountValue | decimal? | |
+| couponCode | string? | |
+| startAt | datetime? | null = always-on while ACTIVE |
+| endAt | datetime? | null = no expiry |
+| priority | int | higher = shown first within placement |
+| status | enum | `DRAFT \| SCHEDULED \| ACTIVE \| PAUSED \| EXPIRED \| ARCHIVED` |
+| isStackable | bool | can combine with other promotions |
+| terms | string? | |
+| createdAt, updatedAt, deletedAt | | |
+| createdBy, updatedBy | string? | FK User |
+
+Relations: `placements: PromotionPlacement[]`, `coupons: Coupon[]`
+
+### `PromotionPlacement` (planned — Step 2.12.1)
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| promotionId | string | FK Promotion |
+| placement | enum | see placement enum below |
+| targetEntityId | string? | optional product/plan ID for entity-specific placements |
+| limit | int? | max simultaneous promotions in this placement |
+| createdAt | | |
+
+`PromotionPlacementSlot` enum (planning):
+`GLOBAL_ANNOUNCEMENT | HOMEPAGE_HERO | HOMEPAGE_HOT_PROMOTIONS | HOMEPAGE_INLINE | WORKSPACE_HERO | WORKSPACE_BOOKING | COMPONENTS_HERO | COMPONENT_LIST | PRODUCT_DETAIL | RND_PAGE | BLOG_PAGE | CONTACT_PAGE | QUOTE_PAGE | CHECKOUT`
+
+### `Coupon` (planned — Step 2.12.1)
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| promotionId | string | FK Promotion |
+| code | string | unique, case-insensitive |
+| usageLimit | int? | null = unlimited |
+| redemptionCount | int | default 0 |
+| expiresAt | datetime? | |
+| isActive | bool | |
+| createdAt, updatedAt | | |
+
+### `WorkspacePlan` (planned — Step 2.13.1)
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| slug | string | unique |
+| name | string | |
+| description | string? | MDX |
+| durationType | enum | `HOURLY \| DAILY \| WEEKLY \| MONTHLY` |
+| durationMinutes | int | e.g., 60, 480, 2880, 10080 |
+| priceMinor | BigInt | price in currency's smallest unit |
+| currency | enum | `BDT \| USD` |
+| capacity | int | max participants |
+| includedFacilities | json | string array of facility keys |
+| supportLevel | string? | e.g., "Basic engineering support" |
+| terms | string? | MDX |
+| isActive | bool | |
+| isPublic | bool | |
+| seoTitle, seoDescription | string? | |
+| createdAt, updatedAt, deletedAt | | |
+
+### `Booking` (planned — Step 2.13.2)
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| reference | string | unique, human-readable e.g. "WS-2026-001234" |
+| customerId | string | FK User |
+| planId | string | FK WorkspacePlan |
+| date | date | booking date |
+| startTime | time | |
+| endTime | time | |
+| participants | int | |
+| priceMinor | BigInt | base price at booking time |
+| discountMinor | BigInt | default 0 |
+| promotionId | string? | FK Promotion |
+| couponId | string? | FK Coupon |
+| finalPriceMinor | BigInt | price - discount |
+| paymentStatus | enum | `NOT_REQUIRED \| PENDING \| PAID \| PARTIALLY_PAID \| REFUNDED \| FAILED` |
+| bookingStatus | enum | `PENDING \| CONFIRMED \| CHECKED_IN \| COMPLETED \| CANCELLED \| NO_SHOW` |
+| customerNote | string? | |
+| internalNote | string? | super_admin/workspace_manager only |
+| termsAccepted | bool | |
+| createdAt, updatedAt | | |
+| createdBy | string? | FK User (if staff-created) |
+
+Note: `paymentStatus` and `bookingStatus` are **separate enums** intentionally. A booking can be `CONFIRMED` with `payment: PENDING` (pay-later) or `CONFIRMED` with `payment: PAID` (online payment). This separation prevents conflation of operational state with financial state.
+
+### `AvailabilityRule` (planned — Step 2.13.2)
+
+Defines recurring availability windows.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| dayOfWeek | int[] | 0=Sunday, 6=Saturday |
+| openTime | time | |
+| closeTime | time | |
+| slotDurationMinutes | int | e.g., 60 |
+| capacity | int | |
+| isActive | bool | |
+| effectiveFrom, effectiveUntil | date? | |
+| createdAt, updatedAt | | |
+
+### `BlackoutPeriod` (planned — Step 2.13.2)
+
+Blocks out specific dates/periods.
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| startDate, endDate | date | |
+| reason | string? | internal label |
+| isPublic | bool | show on public calendar as "Unavailable" |
+| createdAt, updatedAt | | |
+
+### `StockMovement` (planned — Step 2.14.5)
+
+| Field | Type | Notes |
+|---|---|---|
+| id | string | PK |
+| productId | string | FK Product |
+| variantId | string? | FK ProductVariant |
+| deltaQty | int | positive=add, negative=remove |
+| reason | enum | `SALE \| RETURN \| ADJUSTMENT \| IMPORT \| WRITE_OFF \| INITIAL` |
+| actorId | string? | FK User |
+| note | string? | |
+| createdAt | | |
+
+Indices: `productId`, `variantId`, `reason`, `createdAt`.
+
+### Planning notes
+
+1. **Component vs Product**: No separate `Component` model. Components are `Product` records in component-specific categories. `productType` field or category-based filtering distinguishes them. No schema change needed for this distinction — it is a UX concern.
+
+2. **Search vectors**: `searchVector` columns on `Product` and `BlogPost` have been **removed** (corrective C.2, 2026-07-10; final verification 2026-07-25). I-019 is RESOLVED. The existing `gin_trgm_ops` GIN indexes on `name`/`tagline`/`description`/`title`/`body` serve ILIKE search. New searchable entities (RdProject, WorkspacePlan, etc.) should use `name(ops: raw("gin_trgm_ops"))` indices instead of generated `tsvector` — proven safe and Prisma-compatible. Future `prisma migrate dev` directly confirmed to work (disposable probe test passed 2026-07-25).
+
+3. **Money**: All monetary values follow the existing `priceMinor: BigInt` + `currency: Currency` pattern. Never floats. Never strings in the DB.
+
+4. **Soft delete**: All user-facing entities get `deletedAt: DateTime?`. Admin lists always filter `deletedAt: null`. Audit logs are **never soft-deleted** (append-only).
+
+5. **JSON columns**: All JSON columns must have a corresponding TypeScript type and Zod validator at the server action boundary.

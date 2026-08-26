@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#08090B"/><stop offset="100%" stop-color="#0E1014"/></linearGradient>
+    <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.15"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <!-- Whiteboard -->
+  <rect x="300" y="150" width="900" height="500" rx="4" fill="#0E1014" stroke="#1B1F25" stroke-width="2"/>
+  <!-- Engineering sketch on whiteboard -->
+  <g opacity="0.15">
+    <rect x="340" y="190" width="250" height="200" rx="4" fill="none" stroke="#E4E8EE" stroke-width="1"/>
+    <circle cx="465" cy="290" r="40" fill="none" stroke="#E4E8EE" stroke-width="1"/>
+    <rect x="400" y="340" width="130" height="60" rx="3" fill="none" stroke="#E4E8EE" stroke-width="1"/>
+    <line x1="340" y1="240" x2="590" y2="240" stroke="#E4E8EE" stroke-width="0.5"/>
+    <line x1="340" y1="340" x2="590" y2="340" stroke="#E4E8EE" stroke-width="0.5"/>
+  </g>
+  <!-- Cyan annotations on whiteboard -->
+  <g opacity="0.4">
+    <line x1="620" y1="250" x2="700" y2="300" stroke="#3DD8F7" stroke-width="1"/>
+    <line x1="620" y1="300" x2="700" y2="350" stroke="#3DD8F7" stroke-width="1"/>
+    <line x1="620" y1="200" x2="700" y2="250" stroke="#3DD8F7" stroke-width="1"/>
+    <text x="710" y="305" font-family="monospace" font-size="10" fill="#3DD8F7">v1.2</text>
+    <text x="710" y="255" font-family="monospace" font-size="10" fill="#3DD8F7">RX_TX</text>
+  </g>
+  <!-- PCB on desk -->
+  <rect x="350" y="580" width="200" height="120" rx="5" fill="#0A0C0E" stroke="#1B1F25" stroke-width="1"/>
+  <rect x="360" y="590" width="180" height="100" rx="3" fill="#0E1014"/>
+  <circle cx="400" cy="620" r="8" fill="#1B1F25"/>
+  <rect x="430" y="610" width="60" height="30" rx="3" fill="#15181E"/>
+  <circle cx="500" cy="620" r="3" fill="#3DD8F7" opacity="0.5" filter="url(#glow)"/>
+  <!-- Desk -->
+  <rect x="0" y="700" width="1920" height="380" fill="#0E1014"/>
+  <line x1="0" y1="700" x2="1920" y2="700" stroke="#1B1F25" stroke-width="1"/>
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#08090B"/><stop offset="100%" stop-color="#0E1014"/></linearGradient>
+    <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.2"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  <rect width="1080" height="1350" fill="url(#bg)"/>
+  <rect width="1080" height="1350" fill="url(#g)"/>
+  <!-- DIN-rail mount enclosure -->
+  <rect x="340" y="480" width="400" height="300" rx="10" fill="#1B1F25" stroke="#2A3038" stroke-width="2"/>
+  <rect x="360" y="500" width="360" height="260" rx="6" fill="#15181E"/>
+  <!-- Front face status LEDs -->
+  <circle cx="400" cy="540" r="5" fill="#3DD8F7" filter="url(#glow)"/>
+  <circle cx="425" cy="540" r="5" fill="#3DD8F7" opacity="0.6"/>
+  <circle cx="450" cy="540" r="5" fill="#2A3038"/>
+  <circle cx="475" cy="540" r="5" fill="#2A3038"/>
+  <!-- Antenna mounts -->
+  <line x1="400" y1="480" x2="380" y2="380" stroke="#2A3038" stroke-width="4" stroke-linecap="round"/>
+  <line x1="680" y1="480" x2="700" y2="380" stroke="#2A3038" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="380" cy="375" r="8" fill="#1B1F25"/>
+  <circle cx="700" cy="375" r="8" fill="#1B1F25"/>
+  <!-- Connectors -->
+  <rect x="500" y="740" width="80" height="20" rx="2" fill="#0A0C0E" stroke="#1B1F25" stroke-width="1"/>
+  <rect x="600" y="740" width="80" height="20" rx="2" fill="#0A0C0E" stroke="#1B1F25" stroke-width="1"/>
+  <!-- Label space -->
+  <rect x="500" y="520" width="160" height="40" rx="3" fill="#08090B"/>
+  <text x="520" y="545" font-family="monospace" font-size="9" fill="#3DD8F7" opacity="0.4">GATEWAY v1</text>
+  <!-- Cyan link pulse -->
+  <line x1="400" y1="540" x2="400" y2="475" stroke="#3DD8F7" stroke-width="1" opacity="0.4"/>
+</svg>

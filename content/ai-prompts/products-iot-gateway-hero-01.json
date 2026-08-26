@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "A",
+  "prompt": "DIN-mounted IoT gateway enclosure with two antennas, front face with status LEDs including a cyan link indicator, practical industrial lighting, graphite metal surfaces, wall mount context, 4x5 portrait format",
+  "negativePrompt": "People, bright daylight, neon overload, text, watermarks, cartoon, plasticky, white background",
+  "seed": 1234567954,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "4x5",
+  "pixelTarget": "1080x1350",
+  "outputs": [
+    "public/media/products/iot-gateway-node/products-iot-gateway-node-hero-01-4x5.avif",
+    "public/media/products/iot-gateway-node/products-iot-gateway-node-hero-01-4x5.webp"
+  ]
+}

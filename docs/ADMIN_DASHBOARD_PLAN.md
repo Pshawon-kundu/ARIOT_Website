@@ -112,8 +112,8 @@ Role check happens **server-side** in every layout and every server action.
 Tabbed editor:
 
 1. **Details** — name, slug (auto from name, editable, with redirect creation on change post-publish), tagline, description (MDX editor with preview), category, sales type, status, brand, base price, currency, stock, stock policy, weight, dimensions, highlights (list), in-the-box (list).
-2. **Media** — image gallery (sortable, primary toggle, alt text per image), video gallery (with poster), 3D model upload (when applicable). All uploads via signed URL.
-3. **Variants** — option groups (Color, Voltage, …); variant matrix; per-variant SKU, price, stock, barcode.
+2. **Media** — image gallery (sortable, primary toggle, alt text per image), video gallery (with poster), 3D model upload (when applicable). Uploads go through the **media storage provider** (`server/storage/`, D-068): the working default is the **local** provider (`MEDIA_STORAGE_PROVIDER=local`, `POST /api/admin/media/uploads/local`, delivery via `/media/[...segments]`); R2 (`MEDIA_STORAGE_PROVIDER=r2`) uses presigned URLs. The client resolves the provider via `GET /api/admin/media/upload/mode`. Implemented in Step 2.4.4 (✅ 2026-08-18).
+3. **Variants** — option groups (Color, Voltage, …) as **free-form `optionValues` key/value pairs**; variant matrix; per-variant SKU, price, stock, barcode. Implemented in Step 2.4.5 (✅ Closed 2026-08-18): `/admin/products/[id]/variants` + `POST /api/admin/products/variants` (create/update/archive dispatch); option-values normalized server-side (trim; ≤20 keys; key ≤40; value ≤100; order-independent combination uniqueness via `optionCombinationKey`); SKU normalized **uppercase** with global uniqueness (incl. archived variants + active products); concurrency via `Product.updatedAt` (409 on stale); archive = soft-delete (`deletedAt`, idempotent, SKU stays reserved); per-mutation AuditLog (`PRODUCT_VARIANT_CREATED`/`_UPDATED`/`_ARCHIVED`, entityType `Product`); optimistic UI with conflict banner; read-only view without `products.write`. Final production-service verification (2026-08-18): real executors tested through the shared authorization boundary on disposable PostgreSQL (376/376 pass). **Default-variant invariant DEFERRED**: there is no DB constraint on `isDefault`; zero or multiple defaults are possible today — the service only clears other defaults when a variant is set to `true`, and the UI exposes the toggle. An exactly-one-default invariant (per product) is intentionally NOT invented here; define it in the roadmap before Step 2.4.6. See decision D-069.
 4. **Inventory** — current stock, reorder point, reorder quantity, stock movements log (read-only).
 5. **SEO** — meta title, meta description, OG image override, canonical override (advanced).
 6. **Related** — related, cross-sell, accessory, alternative selectors.
@@ -332,5 +332,118 @@ Tabs:
 - **Phase 3** adds: Sales (orders, customers, settings → currencies/taxes/shipping/payments), full Overview KPIs.
 - **Phase 4** adds: Support workspace.
 - **Phase 5** adds: Devices tab on customer detail; firmware management UI.
+
+---
+
+## 9. Complete Admin Information Architecture (Freeze — 2026-07-10)
+
+This section documents the **complete planned admin navigation** after the corrective planning step. All items are planned unless marked ✅ (implemented). Not all items need to be built in Phase 2; see `IMPLEMENTATION_MASTER_PLAN.md` for sequencing.
+
+```
+ARIOT Control
+
+├── Overview (/admin) ✅
+│
+├── Catalog
+│   ├── Products (/admin/products) ✅ Step 2.4.2
+│   ├── Components (/admin/components) [planned 2.14.2]
+│   ├── Categories (/admin/categories) [planned 2.4.7]
+│   ├── Inventory (/admin/inventory) [planned 2.14.4]
+│   └── Media (/admin/media) [planned 2.6.1]
+│
+├── R&D
+│   ├── Projects (/admin/rd/projects) [planned 2.10.2]
+│   ├── Project Updates (/admin/rd/updates) [planned 2.10.4]
+│   └── Public Milestones (/admin/rd/milestones) [planned 2.10.3]
+│
+├── Workspace
+│   ├── Plans (/admin/workspace/plans) [planned 2.13.3]
+│   ├── Facilities (/admin/workspace/facilities) [planned 2.13.4]
+│   ├── Availability (/admin/workspace/availability) [planned 2.13.5]
+│   ├── Bookings (/admin/workspace/bookings) [planned 2.13.6]
+│   ├── Calendar (/admin/workspace/calendar) [planned 2.13.7]
+│   └── Interests (/admin/workspace/interests) [planned 2.13.8]
+│
+├── Promotions
+│   ├── All Promotions (/admin/promotions) [planned 2.12.2]
+│   ├── Placement Rules (/admin/promotions/placements) [planned 2.12.5]
+│   └── Coupons (/admin/promotions/coupons) [planned 2.12.4]
+│
+├── Content
+│   ├── Homepage (/admin/content/homepage) [planned 2.11.2]
+│   ├── Pages (/admin/content/pages) [planned 2.16.2]
+│   ├── Blog (/admin/blog) [planned 2.5.1]
+│   ├── News (/admin/content/news) [planned 2.16.1]
+│   ├── Navigation (/admin/content/navigation) [planned 2.16.3]
+│   ├── Footer (part of Navigation) [planned 2.16.3]
+│   └── FAQs (/admin/content/faqs) [planned 2.16.4]
+│
+├── SEO
+│   ├── Page SEO (/admin/seo) [planned 2.15.1]
+│   ├── Redirects (/admin/seo/redirects) [planned 2.15.3]
+│   └── Global SEO (/admin/settings → SEO section) [planned 2.15.4]
+│
+├── Sales
+│   ├── Quotes (/admin/sales/quotes) [planned 2.7 / Phase 3]
+│   ├── Component Requests (/admin/sales/component-requests) [planned Phase 3]
+│   ├── Orders (/admin/orders) [Phase 3]
+│   └── Customers (/admin/customers) [Phase 3]
+│
+├── Support
+│   ├── Tickets (/admin/support/tickets) [planned 2.8.x / Phase 4]
+│   ├── Manuals (/admin/support/manuals) [planned Phase 4]
+│   └── Firmware (/admin/support/firmware) [planned Phase 4]
+│
+├── Operations
+│   ├── Analytics (/admin/operations/analytics) [planned Phase 3]
+│   ├── Notifications (/admin/operations/notifications) [planned future]
+│   ├── Audit Log (/admin/audit-log) [planned 2.8.3]
+│   └── System Health (/admin/operations/health) [planned future]
+│
+└── Settings
+    ├── Company Profile (/admin/settings) [planned 2.9.1]
+    ├── Users (/admin/users) [planned 2.8.1]
+    ├── Roles (/admin/roles) [planned 2.8.2]
+    └── Integrations (/admin/settings/integrations) [planned future]
+```
+
+### 9.1 Navigation implementation plan
+
+Navigation items are enabled progressively as admin pages are built. The central config in `components/admin/admin-nav.tsx` drives both the desktop rail and the mobile drawer. Each new admin page also adds its route to the nav config (removing `soon: true` from the leaf item).
+
+The current nav config must be extended beyond the current 7 groups (Catalog/Sales/Support/Content/Operations/Settings) to include R&D, Workspace, Promotions, SEO, and a separate Sales group as pages are built.
+
+### 9.2 Permission matrix (extended)
+
+| Module | super_admin | content_admin | catalog_manager | rd_editor | workspace_manager | sales_manager | support_agent | seo_editor |
+|---|---|---|---|---|---|---|---|---|
+| Products read/write | ✓/✓ | ✓/✓ | ✓/✓ | ✓/— | —/— | ✓/— | —/— | —/— |
+| Components read/write | ✓/✓ | ✓/✓ | ✓/✓ | —/— | —/— | ✓/— | —/— | —/— |
+| Categories write | ✓ | ✓ | ✓ | — | — | — | — | — |
+| Inventory adjust | ✓ | — | ✓ | — | — | — | — | — |
+| R&D read/write | ✓/✓ | ✓/✓ | —/— | ✓/✓ | —/— | —/— | —/— | —/— |
+| Workspace read/write | ✓/✓ | —/— | —/— | —/— | ✓/✓ | —/— | —/— | —/— |
+| Bookings read/manage | ✓/✓ | —/— | —/— | —/— | ✓/✓ | ✓/— | —/— | —/— |
+| Promotions read/write | ✓/✓ | ✓/✓ | ✓/— | —/— | ✓/✓ | ✓/— | —/— | —/— |
+| Homepage CMS write | ✓ | ✓ | — | — | — | — | — | — |
+| Blog/News write | ✓ | ✓ | — | ✓ | — | — | — | — |
+| SEO write | ✓ | ✓ | — | — | — | — | — | ✓ |
+| Sales/Orders | ✓/✓ | —/— | —/— | —/— | —/— | ✓/✓ | ✓/— | —/— |
+| Support tickets | ✓/✓ | —/— | —/— | —/— | —/— | ✓/read | ✓/✓ | —/— |
+| Users/Roles | ✓/✓ | —/— | —/— | —/— | —/— | —/— | —/— | —/— |
+| Audit log | ✓ | — | — | — | — | — | — | — |
+| Settings | ✓ | — | — | — | — | — | — | — |
+
+**Note**: `catalog_manager`, `rd_editor`, `workspace_manager`, `sales_manager`, `support_agent`, `seo_editor` are planned future roles. Current implemented roles: `SUPER_ADMIN`, `CONTENT_ADMIN`, `SUPPORT_ADMIN`, `SALES_ADMIN`. New roles require a migration and seed update (after C.1 permission wildcard fix).
+
+### 9.3 Planned phases
+
+| Phase | Admin modules |
+|---|---|
+| Phase 2 (current) | Catalog (Products ✅, Components, Categories, Media), Blog, Operations, Settings, R&D (basic), Homepage CMS, SEO (basic) |
+| Phase 2 extended | Promotions, Workspace Plans+Booking, Content expansion, Inventory |
+| Phase 3 | Sales (Quotes, Orders, Customers, Payments) |
+| Phase 4 | Support tickets, Manuals, Firmware, Full Analytics |
+| Phase 5+ | Device management, IoT telemetry, advanced analytics |
 
 Do not silently leak later-phase admin pages into earlier phases.

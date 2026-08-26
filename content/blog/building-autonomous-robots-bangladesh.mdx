@@ -1,0 +1,64 @@
+## Why lab-proven autonomy fails in the field
+
+Most autonomous robot research assumes flat floors, predictable lighting, and reliable Wi-Fi.
+South Asian field conditions present a harder problem: power cuts, dust, humidity, cable clutter,
+and human traffic patterns that no simulation captures.
+
+This post documents what we learned designing the ARIOT floor-cleaning robot prototype for real
+environments — and why every assumption we imported from Western research labs needed re-examination
+before we shipped anything.
+
+## SLAM on real surfaces
+
+Our LiDAR-based SLAM pipeline performs well on paper. On a typical Dhaka office floor — worn tiles,
+scattered furniture, extension cables, and partially-blocked corridors — it requires significant
+tuning that no off-the-shelf algorithm provides.
+
+Key failure modes we hit:
+
+- **Reflective surfaces** — polished tiles and glass partitions produced phantom obstacles in the
+  LiDAR point cloud, causing the map to distort on the second loop.
+- **Cable clutter** — charging cables, extension leads, and cable trays created false-floor readings
+  that triggered the cliff sensor incorrectly.
+- **Moving obstacles** — people walking slowly through the mapped zone caused the local planner to
+  re-plan constantly, producing oscillation near doorways.
+
+[Specific fix: sensor fusion weights, obstacle inflation radius, recovery behaviour pseudocode pending
+approval before publication.]
+
+## Power management for a 220V country with brownouts
+
+Battery management for a robot that docks and recharges in a market with frequent voltage sags is not
+covered in most embedded robotics textbooks.
+
+The design constraints:
+
+- Input voltage must handle the [V range] swings common on Bangladesh commercial grid connections.
+- The charging circuit must recover cleanly from a mid-charge brownout without leaving the cell in a
+  partial-charge state.
+- The robot must reach the dock when battery drops below a threshold — and that threshold must account
+  for the distance to the dock, not just a fixed percentage.
+
+[Charging circuit schematic, brownout recovery state machine, and dock-range calculation algorithm
+pending datasheet approval.]
+
+## Thermal performance in a hot, humid climate
+
+Bangladesh summers push ambient temperatures well above the operating range tested in European
+laboratory environments. Components that run within spec at 25°C may derate significantly at 35–40°C
+ambient with 80%+ relative humidity.
+
+[Thermal derating data, heatsink sizing rationale, and enclosure ventilation approach pending
+engineering review.]
+
+## What we learned so far
+
+Designing for South Asia means treating the environment as a first-class design constraint — not an
+afterthought applied after the algorithm is "working".
+
+Every field test reveals something a simulation did not predict. We document each failure honestly
+here because the engineering community in this region benefits more from honest failure reports than
+from polished success stories.
+
+This post is a living document. Real numbers, real failures, and real fixes will replace these
+bracketed placeholders as field validation progresses and each change is approved for publication.

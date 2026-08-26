@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "A",
+  "prompt": "Top-down floor plan of a real room with a robot path traced in cyan, raised obstacles highlighted, top-side rim lighting on graphite surface, blueprint aesthetic, engineering credibility, dark background, 16:9 wide format",
+  "negativePrompt": "Cartoon, plasticky, flat lighting, neon overload, text, watermarks, bright daylight, white background",
+  "seed": 1234567901,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "16x9",
+  "pixelTarget": "1920x1080",
+  "outputs": [
+    "public/media/home/home-engineering-navigation-01-16x9.avif",
+    "public/media/home/home-engineering-navigation-01-16x9.webp"
+  ]
+}

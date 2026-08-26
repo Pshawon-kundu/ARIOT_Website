@@ -3,16 +3,18 @@ import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
 import { Separator } from '@/components/ui/separator';
 import { NewsletterForm } from '@/features/forms/newsletter-form';
-import { siteConfig } from '@/lib/seo/site';
 import { cn } from '@/lib/utils/cn';
 
-const PRODUCT_LINKS = [
-  { label: 'All products', href: '/products' },
-  { label: 'Industrial robotics', href: '/products/category/robotics' },
-  { label: 'Smart-city IoT', href: '/products/category/smart-city' },
-  { label: 'Smart-building IoT', href: '/products/category/smart-building' },
-  { label: 'Education kits', href: '/products/category/education' },
+const COMPANY_LINKS = [
+  { label: 'About', href: '/about' },
+  { label: 'Blog', href: '/blog' },
 ] as const;
+
+const RD_LINKS = [{ label: 'Research & development', href: '/research' }] as const;
+
+const WORKSPACE_LINKS = [{ label: 'Robotics workspace', href: '/workspace' }] as const;
+
+const COMPONENTS_LINKS = [{ label: 'Components store', href: '/components' }] as const;
 
 const SOLUTIONS_LINKS = [
   { label: 'Smart Factory', href: '/solutions/smart-factory' },
@@ -22,20 +24,11 @@ const SOLUTIONS_LINKS = [
   { label: 'Education', href: '/solutions/education' },
 ] as const;
 
-const SUPPORT_LINKS = [
+const RESOURCES_LINKS = [
   { label: 'Support hub', href: '/support' },
   { label: 'Manuals', href: '/support/manuals' },
   { label: 'Firmware', href: '/support/firmware' },
-  { label: 'Open a ticket', href: '/support/ticket' },
-  { label: 'Contact', href: '/contact' },
-] as const;
-
-const COMPANY_LINKS = [
-  { label: 'About', href: '/about' },
-  { label: 'Innovation Lab', href: '/innovation-lab' },
   { label: 'Blog', href: '/blog' },
-  { label: 'Press', href: '/about/press' },
-  { label: 'Careers', href: '/careers' },
 ] as const;
 
 const LEGAL_LINKS = [
@@ -46,10 +39,6 @@ const LEGAL_LINKS = [
   { label: 'Shipping & returns', href: '/legal/shipping' },
 ] as const;
 
-// Social brand icons intentionally deferred — lucide-react v1 dropped
-// brand icons. We will add them as inline SVGs (or via a dedicated brand-
-// icon library) in a follow-up sub-turn once the brand handles are real.
-
 const footerLinkClass = cn(
   'rounded-sm text-sm text-steel-200 hover:text-cyan-400',
   'transition-colors duration-200 ease-out-quart',
@@ -57,72 +46,74 @@ const footerLinkClass = cn(
 );
 
 /**
- * SiteFooter — public-website footer (DESIGN_SYSTEM §13 + PAGE_BLUEPRINTS §13).
+ * SiteFooter — public-website footer.
  * Server component shell with a small client island for the newsletter form.
+ *
+ * Link columns follow the approved public IA:
+ *   Company · R&D · Workspace · Components · Solutions · Resources
+ * Blog and Support remain reachable (Resources / More menu) without crowding
+ * the primary nav. Only verified/real routes are linked — no placeholder or
+ * unverified destinations.
  */
 export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer role="contentinfo" className="border-t border-steel-800 bg-bg-base">
-      <Container className="py-16 md:py-24">
-        <div className="grid grid-cols-2 gap-10 md:grid-cols-4 md:gap-12">
-          {/* Brand column */}
-          <div className="col-span-2 flex flex-col gap-4 md:col-span-1">
+    <footer role="contentinfo" className="border-steel-800 bg-bg-base border-t">
+      <Container className="py-16 md:py-20">
+        {/* Brand + contact CTA */}
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
+          <div className="flex flex-col gap-4">
             <Link
               href="/"
-              className="font-display text-xl font-semibold tracking-tight text-steel-100"
+              className="font-display text-steel-100 text-xl font-semibold tracking-tight"
             >
               ARIOT
             </Link>
-            <p className="max-w-xs text-sm text-steel-300">
-              [Autonomous robotics and intelligent IoT systems engineered in
-              South Asia for the real world.]
-            </p>
-            <p className="mt-2 max-w-xs font-mono text-xs text-steel-500">
-              [Engineered in Bangladesh · Deployed across South Asia]
+            <p className="text-steel-300 max-w-md text-sm">
+              ARIOT Technologies researches autonomous robotics, develops connected IoT products,
+              and is building the engineering workspace and component supply that local innovators
+              need — engineered in Bangladesh for South Asia.
             </p>
           </div>
-
-          <FooterStack>
-            <FooterColumn title="Products" links={PRODUCT_LINKS} />
-            <FooterColumn title="Solutions" links={SOLUTIONS_LINKS} />
-          </FooterStack>
-
-          <FooterStack>
-            <FooterColumn title="Support" links={SUPPORT_LINKS} />
-            <FooterColumn title="Company" links={COMPANY_LINKS} />
-          </FooterStack>
-
-          {/* Contact / CTA column */}
-          <div className="col-span-2 flex flex-col gap-4 md:col-span-1">
-            <FooterColumnTitle>Get in touch</FooterColumnTitle>
-            <p className="text-sm text-steel-300">
-              [Talk to our sales team for an enterprise quote, or explore our
-              product catalog.]
+          <div className="flex flex-col gap-4 lg:items-end">
+            <h3 className="text-steel-400 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+              Get in touch
+            </h3>
+            <p className="text-steel-300 max-w-md text-sm lg:text-right">
+              Tell us what you are automating, monitoring, or prototyping — we will route you to the
+              right engineer.
             </p>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
               <Button asChild variant="primary" size="md">
                 <Link href="/quote">Request a quote</Link>
               </Button>
               <Button asChild variant="secondary" size="md">
-                <Link href="/contact">Talk to sales</Link>
+                <Link href="/contact">Contact ARIOT</Link>
               </Button>
             </div>
-            <p className="mt-2 font-mono text-xs text-steel-400">
-              {siteConfig.contact.email}
-              <br />
-              {siteConfig.contact.phone}
-            </p>
           </div>
         </div>
 
+        {/* Link columns */}
+        <div className="mt-14 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-6">
+          <FooterColumn title="Company" links={COMPANY_LINKS} />
+          <FooterColumn title="R&D" links={RD_LINKS} />
+          <FooterColumn title="Workspace" links={WORKSPACE_LINKS} />
+          <FooterColumn title="Components" links={COMPONENTS_LINKS} />
+          <FooterColumn title="Solutions" links={SOLUTIONS_LINKS} />
+          <FooterColumn title="Resources" links={RESOURCES_LINKS} />
+        </div>
+
+        {/* Newsletter */}
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-[1.1fr_1fr] md:items-end">
           <div className="flex flex-col gap-2">
-            <FooterColumnTitle>Newsletter</FooterColumnTitle>
-            <p className="max-w-md text-sm text-steel-300">
-              Quiet engineering notes from the ARIOT team — build logs, IoT
-              field notes, and the occasional product update.
+            <h3 className="text-steel-400 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+              Newsletter
+            </h3>
+            <p className="text-steel-300 max-w-md text-sm">
+              Quiet engineering notes from the ARIOT team — build logs, IoT field notes, and the
+              occasional product update.
             </p>
           </div>
           <NewsletterForm source="footer" variant="footer" />
@@ -131,15 +122,15 @@ export function SiteFooter() {
         <Separator className="my-10" />
 
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <p className="font-mono text-xs text-steel-400">
-            © {year} ARIOT. [All rights reserved.]
+          <p className="text-steel-400 font-mono text-xs">
+            © {year} ARIOT Technologies. All rights reserved.
           </p>
           <ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {LEGAL_LINKS.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={cn(footerLinkClass, 'text-xs text-steel-400 hover:text-steel-200')}
+                  className={cn(footerLinkClass, 'text-steel-400 hover:text-steel-200 text-xs')}
                 >
                   {item.label}
                 </Link>
@@ -154,14 +145,10 @@ export function SiteFooter() {
 
 function FooterColumnTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="font-mono text-xs font-medium uppercase tracking-[0.18em] text-steel-400">
+    <h3 className="text-steel-400 font-mono text-xs font-medium tracking-[0.18em] uppercase">
       {children}
     </h3>
   );
-}
-
-function FooterStack({ children }: { children: React.ReactNode }) {
-  return <div className="flex flex-col gap-6">{children}</div>;
 }
 
 function FooterColumn({

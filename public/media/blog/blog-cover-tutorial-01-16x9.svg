@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#08090B"/><stop offset="100%" stop-color="#0E1014"/></linearGradient>
+    <pattern id="g" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M 48 0 L 0 0 0 48" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.2"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <!-- Notebook flat-lay -->
+  <g transform="translate(300, 200)">
+    <rect x="0" y="0" width="750" height="500" rx="4" fill="#0E1014" stroke="#1B1F25" stroke-width="1"/>
+    <!-- Notebook page -->
+    <rect x="200" y="30" width="500" height="440" rx="2" fill="#0A0C0E"/>
+    <g opacity="0.08">
+      <line x1="220" y1="80" x2="680" y2="80" stroke="#E4E8EE" stroke-width="0.5"/>
+      <line x1="220" y1="120" x2="680" y2="120" stroke="#E4E8EE" stroke-width="0.5"/>
+      <line x1="220" y1="160" x2="680" y2="160" stroke="#E4E8EE" stroke-width="0.5"/>
+      <line x1="220" y1="200" x2="680" y2="200" stroke="#E4E8EE" stroke-width="0.5"/>
+    </g>
+    <!-- Handwritten notes -->
+    <text x="230" y="100" font-family="monospace" font-size="16" fill="#E4E8EE" opacity="0.3">void setup() {</text>
+    <text x="250" y="140" font-family="monospace" font-size="16" fill="#E4E8EE" opacity="0.3">pinMode(LED, OUTPUT);</text>
+    <text x="250" y="180" font-family="monospace" font-size="16" fill="#3DD8F7" opacity="0.4">Serial.begin(115200);</text>
+    <text x="230" y="220" font-family="monospace" font-size="16" fill="#E4E8EE" opacity="0.3">}</text>
+    <!-- Dev board -->
+    <rect x="30" y="40" width="140" height="120" rx="4" fill="#15181E" stroke="#2A3038" stroke-width="1"/>
+    <circle cx="70" cy="80" r="10" fill="#1B1F25"/>
+    <rect x="100" y="70" width="40" height="20" rx="2" fill="#1B1F25"/>
+    <!-- USB cable -->
+    <path d="M 170 100 Q 190 120 200 100" stroke="#2A3038" stroke-width="2" fill="none"/>
+    <!-- Tools -->
+    <rect x="30" y="200" width="60" height="40" rx="3" fill="#1B1F25"/>
+    <rect x="110" y="210" width="40" height="15" rx="2" fill="#1B1F25"/>
+  </g>
+  <!-- Cyan accent -->
+  <circle cx="350" cy="330" r="4" fill="#3DD8F7" filter="url(#glow)"/>
+</svg>

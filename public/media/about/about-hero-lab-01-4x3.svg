@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1200" width="1600" height="1200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#08090B"/>
+      <stop offset="100%" stop-color="#0E1014"/>
+    </linearGradient>
+    <linearGradient id="cyanGlow" cx="0.3" cy="0.3" r="0.5">
+      <stop offset="0%" stop-color="#3DD8F7" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#08090B" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.2"/>
+    </pattern>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="1200" fill="url(#bg)"/>
+  <rect width="1600" height="1200" fill="url(#grid)"/>
+  <rect width="1600" height="1200" fill="url(#cyanGlow)"/>
+  <!-- Workbench surface -->
+  <rect x="0" y="750" width="1600" height="450" fill="#0E1014"/>
+  <line x1="0" y1="750" x2="1600" y2="750" stroke="#1B1F25" stroke-width="1"/>
+  <!-- Oscilloscope -->
+  <rect x="300" y="480" width="200" height="270" rx="6" fill="#15181E" stroke="#2A3038" stroke-width="1.5"/>
+  <rect x="310" y="490" width="180" height="140" rx="3" fill="#08090B"/>
+  <path d="M 320 560 L 340 540 L 360 550 L 380 520 L 400 535 L 410 510" fill="none" stroke="#3DD8F7" stroke-width="1.5" opacity="0.6"/>
+  <circle cx="320" cy="720" r="4" fill="#3DD8F7" opacity="0.5" filter="url(#glow)"/>
+  <rect x="350" y="630" width="40" height="80" rx="2" fill="#1B1F25"/>
+  <!-- Tool rack -->
+  <g opacity="0.15">
+    <rect x="600" y="550" width="4" height="200" fill="#2A3038"/>
+    <rect x="620" y="550" width="4" height="200" fill="#2A3038"/>
+    <rect x="640" y="550" width="4" height="200" fill="#2A3038"/>
+    <rect x="660" y="550" width="4" height="200" fill="#2A3038"/>
+    <rect x="580" y="550" width="104" height="6" fill="#2A3038"/>
+  </g>
+  <!-- PCB on bench -->
+  <rect x="900" y="660" width="200" height="90" rx="3" fill="#15181E" stroke="#1B1F25" stroke-width="1"/>
+  <circle cx="930" cy="690" r="6" fill="#2A3038"/>
+  <circle cx="960" cy="690" r="6" fill="#2A3038"/>
+  <rect x="980" y="680" width="40" height="20" rx="2" fill="#1B1F25"/>
+  <!-- Storage shelf in background -->
+  <g opacity="0.08">
+    <rect x="1200" y="350" width="250" height="8" fill="#2A3038"/>
+    <rect x="1200" y="500" width="250" height="8" fill="#2A3038"/>
+    <rect x="1210" y="248" width="10" height="260" fill="#1B1F25"/>
+    <rect x="1430" y="248" width="10" height="260" fill="#1B1F25"/>
+  </g>
+  <!-- Cyan task light -->
+  <ellipse cx="500" cy="300" rx="300" ry="200" fill="#3DD8F7" opacity="0.02" filter="url(#glow)"/>
+</svg>

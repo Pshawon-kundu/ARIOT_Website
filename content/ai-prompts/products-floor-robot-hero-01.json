@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "A",
+  "prompt": "Low 3/4 angle of autonomous floor-cleaning robot puck on dark hardwood, cool top rim lighting in cyan, LiDAR turret centered with cyan halo, brushed steel and graphite surfaces, dramatic studio lighting, robot is the sole subject, 4x5 portrait format for product detail page",
+  "negativePrompt": "People, bright daylight, neon overload, text, watermarks, cartoon, plasticky CGI sheen, white background, multiple colors",
+  "seed": 1234567950,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "4x5",
+  "pixelTarget": "1080x1350",
+  "outputs": [
+    "public/media/products/autonomous-floor-cleaning-robot/products-autonomous-floor-cleaning-robot-hero-01-4x5.avif",
+    "public/media/products/autonomous-floor-cleaning-robot/products-autonomous-floor-cleaning-robot-hero-01-4x5.webp"
+  ]
+}

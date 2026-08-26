@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "B",
+  "prompt": "Open lab bench with PCB mid-assembly, oscilloscope trace cyan-on-black, neat cable management, editorial composition on dark surface with hairline grid, single cyan light source, engineering-focused, clean aesthetic, 1:1 square format",
+  "negativePrompt": "Cartoon, plasticky, flat lighting, oversaturated, neon overload, text, watermarks, melted geometry, bright daylight, white background",
+  "seed": 1234567894,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "1x1",
+  "pixelTarget": "1080x1080",
+  "outputs": [
+    "public/media/home/home-product-custom-rd-01-1x1.avif",
+    "public/media/home/home-product-custom-rd-01-1x1.webp"
+  ]
+}

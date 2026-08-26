@@ -11,6 +11,8 @@ interface FormFieldRenderProps {
 interface FormFieldProps {
   /** Visible label text. Omit for unlabelled controls (e.g. search box). */
   label?: string;
+  /** Additional class for the label element (e.g. 'sr-only' for visually hidden labels). */
+  labelClassName?: string;
   /** Append a cyan required indicator to the label. */
   required?: boolean;
   /** Helper text rendered below the control when there is no error. */
@@ -40,6 +42,7 @@ interface FormFieldProps {
  */
 export function FormField({
   label,
+  labelClassName,
   required,
   helper,
   error,
@@ -56,7 +59,7 @@ export function FormField({
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       {label ? (
-        <Label htmlFor={id} required={required}>
+        <Label htmlFor={id} required={required} className={labelClassName}>
           {label}
         </Label>
       ) : null}
@@ -68,11 +71,11 @@ export function FormField({
       })}
 
       {error ? (
-        <p id={errorId} className="text-xs text-danger">
+        <p id={errorId} className="text-danger text-xs">
           {error}
         </p>
       ) : helper ? (
-        <p id={helperId} className="text-xs text-steel-400">
+        <p id={helperId} className="text-steel-400 text-xs">
           {helper}
         </p>
       ) : null}

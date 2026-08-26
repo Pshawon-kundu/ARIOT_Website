@@ -6,6 +6,7 @@ import { FeatureCard } from '@/components/marketing/feature-card';
 import { FeatureGrid } from '@/components/marketing/feature-grid';
 import { HeroShell } from '@/components/marketing/hero-shell';
 import { SectionHeader } from '@/components/marketing/section-header';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/ui/container';
@@ -13,7 +14,9 @@ import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import { Section } from '@/components/ui/section';
 import { Select } from '@/components/ui/select';
+import { BreadcrumbList } from '@/components/seo/breadcrumb-list';
 import { defineMetadata } from '@/lib/seo/metadata';
+import { ProductGridTracker } from '@/features/analytics/product-grid-tracker';
 import {
   PRODUCT_CATEGORIES,
   PRODUCT_CONNECTIVITY,
@@ -31,18 +34,24 @@ export const metadata: Metadata = defineMetadata({
 export default function ProductsPage() {
   return (
     <>
+      <BreadcrumbList
+        items={[
+          { name: 'Home', url: '/' },
+          { name: 'Products', url: '/products' },
+        ]}
+      />
       <HeroShell>
         <Section bg="base" spacing="loose">
           <Container className="flex flex-col gap-6">
-            <p className="text-cyan-400 font-mono text-[12px] font-medium tracking-[0.18em] uppercase">
-              [PRODUCTS]
-            </p>
+            <Badge variant="cyan">Products</Badge>
             <div className="flex max-w-4xl flex-col gap-5">
-              <h1 className="text-steel-100 font-display text-4xl font-semibold leading-[1.04] tracking-tight text-balance sm:text-5xl md:text-6xl">
-                All products
+              <h1 className="text-steel-100 font-display text-4xl leading-[1.04] font-semibold tracking-tight text-balance sm:text-5xl md:text-6xl">
+                Robotics and IoT products in development
               </h1>
               <p className="text-steel-200 max-w-2xl text-base sm:text-lg md:text-xl">
-                [Industrial robots, IoT systems, and educational kits — engineered for the South Asian context.]
+                Our product lines span autonomous robots, connected safety devices, smart appliance
+                control, and education kits — each at an honest development stage from prototype to
+                early availability.
               </p>
             </div>
             <div className="flex flex-wrap gap-2 pt-2">
@@ -64,28 +73,27 @@ export default function ProductsPage() {
           <aside className="lg:sticky lg:top-28 lg:self-start">
             <Card>
               <CardHeader>
-                <CardTitle>Catalog filters</CardTitle>
+                <CardTitle as="h2">Filter catalog</CardTitle>
               </CardHeader>
               <CardBody className="flex flex-col gap-4">
-                <FormField label="Search" helper="[Static UI — filtering lands with catalog logic later.]">
+                <FormField
+                  label="Search"
+                  helper="Filtering logic is being built — browse the full catalog below."
+                >
                   {(fieldProps) => (
                     <div className="relative">
                       <Search
                         aria-hidden
-                        className="text-steel-500 pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2"
+                        className="text-steel-500 pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
                       />
-                      <Input
-                        {...fieldProps}
-                        className="pl-9"
-                        placeholder="[Search products]"
-                      />
+                      <Input {...fieldProps} className="pl-9" placeholder="Search products…" />
                     </div>
                   )}
                 </FormField>
                 <FormField label="Category">
                   {(fieldProps) => (
                     <Select {...fieldProps} defaultValue="">
-                      <option value="">[All categories]</option>
+                      <option value="">All categories</option>
                       {PRODUCT_CATEGORIES.map((category) => (
                         <option key={category} value={category}>
                           {category}
@@ -97,7 +105,7 @@ export default function ProductsPage() {
                 <FormField label="Use case">
                   {(fieldProps) => (
                     <Select {...fieldProps} defaultValue="">
-                      <option value="">[All use cases]</option>
+                      <option value="">All use cases</option>
                       {PRODUCT_USE_CASES.map((useCase) => (
                         <option key={useCase} value={useCase}>
                           {useCase}
@@ -109,7 +117,7 @@ export default function ProductsPage() {
                 <FormField label="Connectivity">
                   {(fieldProps) => (
                     <Select {...fieldProps} defaultValue="">
-                      <option value="">[Any connectivity]</option>
+                      <option value="">Any connectivity</option>
                       {PRODUCT_CONNECTIVITY.map((connectivity) => (
                         <option key={connectivity} value={connectivity}>
                           {connectivity}
@@ -119,62 +127,67 @@ export default function ProductsPage() {
                   )}
                 </FormField>
                 <Button type="button" variant="secondary">
-                  Apply placeholder filters
+                  Apply filters
                 </Button>
               </CardBody>
             </Card>
           </aside>
 
-          <div className="flex flex-col gap-8">
-            <SectionHeader
-              eyebrow="Catalog"
-              title="Find the right hardware path"
-              subhead="[Product cards link to detail pages. Pricing, stock, and compare logic land in later phases.]"
-              size="compact"
-            />
-            <FeatureGrid columns={3}>
-              {PRODUCTS.map((product) => (
-                <FeatureCard
-                  key={product.slug}
-                  icon={product.icon}
-                  eyebrow={product.status}
-                  title={product.title}
-                  description={product.description}
-                  chips={product.chips}
-                  href={`/products/${product.slug}`}
-                  cta="View product"
-                />
-              ))}
-            </FeatureGrid>
-            <Card>
-              <CardBody className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <h2 className="text-steel-100 font-display text-2xl font-semibold tracking-tight">
-                    [No exact match?]
-                  </h2>
-                  <p className="text-steel-300 mt-2 text-sm">
-                    [Request a custom build and an engineer will map the right hardware path.]
-                  </p>
-                </div>
-                <Button asChild variant="primary">
-                  <Link href="/quote">
-                    Request a custom solution
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardBody>
-            </Card>
-          </div>
+          <ProductGridTracker>
+            <div className="flex flex-col gap-8">
+              <SectionHeader
+                eyebrow="Catalog"
+                title="Find the right hardware path"
+                subhead="Each product card links to a detail page. Status labels are honest — prototype, development, or available."
+                size="compact"
+              />
+              <FeatureGrid columns={3}>
+                {PRODUCTS.map((product) => (
+                  <FeatureCard
+                    key={product.slug}
+                    icon={product.icon}
+                    eyebrow={product.status}
+                    title={product.title}
+                    description={product.description}
+                    chips={product.chips}
+                    href={`/products/${product.slug}`}
+                    cta="View product"
+                  />
+                ))}
+              </FeatureGrid>
+              <Card>
+                <CardBody className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 className="text-steel-100 font-display text-2xl font-semibold tracking-tight">
+                      Need something outside the catalog?
+                    </h2>
+                    <p className="text-steel-300 mt-2 text-sm">
+                      Request a custom build — an engineer will map the right hardware path for your
+                      environment and constraints.
+                    </p>
+                  </div>
+                  <Button asChild variant="primary" className="shrink-0">
+                    <Link href="/quote">
+                      Request a custom solution
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </CardBody>
+              </Card>
+            </div>
+          </ProductGridTracker>
         </Container>
       </Section>
 
-      <CtaBand
-        eyebrow="Custom systems"
-        title="Need something outside the catalog?"
-        subtitle="[Share the environment, constraints, and target outcome. We'll route it to the right engineering track.]"
-        primary={{ label: 'Request a quote', href: '/quote' }}
-        secondary={{ label: 'Talk to sales', href: '/contact' }}
-      />
+      <ProductGridTracker>
+        <CtaBand
+          eyebrow="Custom systems"
+          title="Need something outside the catalog?"
+          subtitle="Share the environment, constraints, and target outcome. We will route it to the right engineering track."
+          primary={{ label: 'Request a quote', href: '/quote' }}
+          secondary={{ label: 'Talk to sales', href: '/contact' }}
+        />
+      </ProductGridTracker>
     </>
   );
 }

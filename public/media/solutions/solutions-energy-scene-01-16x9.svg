@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#08090B"/><stop offset="100%" stop-color="#0E1014"/></linearGradient>
+    <pattern id="g" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M 48 0 L 0 0 0 48" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.15"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <!-- Substation wall -->
+  <rect x="0" y="100" width="1920" height="600" fill="#0A0C0E"/>
+  <!-- Electrical panel -->
+  <rect x="200" y="200" width="400" height="500" rx="6" fill="#15181E" stroke="#1B1F25" stroke-width="2"/>
+  <rect x="220" y="220" width="360" height="460" rx="3" fill="#0E1014"/>
+  <!-- Panel rows -->
+  <g opacity="0.15">
+    <line x1="240" y1="260" x2="560" y2="260" stroke="#2A3038" stroke-width="1"/>
+    <line x1="240" y1="310" x2="560" y2="310" stroke="#2A3038" stroke-width="1"/>
+    <line x1="240" y1="360" x2="560" y2="360" stroke="#2A3038" stroke-width="1"/>
+    <line x1="240" y1="410" x2="560" y2="410" stroke="#2A3038" stroke-width="1"/>
+    <line x1="240" y1="460" x2="560" y2="460" stroke="#2A3038" stroke-width="1"/>
+  </g>
+  <!-- Field gateway -->
+  <rect x="800" y="250" width="180" height="120" rx="6" fill="#1B1F25" stroke="#2A3038" stroke-width="1.5"/>
+  <circle cx="830" cy="280" r="4" fill="#3DD8F7" filter="url(#glow)"/>
+  <circle cx="850" cy="280" r="4" fill="#3DD8F7" opacity="0.6"/>
+  <rect x="810" y="300" width="160" height="50" rx="3" fill="#08090B"/>
+  <text x="825" y="325" font-family="monospace" font-size="8" fill="#3DD8F7" opacity="0.3">TEMP: 34.2°C</text>
+  <text x="825" y="340" font-family="monospace" font-size="8" fill="#3DD8F7" opacity="0.3">HUM:  61%</text>
+  <!-- Cyan link arc -->
+  <path d="M 980 310 Q 1100 250 1200 310" stroke="#3DD8F7" stroke-width="1" fill="none" opacity="0.3"/>
+  <circle cx="1200" cy="310" r="3" fill="#3DD8F7" opacity="0.4"/>
+  <!-- Floor -->
+  <rect x="0" y="700" width="1920" height="380" fill="#0E1014"/>
+  <line x1="0" y1="700" x2="1920" y2="700" stroke="#1B1F25" stroke-width="1"/>
+</svg>

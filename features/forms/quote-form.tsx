@@ -5,12 +5,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { quoteSchema, type QuoteInput } from '@/lib/validators/quote';
+import { trackEvent } from '@/lib/analytics';
 import { FormStatusBanner } from './form-status';
-import {
-  QuoteContactFields,
-  QuoteProductsFields,
-  QuoteProjectFields,
-} from './quote-form-fields';
+import { QuoteContactFields, QuoteProductsFields, QuoteProjectFields } from './quote-form-fields';
 import { useFormSubmit } from './use-form-submit';
 
 const DEFAULT_VALUES: QuoteInput = {
@@ -54,7 +51,13 @@ export function QuoteForm() {
   const isSuccess = status === 'success';
 
   const onSubmit = handleSubmit(async (data) => {
-    await submit(data);
+    const ok = await submit(data);
+    if (ok) {
+      trackEvent('Quote Form Submitted', {
+        product: data.productCategory,
+        quantity: 1,
+      });
+    }
   });
 
   return (

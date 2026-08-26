@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "C",
+  "prompt": "Whiteboard with crisp engineering sketch and a single PCB on the desk, cyan marker accents highlighting the schematic, collaborative engineering atmosphere, dark graphite base tones, no people, 16x9 wide format",
+  "negativePrompt": "People, bright daylight, neon overload, text outside sketch, watermarks, stock-photo energy, white background",
+  "seed": 1234567915,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "16x9",
+  "pixelTarget": "1920x1080",
+  "outputs": [
+    "public/media/solutions/solutions-custom-rd-scene-01-16x9.avif",
+    "public/media/solutions/solutions-custom-rd-scene-01-16x9.webp"
+  ]
+}

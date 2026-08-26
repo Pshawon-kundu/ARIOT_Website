@@ -1,0 +1,607 @@
+// ARIOT - Core + CMS + Operations Schema Models (Phase 2.1.4)
+//
+// §1  Identity & Access : User, Session, Role, UserRole
+// §2  Catalog           : Category, Product, ProductVariant,
+//                          ProductImage, ProductVideo,
+//                          ProductDownload, ProductRelation
+// §6  Blog / Lab        : BlogCategory, BlogPost, Newsletter
+// §7  Media             : MediaAsset, AiPrompt
+// §8  Operations        : AuditLog, SystemSetting
+//
+// Conventions:
+//   - IDs: cuid() generated (Prisma built-in)
+//   - Timestamps: createdAt (default now), updatedAt (@updatedAt)
+//   - Soft delete: deletedAt on user-facing entities (User, Category,
+//     Product, ProductVariant)
+//   - Money: BigInt (smallest unit) + Currency enum
+//   - Indices on every FK and hot where-filter columns
+//   - Enums are uppercase PascalCase
+//
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Step 2.1.3 search/email extensions for the upcoming init migration:
+// CREATE EXTENSION IF NOT EXISTS citext;
+// CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+// ====================================================================
+// ENUMS
+// ====================================================================
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum RoleKey {
+  SUPER_ADMIN
+  CONTENT_ADMIN
+  SUPPORT_ADMIN
+  SALES_ADMIN
+}
+
+enum Currency {
+  BDT
+  USD
+}
+
+enum SalesType {
+  B2C
+  B2B
+  HYBRID
+}
+
+enum StockPolicy {
+  IN_STOCK
+  BACKORDER
+  MADE_TO_ORDER
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum RelationKind {
+  RELATED
+  CROSS_SELL
+  ACCESSORY
+  ALTERNATIVE
+}
+
+enum DownloadKind {
+  DATASHEET
+  MANUAL
+  QUICKSTART
+  CAD
+  FIRMWARE
+  OTHER
+}
+
+enum BlogPostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum NewsletterStatus {
+  PENDING
+  CONFIRMED
+  UNSUBSCRIBED
+}
+
+enum MediaKind {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  FIRMWARE
+  MODEL_3D
+  OTHER
+}
+
+enum AiTool {
+  SEEDREAM
+  SEEDANCE
+  OTHER
+}
+
+// ====================================================================
+// §1 — IDENTITY & ACCESS
+// ====================================================================
+
+/// Unified identity for customers and admins.
+model User {
+  id                String     @id @default(cuid())
+  email             String     @unique
+  emailVerifiedAt   DateTime? // business timestamp; retained for ARIOT logic
+  emailVerified     Boolean    @default(false) // Better Auth: email verification flag
+  phone             String? // E.164
+  phoneVerifiedAt   DateTime?
+  name              String?
+  avatarUrl         String?
+  passwordHash      String? // argon2id; nullable for OAuth-only
+  locale            String     @default("en")
+  preferredCurrency Currency   @default(BDT)
+  status            UserStatus @default(ACTIVE)
+  lastLoginAt       DateTime?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  deletedAt         DateTime?
+
+  sessions  Session[]
+  userRoles UserRole[]
+  accounts  Account[]
+  blogPosts BlogPost[]      @relation("BlogPostAuthor")
+  media     MediaAsset[]    @relation("MediaAssetUploader")
+  aiPrompts AiPrompt[]      @relation("AiPromptCreator")
+  auditLogs AuditLog[]      @relation("AuditLogActor")
+  settings  SystemSetting[] @relation("SystemSettingUpdater")
+
+  @@index([email])
+  @@index([status])
+  @@index([deletedAt])
+}
+
+/// DB-stored sessions with hashed tokens.
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  ip        String? // hashed for privacy
+  userAgent String? // truncated
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+/// Permission role — assigned to users via UserRole.
+model Role {
+  id          String   @id @default(cuid())
+  key         RoleKey  @unique
+  name        String
+  permissions Json // array of permission keys
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userRoles UserRole[]
+}
+
+/// Join: user × role (M:N).
+model UserRole {
+  userId String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  @@id([userId, roleId])
+  @@index([roleId])
+}
+
+/// OAuth/identity provider link — Better Auth `account` model.
+/// Field names follow Better Auth's Prisma schema (accountId, providerId,
+/// token columns). Added/redesigned in Step 2.2.2 (Better Auth foundation).
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+/// Email verification / passwordless token store — Better Auth `verification` model.
+/// Field names follow Better Auth's Prisma schema (identifier, value).
+/// Added/redesigned in Step 2.2.2 (Better Auth foundation).
+model Verification {
+  id         String    @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+
+  @@index([identifier])
+}
+
+// ====================================================================
+// §2 — CATALOG
+// ====================================================================
+
+/// Category tree with self-referencing parent/child.
+model Category {
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  name           String
+  description    String?
+  parentId       String?
+  order          Int       @default(0)
+  isPublished    Boolean   @default(false)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryTree")
+  products Product[]
+
+  @@index([parentId])
+  @@index([slug])
+  @@index([isPublished])
+  @@index([deletedAt])
+}
+
+/// The flagship entity. Variants live in ProductVariant.
+model Product {
+  id             String                   @id @default(cuid())
+  slug           String                   @unique
+  name           String
+  tagline        String? // ≤ 140 chars
+  description    String? // MDX long-form
+  categoryId     String
+  sku            String                   @unique
+  brand          String                   @default("ARIOT")
+  salesType      SalesType
+  priceMinor     BigInt? // nullable for B2B-only quote items
+  currency       Currency? // inherits from category if null
+  stock          Int                      @default(0)
+  stockPolicy    StockPolicy              @default(IN_STOCK)
+  weightGrams    Int?
+  dimensions     Json? // { l, w, h, unit }
+  status         ProductStatus            @default(DRAFT)
+  publishedAt    DateTime?
+  seoTitle       String?
+  seoDescription String?
+  heroImageId    String? // FK to MediaAsset (step 2.1.3)
+  heroVideoId    String? // FK to MediaAsset (step 2.1.3)
+  specs          Json? // grouped spec table
+  highlights     Json? // array of bullet strings
+  inTheBox       Json? // array of strings
+  // searchVector removed: was GENERATED ALWAYS AS tsvector (Prisma cannot represent
+  // GENERATED ALWAYS AS STORED columns). See corrective migration C.2 / I-019.
+  // Search uses trgm GIN indexes on name/tagline/description below.
+  createdAt      DateTime                 @default(now())
+  updatedAt      DateTime                 @updatedAt
+  deletedAt      DateTime?
+  createdBy      String?
+  updatedBy      String?
+
+  category      Category          @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  heroImage     MediaAsset?       @relation("ProductHeroImage", fields: [heroImageId], references: [id], onDelete: SetNull)
+  heroVideo     MediaAsset?       @relation("ProductHeroVideo", fields: [heroVideoId], references: [id], onDelete: SetNull)
+  variants      ProductVariant[]
+  images        ProductImage[]
+  videos        ProductVideo[]
+  downloads     ProductDownload[]
+  fromRelations ProductRelation[] @relation("ProductRelationSource")
+  toRelations   ProductRelation[] @relation("ProductRelationTarget")
+
+  @@index([categoryId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([slug])
+  @@index([sku])
+  @@index([deletedAt])
+  @@index([heroImageId])
+  @@index([heroVideoId])
+  // searchVector GIN index removed (column dropped in corrective C.2)
+  @@index([name(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([tagline(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([description(ops: raw("gin_trgm_ops"))], type: Gin)
+}
+
+/// Product variants with option values (e.g. colour, voltage).
+model ProductVariant {
+  id           String    @id @default(cuid())
+  productId    String
+  sku          String    @unique
+  name         String // e.g. "Black, 12V"
+  optionValues Json // { color: "black", voltage: "12V" }
+  priceMinor   BigInt? // overrides product price if set
+  currency     Currency?
+  stock        Int       @default(0)
+  barcode      String?
+  isDefault    Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  product Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  images  ProductImage[]
+  videos  ProductVideo[]
+
+  @@index([productId])
+  @@index([sku])
+  @@index([deletedAt])
+}
+
+/// Product images — ordered, variant-specific optional.
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  variantId String? // FK to ProductVariant for variant-specific images
+  mediaId   String // FK to MediaAsset (step 2.1.3)
+  order     Int      @default(0)
+  altText   String
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  media   MediaAsset      @relation("ProductImageMedia", fields: [mediaId], references: [id], onDelete: Restrict)
+
+  @@index([productId])
+  @@index([variantId])
+  @@index([mediaId])
+  @@index([isPrimary])
+}
+
+/// Product videos — with optional poster image.
+model ProductVideo {
+  id            String   @id @default(cuid())
+  productId     String
+  variantId     String? // variant-specific optional
+  mediaId       String // FK to MediaAsset (video file)
+  posterMediaId String? // FK to MediaAsset (poster image)
+  order         Int      @default(0)
+  caption       String?
+  autoplayLoop  Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  product     Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant     ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  media       MediaAsset      @relation("ProductVideoMedia", fields: [mediaId], references: [id], onDelete: Restrict)
+  posterMedia MediaAsset?     @relation("ProductVideoPoster", fields: [posterMediaId], references: [id], onDelete: SetNull)
+
+  @@index([productId])
+  @@index([variantId])
+  @@index([mediaId])
+  @@index([posterMediaId])
+}
+
+/// Datasheets, manuals, CAD files, firmware downloads.
+model ProductDownload {
+  id          String       @id @default(cuid())
+  productId   String
+  kind        DownloadKind
+  version     String? // semver for firmware
+  fileMediaId String // FK to MediaAsset
+  sizeBytes   BigInt
+  isPublic    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  product Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  file    MediaAsset @relation("ProductDownloadFile", fields: [fileMediaId], references: [id], onDelete: Restrict)
+
+  @@index([productId])
+  @@index([fileMediaId])
+  @@index([kind])
+}
+
+/// Self-join: related / cross-sell / accessory / alternative.
+model ProductRelation {
+  productId        String
+  relatedProductId String
+  kind             RelationKind
+  order            Int          @default(0)
+
+  sourceProduct Product @relation("ProductRelationSource", fields: [productId], references: [id], onDelete: Cascade)
+  targetProduct Product @relation("ProductRelationTarget", fields: [relatedProductId], references: [id], onDelete: Cascade)
+
+  @@id([productId, relatedProductId, kind])
+  @@index([relatedProductId])
+}
+
+// ====================================================================
+// Â§6 â€” BLOG / INNOVATION LAB
+// ====================================================================
+
+/// Blog category taxonomy for public posts and innovation-lab entries.
+model BlogCategory {
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  name           String
+  description    String?
+  order          Int       @default(0)
+  isPublished    Boolean   @default(false)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
+
+  posts BlogPost[]
+
+  @@index([slug])
+  @@index([isPublished])
+  @@index([deletedAt])
+}
+
+/// DB-backed MDX post for blog and innovation lab publishing.
+model BlogPost {
+  id                 String                   @id @default(cuid())
+  slug               String                   @unique
+  title              String
+  excerpt            String?
+  body               String                   @db.Text
+  categoryId         String
+  tags               Json
+  coverImageId       String?
+  authorId           String
+  readingTimeMinutes Int
+  status             BlogPostStatus           @default(DRAFT)
+  publishedAt        DateTime?
+  isLab              Boolean                  @default(false)
+  seoTitle           String?
+  seoDescription     String?
+  ogImageId          String?
+  // searchVector removed: was GENERATED ALWAYS AS tsvector — see corrective C.2.
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  deletedAt          DateTime?
+
+  category   BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  coverImage MediaAsset?  @relation("BlogPostCoverImage", fields: [coverImageId], references: [id], onDelete: SetNull)
+  author     User         @relation("BlogPostAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+  ogImage    MediaAsset?  @relation("BlogPostOgImage", fields: [ogImageId], references: [id], onDelete: SetNull)
+
+  @@index([categoryId])
+  @@index([authorId])
+  @@index([coverImageId])
+  @@index([ogImageId])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([deletedAt])
+  // searchVector GIN index removed (column dropped in corrective C.2)
+  @@index([title(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([body(ops: raw("gin_trgm_ops"))], type: Gin)
+}
+
+/// Newsletter subscriptions from footer, blog CTA, and launch forms.
+model Newsletter {
+  id             String           @id @default(cuid())
+  email          String           @unique @db.Citext
+  status         NewsletterStatus @default(PENDING)
+  confirmedAt    DateTime?
+  unsubscribedAt DateTime?
+  source         String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([email])
+  @@index([status])
+}
+
+// ====================================================================
+// Â§7 â€” MEDIA
+// ====================================================================
+
+/// Registry for uploaded/generated files across catalog, blog, and support.
+model MediaAsset {
+  id              String    @id @default(cuid())
+  kind            MediaKind
+  mime            String
+  sizeBytes       BigInt
+  width           Int?
+  height          Int?
+  durationSeconds Int?
+  storageKey      String
+  cdnUrl          String?
+  variants        Json
+  altText         String?
+  caption         String?
+  sourcePromptId  String?
+  folder          String?
+  tags            Json
+  isPublic        Boolean   @default(false)
+  uploadedBy      String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  sourcePrompt        AiPrompt?         @relation("MediaAssetSourcePrompt", fields: [sourcePromptId], references: [id], onDelete: SetNull)
+  uploader            User?             @relation("MediaAssetUploader", fields: [uploadedBy], references: [id], onDelete: SetNull)
+  productHeroImages   Product[]         @relation("ProductHeroImage")
+  productHeroVideos   Product[]         @relation("ProductHeroVideo")
+  productImages       ProductImage[]    @relation("ProductImageMedia")
+  productVideos       ProductVideo[]    @relation("ProductVideoMedia")
+  productVideoPosters ProductVideo[]    @relation("ProductVideoPoster")
+  productDownloads    ProductDownload[] @relation("ProductDownloadFile")
+  blogCoverImages     BlogPost[]        @relation("BlogPostCoverImage")
+  blogOgImages        BlogPost[]        @relation("BlogPostOgImage")
+  aiPromptOutputs     AiPrompt[]        @relation("AiPromptOutput")
+
+  @@index([kind])
+  @@index([folder])
+  @@index([uploadedBy])
+  @@index([sourcePromptId])
+  @@index([deletedAt])
+}
+
+/// Reproducibility metadata for Seedream/Seedance generated assets.
+model AiPrompt {
+  id             String   @id @default(cuid())
+  tool           AiTool
+  prompt         String   @db.Text
+  negativePrompt String?  @db.Text
+  seed           String?
+  params         Json
+  outputMediaId  String?
+  createdBy      String?
+  createdAt      DateTime @default(now())
+
+  outputMedia       MediaAsset?  @relation("AiPromptOutput", fields: [outputMediaId], references: [id], onDelete: SetNull)
+  creator           User?        @relation("AiPromptCreator", fields: [createdBy], references: [id], onDelete: SetNull)
+  sourceMediaAssets MediaAsset[] @relation("MediaAssetSourcePrompt")
+
+  @@index([tool])
+  @@index([outputMediaId])
+  @@index([createdBy])
+}
+
+// ====================================================================
+// §8 — OPERATIONS
+// ====================================================================
+
+/// Append-only admin mutation trail.
+/// The init migration must deny UPDATE/DELETE grants for the app role.
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actorRole  RoleKey?
+  action     String
+  entityType String
+  entityId   String
+  before     Json?
+  after      Json?
+  ipHash     String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  actor User? @relation("AuditLogActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@index([actorId])
+  @@index([createdAt])
+}
+
+/// Admin-editable site-level configuration.
+model SystemSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+
+  updater User? @relation("SystemSettingUpdater", fields: [updatedBy], references: [id], onDelete: SetNull)
+
+  @@index([updatedBy])
+}

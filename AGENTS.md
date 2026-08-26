@@ -29,7 +29,7 @@ If a change does not serve one of these, do not make it.
 
 ---
 
-## 3. Tech Stack (target — do not assume installed yet)
+## 3. Tech Stack (current target — project initialized)
 
 - **Framework**: Next.js (App Router) + React Server Components by default.
 - **Language**: TypeScript, `strict: true`, no `any` without justification.
@@ -44,7 +44,7 @@ If a change does not serve one of these, do not make it.
 - **Media**: S3-compatible bucket placeholder; CDN later.
 - **Email**: Resend or equivalent transactional provider.
 
-Until the project is initialized, **do not** create `package.json`, `next.config.*`, `tsconfig.json`, or any source file. Planning docs only.
+The project is initialized. Do not recreate scaffold/config files or restart the project from scratch. Before changing `package.json`, `next.config.*`, `tsconfig.json`, Prisma config, or source structure, read the relevant `docs/` files and keep changes scoped to the active implementation step.
 
 ---
 
@@ -187,17 +187,29 @@ Until the project is initialized, **do not** create `package.json`, `next.config
 
 | Doc | Purpose |
 |---|---|
-| `docs/PROJECT_BRIEF.md` | Company, audience, goals |
+| `docs/00_PROJECT_OVERVIEW.md` | Strategic overview — company vision, goals, audience, positioning |
+| `docs/01_BUSINESS_REQUIREMENTS.md` | Detailed business requirements by stakeholder and phase |
+| `docs/10_AI_AGENT_CONTEXT.md` | AI handoff context — current state, priorities, known issues |
+| `docs/06_PROGRESS_LOG.md` | Step-by-step progress tracking across all phases |
+| `docs/07_DECISIONS.md` | Architectural and business decisions log |
+| `docs/08_KNOWN_ISSUES.md` | Known issues and technical debt |
+| `docs/09_CHANGELOG.md` | Reverse-chronological change history |
+| `docs/IMPLEMENTATION_BASELINE.md` | Snapshot of project state at implementation start |
+| `docs/PROJECT_FREEZE.md` | Architecture freeze declaration |
+| `docs/05_IMPLEMENTATION_MASTER_PLAN.md` | Full 240-step implementation roadmap across 5 phases |
 | `docs/SITE_MAP.md` | Every route the site will eventually expose |
 | `docs/DESIGN_SYSTEM.md` | Tokens, typography, components, motion grammar |
 | `docs/PAGE_BLUEPRINTS.md` | Section-by-section structure of every page |
 | `docs/TECH_ARCHITECTURE.md` | Folder structure, frontend/backend/db architecture |
-| `docs/FEATURE_ROADMAP.md` | Phase 1–5 sequencing |
+| `docs/FEATURE_ROADMAP.md` | Phase 1–5 sequencing and exit criteria |
 | `docs/AI_ASSET_PIPELINE.md` | Seedream/Seedance usage, naming, optimization |
+| `docs/AI_ASSET_REQUIREMENTS.md` | Asset slot inventory with direction, priority, and budgets |
 | `docs/CONTENT_STRATEGY.md` | Voice, copy direction, SEO |
 | `docs/DATABASE_SCHEMA_PLAN.md` | Prisma model sketch |
 | `docs/ADMIN_DASHBOARD_PLAN.md` | Admin pages, RBAC, UX rules |
 | `docs/ECOMMERCE_PLAN.md` | Catalog → checkout → orders flow |
+| `docs/CLOUDFLARE_R2.md` | R2 provisioning, env vars, upload-flow smoke-test runbook (STORAGE-1R / D-067) |
 | `docs/CASCADE_WORKFLOW.md` | Step-by-step agent workflow |
+| `docs/archive/PROJECT_BRIEF.md` | Legacy — superseded by `00_PROJECT_OVERVIEW.md` |
 
 If a doc does not yet cover a decision needed for a change, **stop and ask** — do not improvise on premium-quality decisions.

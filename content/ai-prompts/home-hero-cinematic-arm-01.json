@@ -1,0 +1,63 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "A",
+  "prompt": "Six-axis robotic arm mid-motion in a dim industrial workshop at night, dramatic top-side rim lighting in cool cyan (#3DD8F7) on brushed graphite metals, single cyan signal LED flaring on the wrist joint, thin volumetric fog catching the rim light, razor-sharp focus on the arm with a brushed-steel gantry in the deep background, 35mm equivalent at 3/4 angle with slight low-angle for authority, top-back cyan rim light with warm fill at 25% from camera-left, deep #08090B shadows, cinematic color grade with graphite and brushed steel as the dominant material palette, only saturated cue is the cyan signal LED, no text, no logos, no watermarks, no people, no cartoon or plasticky surfaces",
+  "negativePrompt": "Cartoon, plasticky, flat lighting, oversaturated colors, neon overload, text, watermarks, hands clipping, generic stock-photo people, six-fingered hands, melted geometry, plastic CGI sheen, random floating particles, lens flares from impossible positions, multiple colors, bright daylight, white background, cartoon, toy-like appearance",
+  "seed": 1234567890,
+  "params": {
+    "model": "SEEDREAM-v2",
+    "steps": 30,
+    "guidance": 6.5
+  },
+  "aspect": "21x9",
+  "pixelTarget": "2520x1080",
+  "outputs": [
+    "public/media/home/home-hero-cinematic-arm-01-21x9.avif",
+    "public/media/home/home-hero-cinematic-arm-01-21x9.webp"
+  ],
+  "approvedBy": "[REVIEWER]",
+  "approvedAt": null,
+  "variants": {
+    "mobile": {
+      "tool": "SEEDREAM",
+      "preset": "A",
+      "prompt": "Vertical recomposition of the same scene: robotic arm fills upper third, brushed-steel floor anchors lower third, same cyan rim lighting and volumetric fog, same dark graphite aesthetic, 9:16 vertical aspect for hero display on mobile devices",
+      "negativePrompt": "Same as primary",
+      "aspect": "9x16",
+      "pixelTarget": "1080x1920",
+      "outputs": [
+        "public/media/home/home-hero-cinematic-arm-01-9x16.avif",
+        "public/media/home/home-hero-cinematic-arm-01-9x16.webp"
+      ]
+    },
+    "seedance": {
+      "tool": "SEEDANCE",
+      "preset": "A",
+      "prompt": "8-second seamless loop of the same robotic arm scene: arm completes one slow pick-and-place arc, end frame equals start frame for seamless looping, cyan LED on wrist breathes once, slow dolly forward at 0.4 m/s with no whip pans, animate only the fog drift and the arm movement, all other composition matches the still frame",
+      "motionPrompt": "Slow pick-and-place arc (completed within 8s), cyan LED breathing (slow in-out over 2s), atmospheric fog drift",
+      "aspect": "21x9",
+      "pixelTarget": "1920x824",
+      "lengthSeconds": 8,
+      "fps": 24,
+      "outputs": [
+        "public/media/home/home-hero-cinematic-arm-01-21x9.mp4",
+        "public/media/home/home-hero-cinematic-arm-01-21x9.webm"
+      ],
+      "poster": {
+        "extractSecond": 0.5,
+        "output": "public/media/home/home-hero-cinematic-arm-01-poster-21x9.avif"
+      }
+    }
+  },
+  "budget": {
+    "image": {
+      "maxAVIF_KB": 350,
+      "resolution": "2520x1080"
+    },
+    "video": {
+      "maxCombinedSize_MB": 1.8,
+      "resolution": "1920x824",
+      "codecs": ["H.264 yuv420p (MP4)", "AV1 (WebM)"]
+    }
+  }
+}

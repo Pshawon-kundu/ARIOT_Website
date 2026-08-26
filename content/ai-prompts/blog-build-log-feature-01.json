@@ -1,0 +1,20 @@
+{
+  "tool": "SEEDANCE",
+  "preset": "A",
+  "prompt": "Slow time-lapse of a workbench session — components being placed on a PCB, oscilloscope trace moving, soldering iron in stand, muted and looped, end frame equals start frame, dark graphite base, single cyan LED as accent, 8 second seamless loop, 16x9 format",
+  "negativePrompt": "People, bright daylight, text, watermarks, cartoon, neon overload, jump cuts, whip pans",
+  "seed": 1234567935,
+  "params": { "model": "SEEDANCE-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "16x9",
+  "pixelTarget": "1280x720",
+  "lengthSeconds": 8,
+  "fps": 24,
+  "outputs": [
+    "public/media/blog/blog-build-log-feature-01-16x9.mp4",
+    "public/media/blog/blog-build-log-feature-01-16x9.webm"
+  ],
+  "poster": {
+    "extractSecond": 0.5,
+    "output": "public/media/blog/blog-build-log-feature-01-poster-16x9.avif"
+  }
+}

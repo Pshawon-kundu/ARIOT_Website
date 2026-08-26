@@ -8,11 +8,8 @@ import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  contactSchema,
-  contactTopicValues,
-  type ContactInput,
-} from '@/lib/validators/contact';
+import { contactSchema, contactTopicValues, type ContactInput } from '@/lib/validators/contact';
+import { trackEvent } from '@/lib/analytics';
 import { FormStatusBanner } from './form-status';
 import { useFormSubmit } from './use-form-submit';
 
@@ -59,6 +56,7 @@ export function ContactForm() {
   const onSubmit = handleSubmit(async (data) => {
     const ok = await submit(data);
     if (ok) {
+      trackEvent('Contact Form Submitted', { topic: data.topic });
       reset(DEFAULT_VALUES);
     }
   });
@@ -80,12 +78,7 @@ export function ContactForm() {
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <FormField label="Name" required error={errors.name?.message}>
           {(p) => (
-            <Input
-              {...p}
-              {...register('name')}
-              autoComplete="name"
-              placeholder="[Your name]"
-            />
+            <Input {...p} {...register('name')} autoComplete="name" placeholder="[Your name]" />
           )}
         </FormField>
         <FormField label="Company" error={errors.company?.message}>

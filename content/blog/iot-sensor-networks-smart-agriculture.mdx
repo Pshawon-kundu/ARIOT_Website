@@ -1,0 +1,61 @@
+## The connectivity assumption problem
+
+Most IoT tutorials assume reliable Wi-Fi or 4G. Rural Bangladesh has neither in many farming areas.
+
+LoRaWAN gives us a workable path: low-power, long-range, and tolerant of intermittent gateway uptime.
+But designing for LoRaWAN introduces its own constraints — message rate limits, small payload windows,
+and ACK reliability trade-offs that shape every part of the firmware and backend architecture.
+
+The key difference from a city deployment: we cannot assume the gateway is always reachable. Nodes
+must buffer readings locally, prioritise critical alerts, and retry efficiently when the network
+window opens.
+
+## Soil moisture sensing in the field
+
+Capacitive soil moisture sensors are cheap and widely available. They are also highly sensitive to
+soil composition, salinity, and burial depth — factors that vary enormously across a single farm,
+let alone across the country.
+
+Our calibration approach:
+
+1. **Two-point calibration per sensor** — we calibrate each node against air (dry reference) and
+   saturated soil (wet reference) at the installation site.
+2. **Salinity correction** — saline soils read artificially high on capacitive sensors. We use a
+   correction factor derived from a conductivity measurement.
+3. **Depth consistency** — burial depth variation of ±2 cm changes readings by [X%]. We fix
+   depth with a mechanical guide and verify with a gauge before sealing the access point.
+
+[Calibration procedure, correction formula, and acceptable tolerance range pending agronomist review.]
+
+## Solar harvesting for node autonomy
+
+A node that a farmer has to charge manually is a node that stops working within a month.
+
+Our design target: full autonomy for [N] days with zero charging intervention, including [M] overcast
+days during monsoon season.
+
+Key decisions:
+
+- **Panel sizing** — [W] peak at [tilt angle], chosen for [rationale].
+- **Battery capacity** — [Ah] lithium cell, chosen to survive [cloud cover days] without sunlight.
+- **MPPT algorithm** — [algorithm type], implemented on [MCU] to maximise harvest at low irradiance.
+- **Low-power mode** — node enters deep sleep between telemetry windows, waking only for scheduled
+  readings and alert checks.
+
+[Final specs, MPPT implementation, and power budget pending hardware validation.]
+
+## Alerts, not dashboards
+
+Farmers do not want to read sensor graphs. They want to know when to irrigate and when not to.
+
+We built a threshold-rule system for the first version:
+
+- **Low-moisture alert**: triggered when soil moisture drops below [X%] for [Y] consecutive readings.
+- **Waterlogging alert**: triggered when moisture exceeds [Z%] for [W] hours.
+- **Delivery path**: SMS via [gateway] for areas with no smartphone penetration. App notification
+  for users with smartphones and data.
+
+The lesson: alert fatigue is as dangerous as no alerting. Our thresholds are conservative on the first
+deployment and tightened based on operator feedback after two weeks of observation.
+
+[Threshold values, SMS gateway integration, and app notification flow pending pilot review.]

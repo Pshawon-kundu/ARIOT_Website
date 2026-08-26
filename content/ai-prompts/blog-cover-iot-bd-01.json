@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "C",
+  "prompt": "South-Asian rooftop antenna installation at dusk, city skyline visible in distance, single cyan signal beacon on the antenna, warm dusk light from horizon, wide cinematic composition, dark base tones, no people, text will be overlaid in HTML, 16x9 wide format",
+  "negativePrompt": "People, cartoon, neon overload, text painted in image, watermarks, stock-photo energy, white background",
+  "seed": 1234567931,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "16x9",
+  "pixelTarget": "1920x1080",
+  "outputs": [
+    "public/media/blog/blog-cover-iot-bd-01-16x9.avif",
+    "public/media/blog/blog-cover-iot-bd-01-16x9.webp"
+  ]
+}

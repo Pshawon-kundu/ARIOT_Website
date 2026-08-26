@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#08090B"/><stop offset="100%" stop-color="#0E1014"/>
+    </linearGradient>
+    <radialGradient id="warmDusk" cx="0.3" cy="0.2" r="0.6">
+      <stop offset="0%" stop-color="#E4A853" stop-opacity="0.03"/>
+      <stop offset="100%" stop-color="#08090B" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M 64 0 L 0 0 0 64" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.15"/>
+    </pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#grid)"/>
+  <rect width="1920" height="1080" fill="url(#warmDusk)"/>
+  <!-- Rooftop silhouette -->
+  <polygon points="0,900 200,750 400,780 600,700 800,730 1000,680 1200,710 1400,650 1600,690 1800,640 1920,660 1920,1080 0,1080" fill="#0A0C0E" stroke="#1B1F25" stroke-width="1"/>
+  <!-- Antenna structure -->
+  <line x1="1400" y1="650" x2="1400" y2="400" stroke="#2A3038" stroke-width="3"/>
+  <line x1="1380" y1="500" x2="1420" y2="500" stroke="#2A3038" stroke-width="2"/>
+  <line x1="1390" y1="450" x2="1410" y2="450" stroke="#2A3038" stroke-width="2"/>
+  <!-- Cyan signal beacon -->
+  <circle cx="1400" cy="400" r="5" fill="#3DD8F7" filter="url(#glow)"/>
+  <!-- Horizon glow -->
+  <rect x="0" y="600" width="1920" height="80" fill="#3DD8F7" opacity="0.01" filter="url(#glow)"/>
+</svg>

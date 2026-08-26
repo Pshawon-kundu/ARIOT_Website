@@ -6,11 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
-import {
-  newsletterSchema,
-  type NewsletterInput,
-} from '@/lib/validators/newsletter';
+import { newsletterSchema, type NewsletterInput } from '@/lib/validators/newsletter';
 import { cn } from '@/lib/utils/cn';
+import { trackEvent } from '@/lib/analytics';
 import { FormStatusBanner } from './form-status';
 import { useFormSubmit } from './use-form-submit';
 
@@ -28,11 +26,7 @@ interface NewsletterFormProps {
  * `/api/newsletter` validation, supports two visual variants for the
  * footer and the blog CTA without duplicating UI logic.
  */
-export function NewsletterForm({
-  source,
-  variant = 'inline',
-  className,
-}: NewsletterFormProps) {
+export function NewsletterForm({ source, variant = 'inline', className }: NewsletterFormProps) {
   const defaults: NewsletterInput = { email: '', source };
 
   const {
@@ -55,6 +49,7 @@ export function NewsletterForm({
   const onSubmit = handleSubmit(async (data) => {
     const ok = await submit(data);
     if (ok) {
+      trackEvent('Newsletter Subscribed');
       reset(defaults);
     }
   });
@@ -68,15 +63,11 @@ export function NewsletterForm({
       aria-label="Newsletter sign-up"
       className={cn('flex flex-col gap-3', className)}
     >
-      <div
-        className={cn(
-          'flex flex-col gap-2',
-          !isFooter && 'sm:flex-row sm:items-start',
-        )}
-      >
+      <div className={cn('flex flex-col gap-2', !isFooter && 'sm:flex-row sm:items-start')}>
         <FormField
           className={cn('flex-1', isFooter && 'w-full')}
-          label={isFooter ? 'Email' : undefined}
+          label="Email"
+          labelClassName={isFooter ? undefined : 'sr-only'}
           error={errors.email?.message}
         >
           {(p) => (

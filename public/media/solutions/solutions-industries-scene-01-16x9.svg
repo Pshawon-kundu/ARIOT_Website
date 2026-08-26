@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#08090B"/><stop offset="100%" stop-color="#0E1014"/></linearGradient>
+    <pattern id="g" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M 48 0 L 0 0 0 48" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.15"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="5"/></filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <!-- Factory floor -->
+  <rect x="0" y="700" width="1920" height="380" fill="#0E1014"/>
+  <!-- Conveyor belt -->
+  <rect x="200" y="720" width="1000" height="30" rx="3" fill="#1B1F25"/>
+  <g opacity="0.15">
+    <line x1="220" y1="735" x2="1180" y2="735" stroke="#2A3038" stroke-width="0.5"/>
+    <line x1="300" y1="720" x2="300" y2="750" stroke="#2A3038" stroke-width="0.5"/>
+    <line x1="500" y1="720" x2="500" y2="750" stroke="#2A3038" stroke-width="0.5"/>
+    <line x1="700" y1="720" x2="700" y2="750" stroke="#2A3038" stroke-width="0.5"/>
+    <line x1="900" y1="720" x2="900" y2="750" stroke="#2A3038" stroke-width="0.5"/>
+    <line x1="1100" y1="720" x2="1100" y2="750" stroke="#2A3038" stroke-width="0.5"/>
+  </g>
+  <!-- Sensor station -->
+  <rect x="800" y="550" width="120" height="170" rx="4" fill="#15181E" stroke="#2A3038" stroke-width="1.5"/>
+  <circle cx="860" cy="580" r="15" fill="#1B1F25" stroke="#3DD8F7" stroke-width="1" opacity="0.7"/>
+  <line x1="860" y1="565" x2="860" y2="620" stroke="#3DD8F7" stroke-width="1" opacity="0.3"/>
+  <!-- Cyan beacon -->
+  <rect x="855" y="540" width="10" height="15" rx="3" fill="#3DD8F7" opacity="0.5" filter="url(#glow)"/>
+  <!-- Machines in background -->
+  <g opacity="0.1">
+    <rect x="1200" y="350" width="200" height="350" rx="6" fill="#1B1F25"/>
+    <rect x="1450" y="400" width="180" height="300" rx="6" fill="#1B1F25"/>
+    <rect x="50" y="450" width="150" height="250" rx="6" fill="#1B1F25"/>
+  </g>
+  <!-- Items on conveyor -->
+  <rect x="400" y="708" width="30" height="12" rx="2" fill="#2A3038"/>
+  <rect x="550" y="708" width="30" height="12" rx="2" fill="#2A3038"/>
+  <rect x="700" y="708" width="30" height="12" rx="2" fill="#2A3038"/>
+  <!-- Factory ceiling structure -->
+  <g opacity="0.05">
+    <line x1="0" y1="100" x2="1920" y2="100" stroke="#2A3038" stroke-width="2"/>
+    <line x1="400" y1="100" x2="400" y2="700" stroke="#2A3038" stroke-width="1"/>
+    <line x1="800" y1="100" x2="800" y2="700" stroke="#2A3038" stroke-width="1"/>
+    <line x1="1200" y1="100" x2="1200" y2="700" stroke="#2A3038" stroke-width="1"/>
+  </g>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#08090B"/>
+  <rect x="60" y="540" width="1080" height="2" fill="url(#gradient)" rx="1"/>
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3DD8F7"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+  </defs>
+  <rect x="60" y="60" width="40" height="40" rx="10" fill="url(#logoGrad)"/>
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3DD8F7"/>
+      <stop offset="100%" stop-color="#10B6D9"/>
+    </linearGradient>
+  </defs>
+  <text x="112" y="89" font-family="system-ui, sans-serif" font-size="18" font-weight="600" fill="#C7CDD6" letter-spacing="0.05em">ARIOT</text>
+  <text x="60" y="340" font-family="system-ui, sans-serif" font-size="52" font-weight="600" fill="#E4E8EE" letter-spacing="-0.02em">ARIOT — Autonomous Robotics and IoT</text>
+  <text x="60" y="580" font-family="system-ui, sans-serif" font-size="14" fill="#7C8593">ARIOT — Autonomous Robotics and IoT</text>
+  <text x="1080" y="580" font-family="monospace" font-size="14" fill="#7C8593" text-anchor="end">ariot.tech</text>
+</svg>

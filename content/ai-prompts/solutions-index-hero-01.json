@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "C",
+  "prompt": "Wide montage merging silhouettes of a home corner, an office desk, a lab table, and a small factory cell across the frame, single cyan throughline connecting the scenes, dark graphite base tones, cinematic composition, 21x9 ultra-wide format, no people, no text, no logos",
+  "negativePrompt": "People, cartoon, bright daylight, neon overload, text, watermarks, stock-photo energy, multiple saturated colors, white background, generic futuristic city",
+  "seed": 1234567920,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "21x9",
+  "pixelTarget": "2520x1080",
+  "outputs": [
+    "public/media/solutions/solutions-index-hero-01-21x9.avif",
+    "public/media/solutions/solutions-index-hero-01-21x9.webp"
+  ]
+}

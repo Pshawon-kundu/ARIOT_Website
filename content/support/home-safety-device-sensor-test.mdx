@@ -1,0 +1,71 @@
+## Before you test
+
+Notify all household members before running a sensor test. The audible alarm **will activate at
+full volume**. Young children and people with sound sensitivity should be aware.
+
+Pre-test checks:
+
+- The device shows a **steady indicator light** (not blinking). A blinking light indicates a
+  fault condition — resolve the fault before testing.
+- The device has been powered for at least 60 minutes. Some sensors require a warm-up period
+  to reach calibrated accuracy.
+- The companion app is installed and the device is showing **Online** status.
+
+## Smoke sensor test
+
+The smoke sensor is a photoelectric type. Use a purpose-made smoke test canister for this test.
+**Do not use an open flame, cigarettes, or incense sticks** — these can contaminate the sensor
+chamber and affect long-term accuracy.
+
+**Procedure:**
+
+1. Hold the test canister [X cm] below the device, with the nozzle pointing upward toward the
+   smoke inlet.
+2. Spray a 2-second burst.
+3. The alarm should activate within **10 seconds**.
+
+If the alarm does not activate within 30 seconds, do not spray again immediately. Allow 60 seconds
+for the smoke to clear, then repeat once. If the test still fails on the second attempt, the smoke
+sensor may require replacement. Contact support with the serial number and failure details.
+
+**Clearing the alarm**: press the Silence button on the device or tap **Silence** in the app.
+Allow 5 minutes for the sensor to reset before running another test.
+
+## Gas sensor test
+
+The gas sensor detects combustible gases (LPG, methane) and carbon monoxide at [concentration
+thresholds pending]. Use a purpose-made gas test spray for this test. **Do not use an open lighter
+or match** — this is a fire hazard and will not produce a controlled, reproducible test.
+
+**Procedure:**
+
+1. Hold the test spray [Y cm] from the device, directed at the gas inlet vent.
+2. Spray a 1-second burst.
+3. The gas alarm LED (red) and siren should activate within **5 seconds**.
+
+If the alarm does not activate within 15 seconds, allow 2 minutes for residual gas to disperse,
+then test once more. A second failure may indicate sensor degradation — contact support.
+
+> **Safety note**: conduct gas sensor tests in a ventilated space. Open a window before testing
+> and close it only after the sensor returns to normal (steady green indicator).
+
+## App notification test
+
+After triggering either alarm, verify that the companion app received a push notification.
+
+**Expected behaviour:**
+
+1. Alarm triggers on device.
+2. Device sends alert to cloud within [N seconds].
+3. App receives push notification within 60 seconds of the alarm trigger.
+
+**If notification does not arrive within 60 seconds, check:**
+
+- The device shows **Online** in the app (loss of Wi-Fi prevents notification delivery).
+- App notifications for the ARIOT app are **not muted** in your phone's notification settings.
+- The app is not in a suspended background state (some Android manufacturers aggressively kill
+  background apps — check your phone's battery optimisation settings).
+- The backend notification service is not in a scheduled maintenance window ([status page pending]).
+
+If the device is online and notifications are enabled but not arriving, contact support with the
+device serial number and the approximate time of the failed test.

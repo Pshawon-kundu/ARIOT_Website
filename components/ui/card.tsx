@@ -14,13 +14,11 @@ import { cn } from '@/lib/utils/cn';
 const cardVariants = cva('relative overflow-hidden', {
   variants: {
     variant: {
-      steel:
-        'bg-bg-raised border border-steel-700 rounded-lg shadow-inset',
-      glass:
-        'border border-white/[0.06] rounded-xl backdrop-blur-xl shadow-inset',
+      steel: 'bg-bg-raised border border-steel-700 rounded-lg shadow-1',
+      glass: 'glass-panel-strong rounded-xl',
     },
     interactive: {
-      true: 'transition-colors duration-200 ease-out-quart hover:border-steel-600',
+      true: 'transition-shadow transition-transform duration-200 ease-out-quart hover:-translate-y-0.5 hover:shadow-2 hover:border-steel-600',
       false: '',
     },
   },
@@ -28,22 +26,13 @@ const cardVariants = cva('relative overflow-hidden', {
 });
 
 export interface CardProps
-  extends HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof cardVariants> {}
+  extends HTMLAttributes<HTMLDivElement>, VariantProps<typeof cardVariants> {}
 
-export function Card({
-  className,
-  variant,
-  interactive,
-  style,
-  ...props
-}: CardProps) {
-  // Glass gradient is exposed as a CSS variable in app/globals.css to keep
-  // the rgba stops out of components (DESIGN_SYSTEM §7.2).
-  const resolvedStyle: CSSProperties | undefined =
-    variant === 'glass'
-      ? { background: 'var(--gradient-glass)', ...style }
-      : style;
+export function Card({ className, variant, interactive, style, ...props }: CardProps) {
+  // Glass uses the shared .glass-panel-strong CSS class (see globals.css) rather
+  // than an inline background so backdrop-filter works correctly without needing
+  // the gradient-glass variable, which is now redundant for the glass card.
+  const resolvedStyle: CSSProperties | undefined = variant === 'glass' ? style : style;
 
   return (
     <div
@@ -54,59 +43,35 @@ export function Card({
   );
 }
 
-export function CardHeader({
-  className,
-  ...props
-}: HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn('flex flex-col gap-1.5 px-6 pt-6 pb-4', className)}
-      {...props}
-    />
-  );
+export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+  return <div className={cn('flex flex-col gap-1.5 px-6 pt-6 pb-4', className)} {...props} />;
 }
 
 export function CardTitle({
+  as: Comp = 'h3',
   className,
   ...props
-}: HTMLAttributes<HTMLHeadingElement>) {
+}: HTMLAttributes<HTMLHeadingElement> & { as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' }) {
   return (
-    <h3
-      className={cn(
-        'font-display text-xl font-semibold tracking-tight text-steel-100',
-        className,
-      )}
+    <Comp
+      className={cn('font-display text-steel-100 text-xl font-semibold tracking-tight', className)}
       {...props}
     />
   );
 }
 
-export function CardDescription({
-  className,
-  ...props
-}: HTMLAttributes<HTMLParagraphElement>) {
-  return (
-    <p className={cn('text-sm text-steel-300', className)} {...props} />
-  );
+export function CardDescription({ className, ...props }: HTMLAttributes<HTMLParagraphElement>) {
+  return <p className={cn('text-steel-300 text-sm', className)} {...props} />;
 }
 
-export function CardBody({
-  className,
-  ...props
-}: HTMLAttributes<HTMLDivElement>) {
+export function CardBody({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return <div className={cn('px-6 pb-6', className)} {...props} />;
 }
 
-export function CardFooter({
-  className,
-  ...props
-}: HTMLAttributes<HTMLDivElement>) {
+export function CardFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn(
-        'flex items-center gap-3 px-6 pt-4 pb-6 border-t border-steel-800',
-        className,
-      )}
+      className={cn('border-steel-800 flex items-center gap-3 border-t px-6 pt-4 pb-6', className)}
       {...props}
     />
   );

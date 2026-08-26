@@ -163,6 +163,188 @@
 }
 
 /* ============================================================================
+   Light theme scope — Phase 1 Visual Redesign (premium light correction).
+
+   Applied via the `theme-light` class on the top-level wrapper of the public
+   marketing site and the sign-in page. It re-binds the SAME token names to a
+   light palette, so every component that already uses token utilities
+   (`bg-bg-base`, `text-steel-100`, `border-steel-700`, `bg-cyan-faint`, …)
+   re-skins automatically without per-component edits.
+
+   The admin console lives in a separate route group and intentionally keeps
+   the default dark tokens, so its existing visual system is preserved
+   unchanged. This scoping is what lets us lighten the public site without
+   touching admin/auth/RBAC logic.
+   ============================================================================ */
+.theme-light {
+  --bg-base: #ffffff;
+  --bg-raised: #f7f9fc;
+  --bg-elevated: #ffffff;
+  --bg-overlay: rgba(15, 23, 42, 0.45);
+  --bg-grid: rgba(15, 23, 42, 0.04);
+
+  --steel-50: #f8fafc;
+  --steel-100: #0f172a;
+  --steel-200: #1e293b;
+  --steel-300: #334155;
+  --steel-400: #475569;
+  --steel-500: #64748b;
+  --steel-600: #94a3b8;
+  --steel-700: #cbd5e1;
+  --steel-800: #e2e8f0;
+  --steel-900: #f1f5f9;
+
+  --cyan-300: #3b82f6;
+  --cyan-400: #2563eb;
+  --cyan-500: #1d4ed8;
+  --cyan-600: #1e40af;
+  --cyan-faint: rgba(37, 99, 235, 0.08);
+
+  --success: #16a34a;
+  --success-bg: rgba(22, 163, 74, 0.1);
+  --success-border: rgba(22, 163, 74, 0.3);
+  --warning: #d97706;
+  --warning-bg: rgba(217, 119, 6, 0.1);
+  --warning-border: rgba(217, 119, 6, 0.3);
+  --danger: #dc2626;
+  --danger-bg: rgba(220, 38, 38, 0.1);
+  --danger-border: rgba(220, 38, 38, 0.3);
+  --info: var(--cyan-400);
+
+  --shadow-1: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --shadow-2: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-3: 0 12px 32px rgba(15, 23, 42, 0.1);
+  --shadow-cyan: 0 8px 24px rgba(37, 99, 235, 0.16);
+  --shadow-cyan-strong: 0 8px 28px rgba(37, 99, 235, 0.22);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+  --gradient-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(241, 245, 249, 0.65));
+}
+
+/* ============================================================================
+   Admin theme scope — Step 2.3.3.
+   Applied via `.theme-admin` on the admin shell root div.
+   Intentionally dark — the admin console is a separate visual system from
+   the public `.theme-light` marketing site and must never adopt those tokens.
+   Explicitly re-declares the core surface tokens so this boundary is
+   self-contained even if `:root` or `.theme-light` change in the future.
+   ============================================================================ */
+.theme-admin {
+  /* Surface tokens — dark, matching :root values for self-containment. */
+  --bg-base: #08090b;
+  --bg-raised: #0e1014;
+  --bg-elevated: #15181e;
+  --bg-overlay: rgba(8, 9, 11, 0.72);
+
+  /* Density: comfortable defaults (ADMIN_DASHBOARD_PLAN §2.3).
+     Comfortable target: ~40 px interactive row, 16 px gutter.
+     Override with data-density="compact" below. */
+  --adm-row-py: 0.5rem; /* 8 px top + 8 px bottom → ~40 px row height  */
+  --adm-leaf-py: 0.375rem; /* 6 px + 6 px → ~32 px leaf row height        */
+  --adm-gutter: 1rem; /* 16 px section gutter                         */
+  --adm-content-py: 1.5rem; /* 24 px main-content top/bottom padding        */
+  /* Table density (Step 2.4.1) */
+  --adm-cell-px: 1rem; /* 16 px table cell horizontal padding          */
+  --adm-cell-py: 0.625rem; /* 10 px table cell vertical padding            */
+  --adm-thead-py: 0.5rem; /* 8 px table header vertical padding           */
+}
+
+/* Compact density overrides.
+   Target: ~32 px interactive row, 12 px gutter.
+   Mobile exception: nav rows maintain ≥ 40 px on touch screens. */
+.theme-admin[data-density='compact'] {
+  --adm-row-py: 0.25rem; /* 4 px + 4 px → ~32 px row height             */
+  --adm-leaf-py: 0.25rem; /* 4 px + 4 px → ~28 px leaf row height        */
+  --adm-gutter: 0.75rem; /* 12 px gutter                                 */
+  --adm-content-py: 1rem; /* 16 px main-content padding                   */
+  /* Table density compact */
+  --adm-cell-px: 0.75rem; /* 12 px compact cell horizontal padding        */
+  --adm-cell-py: 0.375rem; /* 6 px compact cell vertical padding           */
+  --adm-thead-py: 0.25rem; /* 4 px compact header vertical padding         */
+}
+
+/* ── Density-sensitive nav elements ─────────────────────────────────────────
+   These unlayered CSS rules override Tailwind's @layer utilities for the
+   vertical padding of admin nav items, allowing density to be driven purely
+   by CSS variables without per-component JavaScript logic.
+   Regular (unlayered) CSS > @layer utilities in the cascade priority.       */
+.theme-admin .adm-nav-link,
+.theme-admin .adm-nav-group-btn {
+  padding-top: var(--adm-row-py);
+  padding-bottom: var(--adm-row-py);
+}
+
+.theme-admin .adm-nav-leaf {
+  padding-top: var(--adm-leaf-py);
+  padding-bottom: var(--adm-leaf-py);
+}
+
+/* Mobile tap-target exception: restore comfortable padding on touch viewports
+   regardless of compact preference (ADMIN_DASHBOARD_PLAN §2.3 + AGENTS §8). */
+@media (max-width: 1023px) {
+  .theme-admin[data-density='compact'] .adm-nav-link,
+  .theme-admin[data-density='compact'] .adm-nav-group-btn,
+  .theme-admin[data-density='compact'] .adm-nav-leaf {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* ── Density-sensitive table cells (Step 2.4.1) ─────────────────────────────
+   Same unlayered-CSS > @layer utilities principle as the nav classes.
+   Table cell padding is driven by CSS variables so density is one-source-of-truth. */
+.theme-admin .adm-td {
+  padding: var(--adm-cell-py) var(--adm-cell-px);
+}
+
+.theme-admin .adm-th {
+  padding: var(--adm-thead-py) var(--adm-cell-px);
+}
+
+/* ============================================================================
+   Drawer animation — portal-rendered drawer slides in from the right.
+   Only applied when the panel mounts (open=true), so no JS state needed.
+   prefers-reduced-motion is handled by the global block below.
+   ============================================================================ */
+@keyframes drawer-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0.6;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.drawer-slide-in {
+  animation: drawer-in-right 280ms cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* ============================================================================
+   Glass-surface utilities — selective glassmorphism per DESIGN_SYSTEM §7.
+   Use on hero panels, feature highlight boxes, and navigation dropdowns.
+   Do NOT use on long text sections, forms, or every card.
+   ============================================================================ */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+  border-radius: var(--radius-lg);
+}
+
+.glass-panel-strong {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.1);
+  border-radius: var(--radius-xl);
+}
+
+/* ============================================================================
    Base styles
    ============================================================================ */
 

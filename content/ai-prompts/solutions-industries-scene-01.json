@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "C",
+  "prompt": "Small-batch production cell at dusk, conveyor line with sensor station, cyan beacon on a compact automation module, honest gritty industrial atmosphere, dark graphite tones, no people, 16x9 wide format",
+  "negativePrompt": "People, bright daylight, neon overload, text, watermarks, stock-photo energy, white background, cartoon",
+  "seed": 1234567913,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "16x9",
+  "pixelTarget": "1920x1080",
+  "outputs": [
+    "public/media/solutions/solutions-industries-scene-01-16x9.avif",
+    "public/media/solutions/solutions-industries-scene-01-16x9.webp"
+  ]
+}

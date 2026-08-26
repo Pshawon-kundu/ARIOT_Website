@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#08090B"/><stop offset="100%" stop-color="#0E1014"/></linearGradient>
+    <linearGradient id="daylight" x1="0.6" y1="0" x2="0.6" y2="1"><stop offset="0%" stop-color="#E4E8EE" stop-opacity="0.04"/><stop offset="100%" stop-color="#08090B" stop-opacity="0"/></linearGradient>
+    <pattern id="g" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M 48 0 L 0 0 0 48" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.15"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#g)"/>
+  <rect width="1920" height="1080" fill="url(#daylight)"/>
+  <!-- Office desk -->
+  <rect x="200" y="650" width="900" height="50" rx="3" fill="#0E1014" stroke="#1B1F25" stroke-width="1"/>
+  <rect x="300" y="700" width="50" height="380" fill="#0A0C0E"/>
+  <rect x="950" y="700" width="50" height="380" fill="#0A0C0E"/>
+  <!-- Window with blinds -->
+  <rect x="1100" y="100" width="500" height="500" rx="4" fill="#08090B" stroke="#1B1F25" stroke-width="1"/>
+  <g opacity="0.04">
+    <line x1="1100" y1="150" x2="1600" y2="150" stroke="#E4E8EE" stroke-width="1"/>
+    <line x1="1100" y1="200" x2="1600" y2="200" stroke="#E4E8EE" stroke-width="1"/>
+    <line x1="1100" y1="250" x2="1600" y2="250" stroke="#E4E8EE" stroke-width="1"/>
+    <line x1="1100" y1="300" x2="1600" y2="300" stroke="#E4E8EE" stroke-width="1"/>
+    <line x1="1100" y1="350" x2="1600" y2="350" stroke="#E4E8EE" stroke-width="1"/>
+    <line x1="1100" y1="400" x2="1600" y2="400" stroke="#E4E8EE" stroke-width="1"/>
+  </g>
+  <!-- Monitor on desk -->
+  <rect x="450" y="500" width="280" height="150" rx="6" fill="#0A0C0E" stroke="#1B1F25" stroke-width="1"/>
+  <rect x="460" y="510" width="260" height="130" rx="3" fill="#08090B"/>
+  <!-- Air quality puck device -->
+  <ellipse cx="300" cy="640" rx="30" ry="12" fill="#1B1F25" stroke="#2A3038" stroke-width="1"/>
+  <ellipse cx="300" cy="638" rx="25" ry="9" fill="#15181E"/>
+  <circle cx="300" cy="640" r="3" fill="#3DD8F7" filter="url(#glow)"/>
+  <rect x="0" y="700" width="1920" height="380" fill="#0E1014"/>
+</svg>

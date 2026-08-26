@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import { Inter, JetBrains_Mono, Space_Grotesk } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import { siteConfig } from '@/lib/seo/site';
+import { env } from '@/server/env';
 import './globals.css';
 
 const spaceGrotesk = Space_Grotesk({
@@ -51,11 +53,20 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     title: siteConfig.fullName,
     description: siteConfig.description,
+    images: [
+      {
+        url: `${siteConfig.url}/api/og?title=${encodeURIComponent(siteConfig.fullName)}`,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.fullName}`,
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: siteConfig.fullName,
     description: siteConfig.description,
+    images: [`${siteConfig.url}/api/og?title=${encodeURIComponent(siteConfig.fullName)}`],
   },
   robots: {
     index: true,
@@ -81,9 +92,7 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
@@ -92,6 +101,13 @@ export default function RootLayout({
     >
       <body className="bg-bg-base text-steel-100 flex min-h-dvh flex-col font-sans antialiased">
         {children}
+        {env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
+          <Script
+            defer
+            data-domain={env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+            src="https://plausible.io/js/script.js"
+          />
+        )}
         <Analytics />
       </body>
     </html>

@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "B",
+  "prompt": "Low puck-form floor robot on dark tile floor with vanishing micro-grid, single cyan status ring on the rim-lit top, side-view editorial composition, satin-white upper surface with graphite lower chassis, hairline blueprint annotation hairlines around the device, 1:1 square format, dark background, only cyan signal is the status ring",
+  "negativePrompt": "Cartoon, plasticky, flat lighting, oversaturated colors, neon overload, text, watermarks, six-fingered hands, melted geometry, plastic CGI sheen, random floating particles, bright daylight, white background",
+  "seed": 1234567891,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "1x1",
+  "pixelTarget": "1080x1080",
+  "outputs": [
+    "public/media/home/home-product-floor-robot-01-1x1.avif",
+    "public/media/home/home-product-floor-robot-01-1x1.webp"
+  ]
+}

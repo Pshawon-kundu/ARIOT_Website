@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#08090B"/>
+      <stop offset="100%" stop-color="#0E1014"/>
+    </linearGradient>
+    <radialGradient id="cyanGlow" cx="0.25" cy="0.4" r="0.4">
+      <stop offset="0%" stop-color="#3DD8F7" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#08090B" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.2"/>
+    </pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#grid)"/>
+  <rect width="1920" height="1080" fill="url(#cyanGlow)"/>
+  <!-- Robot arm joint closeup in left third -->
+  <g transform="translate(200, 540)">
+    <circle r="80" fill="#1B1F25" stroke="#2A3038" stroke-width="2"/>
+    <circle r="45" fill="#2A3038"/>
+    <circle r="20" fill="#3DD8F7" opacity="0.25" filter="url(#glow)"/>
+    <line x1="0" y1="-80" x2="0" y2="-180" stroke="#2A3038" stroke-width="12" stroke-linecap="round"/>
+    <line x1="0" y1="80" x2="0" y2="160" stroke="#2A3038" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <!-- Cyan signal element -->
+  <circle cx="200" cy="460" r="6" fill="#3DD8F7" filter="url(#glow)"/>
+</svg>

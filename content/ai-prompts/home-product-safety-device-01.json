@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "B",
+  "prompt": "Wall-mounted disk-form safety device on dark surface, satin-white front bezel with single cyan LED ring lit, side-angled editorial composition, blueprint annotation hairlines around the device, dark background with micro grid, clean engineering aesthetic",
+  "negativePrompt": "Cartoon, plasticky, flat lighting, oversaturated, neon overload, text, watermarks, melted geometry, plastic CGI sheen, random floating particles, bright daylight",
+  "seed": 1234567892,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "1x1",
+  "pixelTarget": "1080x1080",
+  "outputs": [
+    "public/media/home/home-product-safety-device-01-1x1.avif",
+    "public/media/home/home-product-safety-device-01-1x1.webp"
+  ]
+}

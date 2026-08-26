@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "A",
+  "prompt": "Editorial bench shot with bare PCB mid-prototype, oscilloscope probe in frame, cyan trace visible on scope screen, soldering station in background, engineering workshop atmosphere, dark graphite base tones, 4x5 portrait format",
+  "negativePrompt": "People, bright daylight, neon overload, text, watermarks, cartoon, plasticky, white background, stock-photo energy",
+  "seed": 1234567955,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "4x5",
+  "pixelTarget": "1080x1350",
+  "outputs": [
+    "public/media/products/custom-embedded-controller/products-custom-embedded-controller-hero-01-4x5.avif",
+    "public/media/products/custom-embedded-controller/products-custom-embedded-controller-hero-01-4x5.webp"
+  ]
+}

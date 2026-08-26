@@ -1,0 +1,14 @@
+{
+  "tool": "SEEDREAM",
+  "preset": "C",
+  "prompt": "Empty SME office at dawn, daylight diffused through window blinds, small puck device on desk with soft cyan air-quality LED, clean composition, dark graphite base tones, no people, 16x9 wide format",
+  "negativePrompt": "People, bright daylight, neon overload, text, watermarks, stock-photo energy, white background",
+  "seed": 1234567911,
+  "params": { "model": "SEEDREAM-v2", "steps": 30, "guidance": 6.5 },
+  "aspect": "16x9",
+  "pixelTarget": "1920x1080",
+  "outputs": [
+    "public/media/solutions/solutions-offices-scene-01-16x9.avif",
+    "public/media/solutions/solutions-offices-scene-01-16x9.webp"
+  ]
+}

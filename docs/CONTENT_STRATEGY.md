@@ -1,6 +1,6 @@
 # CONTENT_STRATEGY.md
 
-How ARIOT writes for the web. Voice, copy direction by surface, blog topic strategy, SEO seed keywords, support content structure, trust-building patterns, and a CTA library. Pair with `docs/PAGE_BLUEPRINTS.md` (where copy goes) and `docs/PROJECT_BRIEF.md` (why we say what we say).
+How ARIOT writes for the web. Voice, copy direction by surface, blog topic strategy, SEO seed keywords, support content structure, trust-building patterns, and a CTA library. Pair with `docs/PAGE_BLUEPRINTS.md` (where copy goes) and `docs/00_PROJECT_OVERVIEW.md` (why we say what we say).
 
 ---
 

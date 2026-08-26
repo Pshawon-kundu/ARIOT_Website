@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
@@ -12,12 +13,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardBody, CardHeader, CardTitle } from '@/components/ui/card';
 import { Container } from '@/components/ui/container';
 import { Section } from '@/components/ui/section';
-import { defineMetadata } from '@/lib/seo/metadata';
-import {
-  PRODUCTS,
-  getProductBySlug,
-  getRelatedProducts,
-} from '@/app/(marketing)/products/_data';
+import { BreadcrumbList } from '@/components/seo/breadcrumb-list';
+import { Product as ProductJsonLd } from '@/components/seo/product';
+import { defineMetadata, defineProductMetadata } from '@/lib/seo/metadata';
+import { ProductViewTracker } from '@/features/analytics/product-view-tracker';
+import { PRODUCTS, getProductBySlug, getRelatedProducts } from '@/app/(marketing)/products/_data';
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -27,9 +27,7 @@ export function generateStaticParams(): Array<{ slug: string }> {
   return PRODUCTS.map((product) => ({ slug: product.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: ProductPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { slug } = await params;
   const product = getProductBySlug(slug);
 
@@ -42,10 +40,11 @@ export async function generateMetadata({
     });
   }
 
-  return defineMetadata({
+  return defineProductMetadata({
     title: product.title,
     description: product.description,
     path: `/products/${product.slug}`,
+    category: product.category,
   });
 }
 
@@ -61,6 +60,28 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
 
   return (
     <>
+      <ProductViewTracker slug={product.slug} name={product.title} />
+      <ProductJsonLd
+        name={product.title}
+        description={product.description}
+        brand="ARIOT"
+        offers={[
+          {
+            price: product.price,
+            priceCurrency: 'BDT',
+            availability: 'https://schema.org/PreOrder',
+          },
+        ]}
+      />
+      <BreadcrumbList
+        items={[
+          { name: 'Home', url: '/' },
+          { name: 'Products', url: '/products' },
+          { name: product.category, url: `/products` },
+          { name: product.title, url: `/products/${product.slug}` },
+        ]}
+      />
+
       <HeroShell>
         <Section bg="base" spacing="loose">
           <Container className="flex flex-col gap-8">
@@ -76,11 +97,11 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               <MediaGallery title={product.title} />
               <Card variant="glass">
                 <CardBody className="flex flex-col gap-5 p-6 md:p-8">
-                  <p className="text-cyan-400 font-mono text-[12px] font-medium tracking-[0.18em] uppercase">
+                  <p className="font-mono text-[12px] font-medium tracking-[0.18em] text-cyan-400 uppercase">
                     {product.category}
                   </p>
                   <div className="flex flex-col gap-3">
-                    <h1 className="text-steel-100 font-display text-4xl font-semibold leading-[1.04] tracking-tight text-balance sm:text-5xl">
+                    <h1 className="text-steel-100 font-display text-4xl leading-[1.04] font-semibold tracking-tight text-balance sm:text-5xl">
                       {product.title}
                     </h1>
                     <p className="text-steel-200 text-lg">{product.tagline}</p>
@@ -100,7 +121,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
                     <p className="text-steel-400 font-mono text-[11px] tracking-[0.18em] uppercase">
                       Price
                     </p>
-                    <p className="text-cyan-400 mt-1 font-display text-3xl font-semibold tracking-tight">
+                    <p className="font-display mt-1 text-3xl font-semibold tracking-tight text-cyan-400">
                       {product.price}
                     </p>
                     <p className="text-steel-400 mt-2 text-sm">
@@ -134,11 +155,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           />
           <FeatureGrid columns={4}>
             {product.features.map((feature, index) => (
-              <FeatureCard
-                key={feature}
-                title={`[Feature ${index + 1}]`}
-                description={feature}
-              />
+              <FeatureCard key={feature} title={`[Feature ${index + 1}]`} description={feature} />
             ))}
           </FeatureGrid>
         </Container>
@@ -187,36 +204,56 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
 }
 
 function MediaGallery({ title }: { title: string }) {
+  // Slug-derived path for the product's hero image
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  const heroSrc = `/media/products/${slug}/products-${slug}-hero-01-4x5.svg`;
+
   return (
     <Card className="min-h-full">
       <CardBody className="flex flex-col gap-4 p-4 md:p-6">
-        <div
-          role="img"
-          aria-label={`${title} media placeholder`}
-          className="border-steel-700 bg-bg-base relative aspect-[4/3] overflow-hidden rounded-lg border"
-        >
-          <span
+        <div className="border-steel-700 relative aspect-[4/3] overflow-hidden rounded-lg border">
+          <Image
+            src={heroSrc}
+            alt={`${title} — hero view`}
+            fill
+            priority
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+          />
+          <div
             aria-hidden
-            className="absolute inset-0 opacity-60"
+            className="pointer-events-none absolute inset-0"
             style={{
-              backgroundImage:
-                'linear-gradient(var(--bg-grid) 1px, transparent 1px), linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px)',
-              backgroundSize: '32px 32px',
+              background: 'linear-gradient(180deg, transparent 60%, var(--bg-base) 100%)',
             }}
           />
           <span className="text-steel-500 absolute bottom-3 left-3 font-mono text-[10px] tracking-[0.18em] uppercase">
-            [PRODUCT MEDIA PLACEHOLDER]
+            [PRODUCT MEDIA — SEEDREAM PENDING]
           </span>
         </div>
         <div className="grid grid-cols-3 gap-3" aria-label="Media thumbnails">
-          {['[Image]', '[Loop]', '[Detail]'].map((item) => (
-            <div
-              key={item}
-              className="border-steel-700 bg-bg-elevated text-steel-400 flex aspect-video items-center justify-center rounded-md border font-mono text-[10px] tracking-[0.18em] uppercase"
-            >
-              {item}
-            </div>
-          ))}
+          <div className="border-steel-700 relative aspect-video overflow-hidden rounded-md border">
+            <Image
+              src={heroSrc}
+              alt={`${title} front view`}
+              fill
+              className="object-cover"
+              sizes="25vw"
+            />
+          </div>
+          <div className="border-steel-700 bg-bg-elevated flex items-center justify-center rounded-md border">
+            <span className="text-steel-500 font-mono text-[10px] tracking-[0.18em] uppercase">
+              [LOOP]
+            </span>
+          </div>
+          <div className="border-steel-700 bg-bg-elevated flex items-center justify-center rounded-md border">
+            <span className="text-steel-500 font-mono text-[10px] tracking-[0.18em] uppercase">
+              [DETAIL]
+            </span>
+          </div>
         </div>
       </CardBody>
     </Card>

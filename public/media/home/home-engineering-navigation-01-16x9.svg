@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#08090B"/><stop offset="100%" stop-color="#0E1014"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#1B1F25" stroke-width="0.5" opacity="0.2"/>
+    </pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#grid)"/>
+  <!-- Floor plan -->
+  <g transform="translate(160,40)" stroke="#2A3038" stroke-width="1.5" fill="none" opacity="0.6">
+    <rect x="0" y="0" width="400" height="300"/>
+    <rect x="420" y="0" width="500" height="300"/>
+    <rect x="940" y="0" width="400" height="480"/>
+    <rect x="0" y="320" width="400" height="240"/>
+    <rect x="420" y="320" width="200" height="240"/>
+    <rect x="640" y="320" width="280" height="200"/>
+    <rect x="0" y="580" width="920" height="300"/>
+  </g>
+  <!-- Robot path traced in cyan -->
+  <path d="M 400 500 L 500 400 L 700 420 L 800 300 L 850 150 L 600 200 L 500 300 L 420 320" stroke="#3DD8F7" stroke-width="2" fill="none" opacity="0.7" stroke-dasharray="8,4"/>
+  <circle cx="400" cy="500" r="6" fill="#3DD8F7" filter="url(#glow)"/>
+  <circle cx="420" cy="320" r="4" fill="#3DD8F7" opacity="0.5"/>
+</svg>
