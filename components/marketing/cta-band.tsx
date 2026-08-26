@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
 import { Section } from '@/components/ui/section';
 import { Eyebrow } from './eyebrow';
+import { Reveal } from '@/components/motion/reveal';
 import { cn } from '@/lib/utils/cn';
 
 interface CtaBandLink {
@@ -54,31 +55,31 @@ export function CtaBand({
             'radial-gradient(ellipse 70% 50% at 50% 0%, var(--cyan-faint) 0%, transparent 60%)',
         }}
       />
-      <Container className="flex flex-col items-center gap-6 text-center">
-        {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
-        <h2 className="text-steel-100 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl md:text-5xl">
-          {title}
-        </h2>
-        {subtitle ? (
-          <p className="text-steel-300 max-w-2xl text-base sm:text-lg">
-            {subtitle}
-          </p>
-        ) : null}
-        {primary || secondary ? (
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
-            {primary ? (
-              <Button asChild size="lg" variant="primary">
-                <Link href={primary.href}>{primary.label}</Link>
-              </Button>
-            ) : null}
-            {secondary ? (
-              <Button asChild size="lg" variant="secondary">
-                <Link href={secondary.href}>{secondary.label}</Link>
-              </Button>
-            ) : null}
-          </div>
-        ) : null}
-      </Container>
+      <Reveal>
+        <Container className="flex flex-col items-center gap-6 text-center">
+          {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
+          <h2 className="text-steel-100 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl md:text-5xl">
+            {title}
+          </h2>
+          {subtitle ? (
+            <p className="text-steel-300 max-w-2xl text-base sm:text-lg">{subtitle}</p>
+          ) : null}
+          {primary || secondary ? (
+            <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
+              {primary ? (
+                <Button asChild size="lg" variant="primary">
+                  <Link href={primary.href}>{primary.label}</Link>
+                </Button>
+              ) : null}
+              {secondary ? (
+                <Button asChild size="lg" variant="secondary">
+                  <Link href={secondary.href}>{secondary.label}</Link>
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
+        </Container>
+      </Reveal>
     </Section>
   );
 }

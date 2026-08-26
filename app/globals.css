@@ -177,48 +177,74 @@
    touching admin/auth/RBAC logic.
    ============================================================================ */
 .theme-light {
+  /* ── Surfaces: premium off-white engineering canvas ─────────────────────── */
   --bg-base: #ffffff;
-  --bg-raised: #f7f9fc;
+  --bg-raised: #f5f7fa;
   --bg-elevated: #ffffff;
-  --bg-overlay: rgba(15, 23, 42, 0.45);
-  --bg-grid: rgba(15, 23, 42, 0.04);
+  --bg-sunken: #eef1f6;
+  --bg-overlay: rgba(15, 23, 42, 0.42);
+  --bg-grid: rgba(15, 23, 42, 0.035);
 
-  --steel-50: #f8fafc;
-  --steel-100: #0f172a;
-  --steel-200: #1e293b;
-  --steel-300: #334155;
-  --steel-400: #475569;
-  --steel-500: #64748b;
-  --steel-600: #94a3b8;
-  --steel-700: #cbd5e1;
-  --steel-800: #e2e8f0;
-  --steel-900: #f1f5f9;
+  /* ── Steel neutral scale (charcoal foreground + brushed-metal borders) ─────
+     steel-100 is the near-black primary text on the light canvas. The scale
+     inverts at steel-600: below it are text tones, above it are border/hairline
+     tones that read as brushed-aluminium edges on white. */
+  --steel-50: #ffffff;
+  --steel-100: #0b1220;
+  --steel-200: #1f2a37;
+  --steel-300: #475569;
+  --steel-400: #64748b;
+  --steel-500: #94a3b8;
+  --steel-600: #c2cbd8;
+  --steel-700: #dde3ec;
+  --steel-800: #eaf0f6;
+  --steel-900: #f4f7fa;
 
-  --cyan-300: #3b82f6;
-  --cyan-400: #2563eb;
-  --cyan-500: #1d4ed8;
-  --cyan-600: #1e40af;
-  --cyan-faint: rgba(37, 99, 235, 0.08);
+  /* ── Restrained ARIOT cyan — a precise teal-cyan, not SaaS blue ────────────
+     Used sparingly: eyebrows, links, focus, sensor accents, status dots. */
+  --cyan-300: #0e8fa8;
+  --cyan-400: #0e7490;
+  --cyan-500: #0c5e73;
+  --cyan-600: #0b4a5a;
+  --cyan-faint: rgba(13, 148, 160, 0.1);
 
-  --success: #16a34a;
-  --success-bg: rgba(22, 163, 74, 0.1);
-  --success-border: rgba(22, 163, 74, 0.3);
-  --warning: #d97706;
-  --warning-bg: rgba(217, 119, 6, 0.1);
-  --warning-border: rgba(217, 119, 6, 0.3);
-  --danger: #dc2626;
-  --danger-bg: rgba(220, 38, 38, 0.1);
-  --danger-border: rgba(220, 38, 38, 0.3);
+  /* ── Brushed-metal gradient + hairline (engineering detailing) ──────────── */
+  --metal-1: #ffffff;
+  --metal-2: #e7ecf3;
+  --metal-3: #cfd7e2;
+  --gradient-metal: linear-gradient(
+    180deg,
+    var(--metal-1) 0%,
+    var(--metal-2) 52%,
+    var(--metal-3) 100%
+  );
+  --gradient-metal-line: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--steel-600) 18%,
+    var(--steel-600) 82%,
+    transparent 100%
+  );
+
+  --success: #15803d;
+  --success-bg: rgba(21, 128, 61, 0.1);
+  --success-border: rgba(21, 128, 61, 0.3);
+  --warning: #b45309;
+  --warning-bg: rgba(180, 83, 9, 0.1);
+  --warning-border: rgba(180, 83, 9, 0.3);
+  --danger: #b91c1c;
+  --danger-bg: rgba(185, 28, 28, 0.1);
+  --danger-border: rgba(185, 28, 28, 0.3);
   --info: var(--cyan-400);
 
-  --shadow-1: 0 1px 2px rgba(15, 23, 42, 0.06);
-  --shadow-2: 0 4px 12px rgba(15, 23, 42, 0.08);
-  --shadow-3: 0 12px 32px rgba(15, 23, 42, 0.1);
-  --shadow-cyan: 0 8px 24px rgba(37, 99, 235, 0.16);
-  --shadow-cyan-strong: 0 8px 28px rgba(37, 99, 235, 0.22);
-  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  --shadow-1: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-2: 0 6px 16px rgba(15, 23, 42, 0.07);
+  --shadow-3: 0 14px 40px rgba(15, 23, 42, 0.1);
+  --shadow-cyan: 0 10px 30px rgba(13, 148, 160, 0.18);
+  --shadow-cyan-strong: 0 12px 34px rgba(13, 148, 160, 0.24);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
-  --gradient-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(241, 245, 249, 0.65));
+  --gradient-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(241, 245, 249, 0.7));
 }
 
 /* ============================================================================
@@ -342,6 +368,53 @@
   border: 1px solid rgba(148, 163, 184, 0.35);
   box-shadow: 0 8px 32px rgba(15, 23, 42, 0.1);
   border-radius: var(--radius-xl);
+}
+
+/* ============================================================================
+   Premium engineering utilities — Phase 1 visual redesign
+   Light-mode only helpers for brushed-metal detailing and precision accents.
+   ============================================================================ */
+
+/* Brushed-aluminium hairline — a 1px gradient rule that reads as milled metal
+   rather than a flat border. Use for section dividers and card top-edges. */
+.metal-divider {
+  height: 1px;
+  border: 0;
+  background: var(--gradient-metal-line);
+}
+
+/* Brushed-metal surface — subtle vertical sheen for premium panels/cards. */
+.surface-metallic {
+  background: var(--gradient-metal);
+  border: 1px solid var(--steel-700);
+}
+
+/* Cyan-to-steel gradient for hero keyword accents — restrained, not neon. */
+.text-cyan-gradient {
+  background: linear-gradient(
+    120deg,
+    var(--cyan-400) 0%,
+    var(--cyan-300) 60%,
+    var(--cyan-500) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Faint blueprint grid — engineering texture for hero/section backgrounds. */
+.bg-blueprint {
+  background-image:
+    linear-gradient(var(--bg-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* Precision focus ring tuned for the light canvas. */
+.theme-light *:focus-visible {
+  outline: 2px solid var(--cyan-400);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* ============================================================================

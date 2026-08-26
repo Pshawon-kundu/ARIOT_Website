@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Reveal } from '@/components/motion/reveal';
 import { cn } from '@/lib/utils/cn';
 
 export interface Metric {
@@ -24,21 +25,20 @@ interface MetricBandProps {
  */
 export function MetricBand({ metrics, className }: MetricBandProps) {
   return (
-    <dl
-      className={cn(
-        'grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4 sm:gap-x-10',
-        className,
-      )}
-    >
-      {metrics.map((metric) => (
-        <div key={metric.label} className="flex flex-col-reverse gap-2">
+    <dl className={cn('grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4 sm:gap-x-10', className)}>
+      {metrics.map((metric, index) => (
+        <Reveal
+          key={metric.label}
+          delay={Math.min(index, 5) * 0.08}
+          className="flex flex-col-reverse gap-2"
+        >
           <dt className="text-steel-400 font-mono text-[11px] tracking-[0.18em] uppercase">
             {metric.label}
           </dt>
-          <dd className="text-cyan-400 font-display text-4xl font-semibold tracking-tight tabular-nums md:text-5xl">
+          <dd className="font-display text-4xl font-semibold tracking-tight text-cyan-400 tabular-nums md:text-5xl">
             {metric.value}
           </dd>
-        </div>
+        </Reveal>
       ))}
     </dl>
   );

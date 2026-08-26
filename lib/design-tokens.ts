@@ -18,34 +18,35 @@
 export const colors = {
   bg: {
     base: '#FFFFFF',
-    raised: '#F7F9FC',
+    raised: '#F5F7FA',
     elevated: '#FFFFFF',
-    overlay: 'rgba(15, 23, 42, 0.45)',
-    grid: 'rgba(15, 23, 42, 0.04)',
+    sunken: '#EEF1F6',
+    overlay: 'rgba(15, 23, 42, 0.42)',
+    grid: 'rgba(15, 23, 42, 0.035)',
   },
   steel: {
-    50: '#F8FAFC',
-    100: '#0F172A',
-    200: '#1E293B',
-    300: '#334155',
-    400: '#475569',
-    500: '#64748B',
-    600: '#94A3B8',
-    700: '#CBD5E1',
-    800: '#E2E8F0',
-    900: '#F1F5F9',
+    50: '#FFFFFF',
+    100: '#0B1220',
+    200: '#1F2A37',
+    300: '#475569',
+    400: '#64748B',
+    500: '#94A3B8',
+    600: '#C2CBD8',
+    700: '#DDE3EC',
+    800: '#EAF0F6',
+    900: '#F4F7FA',
   },
   cyan: {
-    300: '#3B82F6',
-    400: '#2563EB',
-    500: '#1D4ED8',
-    600: '#1E40AF',
-    faint: 'rgba(37, 99, 235, 0.08)',
+    300: '#0E8FA8',
+    400: '#0E7490',
+    500: '#0C5E73',
+    600: '#0B4A5A',
+    faint: 'rgba(13, 148, 160, 0.1)',
   },
   semantic: {
-    success: '#16A34A',
-    warning: '#D97706',
-    danger: '#DC2626',
+    success: '#15803D',
+    warning: '#B45309',
+    danger: '#B91C1C',
   },
 } as const;
 
@@ -59,12 +60,24 @@ export const radius = {
 } as const;
 
 export const shadows = {
-  s1: '0 1px 2px rgba(15, 23, 42, 0.06)',
-  s2: '0 4px 12px rgba(15, 23, 42, 0.08)',
-  s3: '0 12px 32px rgba(15, 23, 42, 0.1)',
-  cyan: '0 8px 24px rgba(37, 99, 235, 0.16)',
-  cyanStrong: '0 8px 28px rgba(37, 99, 235, 0.22)',
-  inset: 'inset 0 1px 0 rgba(255, 255, 255, 0.7)',
+  s1: '0 1px 2px rgba(15, 23, 42, 0.05)',
+  s2: '0 6px 16px rgba(15, 23, 42, 0.07)',
+  s3: '0 14px 40px rgba(15, 23, 42, 0.1)',
+  cyan: '0 10px 30px rgba(13, 148, 160, 0.18)',
+  cyanStrong: '0 12px 34px rgba(13, 148, 160, 0.24)',
+  inset: 'inset 0 1px 0 rgba(255, 255, 255, 0.9)',
+} as const;
+
+export const metal = {
+  one: '#FFFFFF',
+  two: '#E7ECF3',
+  three: '#CFD7E2',
+} as const;
+
+export const gradient = {
+  metal: 'linear-gradient(180deg, #FFFFFF 0%, #E7ECF3 52%, #CFD7E2 100%)',
+  metalLine: 'linear-gradient(90deg, transparent 0%, #C2CBD8 18%, #C2CBD8 82%, transparent 100%)',
+  cyan: 'linear-gradient(120deg, #0E7490 0%, #0E8FA8 60%, #0C5E73 100%)',
 } as const;
 
 export const space = {

@@ -1,3 +1,4 @@
+import { Reveal } from '@/components/motion/reveal';
 import { cn } from '@/lib/utils/cn';
 
 interface LogoStripItem {
@@ -25,22 +26,24 @@ interface LogoStripProps {
  */
 export function LogoStrip({ eyebrow, items, className }: LogoStripProps) {
   return (
-    <div className={cn('flex flex-col items-center gap-6', className)}>
-      {eyebrow ? (
-        <p className="text-steel-400 font-mono text-[11px] tracking-[0.18em] uppercase">
-          {eyebrow}
-        </p>
-      ) : null}
-      <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 md:gap-x-12">
-        {items.map((item) => (
-          <li
-            key={item.label}
-            className="text-steel-300 hover:text-steel-100 font-mono text-[12px] tracking-[0.18em] uppercase opacity-70 transition-[color,opacity] duration-200 ease-out-quart hover:opacity-100"
-          >
-            {item.label}
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Reveal>
+      <div className={cn('flex flex-col items-center gap-6', className)}>
+        {eyebrow ? (
+          <p className="text-steel-400 font-mono text-[11px] tracking-[0.18em] uppercase">
+            {eyebrow}
+          </p>
+        ) : null}
+        <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 md:gap-x-12">
+          {items.map((item) => (
+            <li
+              key={item.label}
+              className="text-steel-300 hover:text-steel-100 ease-out-quart font-mono text-[12px] tracking-[0.18em] uppercase opacity-70 transition-[color,opacity] duration-200 hover:opacity-100"
+            >
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Reveal>
   );
 }

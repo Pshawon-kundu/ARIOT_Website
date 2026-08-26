@@ -1,4 +1,10 @@
-import type { HTMLAttributes } from 'react';
+import {
+  Children,
+  cloneElement,
+  type HTMLAttributes,
+  type ReactElement,
+  type ReactNode,
+} from 'react';
 import { cn } from '@/lib/utils/cn';
 
 interface FeatureGridProps extends HTMLAttributes<HTMLDivElement> {
@@ -20,11 +26,8 @@ const columnClass = {
  * Use the `auto-rows-fr` rule to let cards in a row stretch to a
  * uniform height even when descriptions vary in length.
  */
-export function FeatureGrid({
-  className,
-  columns = 3,
-  ...props
-}: FeatureGridProps) {
+export function FeatureGrid({ className, columns = 3, children, ...props }: FeatureGridProps) {
+  const items = Children.toArray(children);
   return (
     <div
       className={cn(
@@ -33,6 +36,18 @@ export function FeatureGrid({
         className,
       )}
       {...props}
-    />
+    >
+      {Children.map(items, (child, index) =>
+        isValidCard(child)
+          ? cloneElement(child as ReactElement<Record<string, unknown>>, {
+              index: Math.min(index, 6),
+            })
+          : child,
+      )}
+    </div>
   );
+}
+
+function isValidCard(child: ReactNode): child is ReactElement {
+  return typeof child === 'object' && child !== null && 'props' in child && 'type' in child;
 }

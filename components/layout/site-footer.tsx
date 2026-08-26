@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
 import { Separator } from '@/components/ui/separator';
+import { BrandMark } from '@/components/layout/brand-mark';
 import { NewsletterForm } from '@/features/forms/newsletter-form';
 import { cn } from '@/lib/utils/cn';
 
@@ -59,16 +60,21 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer role="contentinfo" className="border-steel-800 bg-bg-base border-t">
+    <footer role="contentinfo" className="border-steel-800 bg-bg-base relative border-t">
+      <span
+        aria-hidden
+        className="via-steel-600/50 pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent"
+      />
       <Container className="py-16 md:py-20">
         {/* Brand + contact CTA */}
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
           <div className="flex flex-col gap-4">
             <Link
               href="/"
-              className="font-display text-steel-100 text-xl font-semibold tracking-tight"
+              aria-label="ARIOT — home"
+              className="focus-visible:ring-offset-bg-base inline-flex items-center rounded-sm transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:outline-none"
             >
-              ARIOT
+              <BrandMark logoClassName="h-9 w-9" />
             </Link>
             <p className="text-steel-300 max-w-md text-sm">
               ARIOT Technologies researches autonomous robotics, develops connected IoT products,

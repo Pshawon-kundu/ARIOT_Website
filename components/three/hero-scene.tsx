@@ -30,8 +30,8 @@ export default function HeroScene() {
       <ambientLight intensity={0.25} />
       {/* Key light — warm white from upper-left */}
       <directionalLight position={[3, 4, 2]} intensity={0.8} color="#e4e8ee" castShadow={false} />
-      {/* Cyan accent fill — signature ARIOT signal light */}
-      <pointLight position={[-2, 1, 2]} intensity={4} color="#3dd8f7" distance={8} decay={2} />
+      {/* Cyan accent fill — restrained ARIOT signal light */}
+      <pointLight position={[-2, 1, 2]} intensity={4} color="#0e8fa8" distance={8} decay={2} />
 
       {/* Procedural environment — no CDN dependency, avoids fetch errors for HDR files */}
       {/* Metalness reduced on scene materials since no env map is available for reflections.
@@ -105,8 +105,8 @@ function RobotPlaceholder() {
       <mesh position={[0, 0.22, 0]} rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[0.52, 0.045, 12, 48]} />
         <meshStandardMaterial
-          color="#3dd8f7"
-          emissive="#3dd8f7"
+          color="#0e7490"
+          emissive="#0e8fa8"
           emissiveIntensity={0.5}
           metalness={0.2}
           roughness={0.1}

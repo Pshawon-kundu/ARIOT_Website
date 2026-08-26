@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Eyebrow } from './eyebrow';
+import { Reveal } from '@/components/motion/reveal';
 import { cn } from '@/lib/utils/cn';
 
 interface SectionHeaderProps {
@@ -37,25 +38,27 @@ export function SectionHeader({
       : 'font-display text-3xl font-semibold tracking-tight text-balance text-steel-100 sm:text-4xl md:text-5xl';
 
   return (
-    <header
-      className={cn(
-        'flex max-w-3xl flex-col gap-4',
-        align === 'center' && 'mx-auto items-center text-center',
-        className,
-      )}
-    >
-      {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
-      <h2 className={titleClass}>{title}</h2>
-      {subhead ? (
-        <p
-          className={cn(
-            'text-steel-300 text-base sm:text-lg',
-            align === 'center' && 'mx-auto',
-          )}
-        >
-          {subhead}
-        </p>
-      ) : null}
-    </header>
+    <Reveal>
+      <header
+        className={cn(
+          'flex max-w-3xl flex-col gap-4',
+          align === 'center' && 'mx-auto items-center text-center',
+          className,
+        )}
+      >
+        {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
+        <h2 className={titleClass}>{title}</h2>
+        {subhead ? (
+          <p
+            className={cn(
+              'text-steel-300 max-w-2xl text-base sm:text-lg',
+              align === 'center' && 'mx-auto',
+            )}
+          >
+            {subhead}
+          </p>
+        ) : null}
+      </header>
+    </Reveal>
   );
 }

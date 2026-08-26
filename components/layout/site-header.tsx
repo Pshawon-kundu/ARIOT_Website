@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
 import { NavLink } from './nav-link';
+import { BrandMark } from './brand-mark';
 import { MobileDrawer } from './mobile-drawer';
 import { MoreMenu } from './more-menu';
 
@@ -43,13 +44,17 @@ export function SiteHeader() {
       role="banner"
       className="border-steel-800 bg-bg-base/80 sticky top-0 z-30 border-b backdrop-blur-md"
     >
-      <Container className="flex h-[60px] items-center justify-between gap-3 md:h-[72px]">
+      <Container className="relative flex h-[60px] items-center justify-between gap-3 md:h-[72px]">
+        <span
+          aria-hidden
+          className="via-steel-600/50 pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent to-transparent"
+        />
         <Link
           href="/"
           aria-label="ARIOT — home"
-          className="font-display text-steel-100 ease-out-quart focus-visible:ring-offset-bg-base inline-flex items-center rounded-sm text-lg font-semibold tracking-tight transition-colors duration-200 hover:text-cyan-400 focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:outline-none md:text-xl"
+          className="ease-out-quart focus-visible:ring-offset-bg-base inline-flex items-center rounded-sm transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:outline-none"
         >
-          ARIOT
+          <BrandMark logoClassName="h-10 w-10 md:h-12 md:w-12" />
         </Link>
 
         <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">

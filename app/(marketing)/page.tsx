@@ -51,7 +51,7 @@ export default function HomePage() {
 
               <h1 className="text-steel-100 font-display max-w-4xl text-4xl leading-[1.04] font-semibold tracking-tight text-balance sm:text-5xl md:text-6xl lg:text-7xl">
                 Building the Robotics Ecosystem{' '}
-                <span className="text-cyan-400">of Bangladesh.</span>
+                <span className="text-cyan-gradient">of Bangladesh.</span>
               </h1>
 
               <p className="text-steel-200 max-w-2xl text-base sm:text-lg md:text-xl">

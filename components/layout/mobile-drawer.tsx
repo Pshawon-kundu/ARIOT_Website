@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NavLink } from './nav-link';
+import { BrandMark } from '@/components/layout/brand-mark';
 import { cn } from '@/lib/utils/cn';
 
 interface NavItem {
@@ -140,9 +141,10 @@ export function MobileDrawer({ navItems }: MobileDrawerProps) {
           <Link
             href="/"
             onClick={close}
-            className="font-display text-steel-100 text-lg font-semibold tracking-tight transition-colors hover:text-cyan-400 focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:outline-none"
+            aria-label="ARIOT — home"
+            className="inline-flex items-center rounded-md transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:outline-none"
           >
-            ARIOT
+            <BrandMark logoClassName="h-9 w-9" />
           </Link>
           <button
             type="button"

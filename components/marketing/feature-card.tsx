@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowUpRight, type LucideIcon } from 'lucide-react';
 import { Card, CardBody } from '@/components/ui/card';
+import { Reveal } from '@/components/motion/reveal';
 import { cn } from '@/lib/utils/cn';
 
 interface FeatureCardProps {
@@ -19,6 +20,8 @@ interface FeatureCardProps {
   chips?: ReadonlyArray<string>;
   /** Visual flavor — defaults to steel; use 'glass' on hero-adjacent rows. */
   variant?: 'steel' | 'glass';
+  /** Optional stagger index for precision scroll-reveal (max sensible: 6). */
+  index?: number;
   className?: string;
 }
 
@@ -43,26 +46,23 @@ export function FeatureCard({
   cta = 'Learn more',
   chips,
   variant = 'steel',
+  index,
   className,
 }: FeatureCardProps) {
   const interactive = Boolean(href);
   const inner = (
-    <Card
-      variant={variant}
-      interactive={interactive}
-      className={cn('h-full', className)}
-    >
+    <Card variant={variant} interactive={interactive} className={cn('h-full', className)}>
       <CardBody className="flex h-full flex-col gap-4 p-6">
         {Icon ? (
           <span
             aria-hidden
-            className="bg-cyan-faint text-cyan-400 inline-flex h-10 w-10 items-center justify-center rounded-md"
+            className="bg-cyan-faint inline-flex h-11 w-11 items-center justify-center rounded-lg border-cyan-400/20 text-cyan-400 ring-1 ring-cyan-400/10 ring-inset"
           >
             <Icon className="h-5 w-5" />
           </span>
         ) : null}
         {eyebrow ? (
-          <span className="text-steel-400 font-mono text-[11px] tracking-[0.18em] uppercase">
+          <span className="font-mono text-[11px] tracking-[0.18em] text-cyan-400 uppercase">
             {eyebrow}
           </span>
         ) : null}
@@ -75,7 +75,7 @@ export function FeatureCard({
             {chips.map((chip) => (
               <li
                 key={chip}
-                className="border-steel-700 bg-bg-elevated text-steel-200 rounded-sm border px-2 py-0.5 font-mono text-[11px]"
+                className="border-steel-700 bg-bg-elevated text-steel-300 rounded-sm border px-2 py-0.5 font-mono text-[11px]"
               >
                 {chip}
               </li>
@@ -83,24 +83,30 @@ export function FeatureCard({
           </ul>
         ) : null}
         {href ? (
-          <span className="text-cyan-400 mt-auto inline-flex items-center gap-1 pt-2 text-sm font-medium transition-colors duration-200 ease-out-quart group-hover:text-cyan-300">
+          <span className="ease-out-quart mt-auto inline-flex items-center gap-1 pt-2 text-sm font-medium text-cyan-400 transition-colors duration-200 group-hover:text-cyan-300">
             {cta}
-            <ArrowUpRight className="h-4 w-4" />
+            <ArrowUpRight className="ease-out-quart h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </span>
         ) : null}
       </CardBody>
     </Card>
   );
 
+  const reveal = (
+    <Reveal delay={index ? Math.min(index, 6) * 0.06 : 0} className="h-full">
+      {inner}
+    </Reveal>
+  );
+
   if (href) {
     return (
       <Link
         href={href}
-        className="group focus-visible:ring-cyan-400 focus-visible:ring-offset-bg-base block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+        className="group focus-visible:ring-offset-bg-base block h-full rounded-lg focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:outline-none"
       >
-        {inner}
+        {reveal}
       </Link>
     );
   }
-  return inner;
+  return reveal;
 }

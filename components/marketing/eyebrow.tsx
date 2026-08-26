@@ -12,11 +12,12 @@ export function Eyebrow({ className, children, ...props }: EyebrowProps) {
   return (
     <span
       className={cn(
-        'text-cyan-400 inline-block font-mono text-[12px] font-medium tracking-[0.18em] uppercase',
+        'inline-flex items-center font-mono text-[12px] font-medium tracking-[0.18em] text-cyan-400 uppercase',
         className,
       )}
       {...props}
     >
+      <span aria-hidden className="mr-2.5 inline-block h-px w-6 shrink-0 bg-cyan-400" />
       {children}
     </span>
   );

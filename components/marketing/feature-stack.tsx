@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
+import { Reveal } from '@/components/motion/reveal';
 import { cn } from '@/lib/utils/cn';
 
 export interface FeatureStackItem {
@@ -40,7 +41,9 @@ export function FeatureStack({ items, className }: FeatureStackProps) {
   return (
     <div className={cn('flex flex-col gap-16 md:gap-24', className)}>
       {items.map((item, index) => (
-        <FeatureStackRow key={item.title} item={item} reversed={index % 2 === 1} />
+        <Reveal key={item.title}>
+          <FeatureStackRow item={item} reversed={index % 2 === 1} />
+        </Reveal>
       ))}
     </div>
   );
@@ -109,7 +112,7 @@ function FeatureMedia({ alt }: { alt: string }) {
   const src = assetName ? `/media/home/home-engineering-${assetName}-01-16x9.svg` : null;
 
   return (
-    <div className="border-steel-700 relative aspect-[16/10] w-full overflow-hidden rounded-xl border">
+    <div className="border-steel-700 bg-bg-raised shadow-1 relative aspect-[16/10] w-full overflow-hidden rounded-xl border">
       {src ? (
         <Image
           src={src}
@@ -122,20 +125,24 @@ function FeatureMedia({ alt }: { alt: string }) {
         <div
           role="img"
           aria-label={alt}
-          className="bg-bg-raised shadow-inset h-full w-full"
+          className="bg-blueprint shadow-inset h-full w-full"
           style={{
             background: 'radial-gradient(circle at 30% 30%, var(--cyan-faint) 0%, transparent 60%)',
           }}
         />
       )}
-      {/* Gradient overlay for readability */}
+      {/* Gradient overlay for readability — soft steel vignette at the edges */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            'linear-gradient(90deg, var(--bg-base) 0%, transparent 20%, transparent 80%, var(--bg-base) 100%)',
+            'linear-gradient(90deg, var(--bg-base) 0%, transparent 22%, transparent 78%, var(--bg-base) 100%)',
         }}
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/70 to-transparent"
       />
     </div>
   );

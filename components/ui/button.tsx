@@ -29,18 +29,14 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary:
-          'bg-cyan-400 text-bg-base hover:bg-cyan-300 active:bg-cyan-500',
+        primary: 'bg-steel-100 text-bg-base hover:bg-steel-200 active:bg-steel-300 hover:shadow-2',
         secondary:
           'bg-transparent text-steel-100 border border-steel-600 hover:bg-bg-elevated hover:border-steel-500 active:bg-bg-raised',
-        ghost:
-          'bg-transparent text-steel-200 hover:text-steel-100 hover:bg-bg-elevated',
+        ghost: 'bg-transparent text-steel-200 hover:text-steel-100 hover:bg-bg-elevated',
         subtle:
           'bg-bg-elevated text-steel-100 border border-steel-800 hover:bg-bg-raised hover:border-steel-700',
-        danger:
-          'bg-danger text-bg-base hover:opacity-90 active:opacity-80',
-        link:
-          'bg-transparent text-cyan-400 hover:text-cyan-300 underline-offset-4 hover:underline',
+        danger: 'bg-danger text-bg-base hover:opacity-90 active:opacity-80',
+        link: 'bg-transparent text-cyan-400 hover:text-cyan-300 underline-offset-4 hover:underline',
       },
       size: {
         sm: 'h-8 px-3 text-sm',
@@ -62,19 +58,11 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 
-export function Button({
-  className,
-  variant,
-  size,
-  asChild = false,
-  type,
-  ...props
-}: ButtonProps) {
+export function Button({ className, variant, size, asChild = false, type, ...props }: ButtonProps) {
   const Comp = asChild ? Slot : 'button';
   // Default `type="button"` to avoid accidental form submits when the
   // button is used inside a <form>. Consumers can override.

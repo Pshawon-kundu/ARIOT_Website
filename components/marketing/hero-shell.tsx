@@ -29,23 +29,26 @@ export function HeroShell({ className, children, ...props }: HeroShellProps) {
         role="presentation"
         fill
         priority
-        className="pointer-events-none -z-30 object-cover opacity-70"
+        className="pointer-events-none -z-30 object-cover opacity-55"
         sizes="100vw"
       />
 
+      {/* Soft left-to-right white scrim so the hero copy stays legible over
+          the cinematic still without flattening the robotics visual. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-20"
         style={{
           background:
-            'radial-gradient(ellipse 80% 50% at 50% 0%, var(--cyan-faint) 0%, transparent 60%)',
+            'linear-gradient(90deg, var(--bg-base) 0%, rgba(255,255,255,0.65) 38%, transparent 62%), linear-gradient(180deg, transparent 55%, var(--bg-base) 100%)',
         }}
       />
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-20"
         style={{
-          background: 'linear-gradient(180deg, transparent 0%, var(--bg-base) 100%)',
+          background:
+            'radial-gradient(ellipse 80% 50% at 50% 0%, var(--cyan-faint) 0%, transparent 60%)',
         }}
       />
       <div
@@ -58,6 +61,11 @@ export function HeroShell({ className, children, ...props }: HeroShellProps) {
           maskImage: 'radial-gradient(ellipse at center, #000 45%, transparent 80%)',
           WebkitMaskImage: 'radial-gradient(ellipse at center, #000 45%, transparent 80%)',
         }}
+      />
+      {/* Brushed-metal hairline at the base of the hero */}
+      <span
+        aria-hidden
+        className="via-steel-600/50 pointer-events-none absolute inset-x-0 bottom-0 z-0 h-px bg-gradient-to-r from-transparent to-transparent"
       />
       {children}
     </div>
