@@ -14,6 +14,7 @@ import { LogoStrip } from '@/components/marketing/logo-strip';
 import { MetricBand } from '@/components/marketing/metric-band';
 import { SectionHeader } from '@/components/marketing/section-header';
 import { Hero3DClient } from '@/components/three/hero-3d-client';
+import { ScrambleWord } from '@/components/motion/scramble-word';
 import { Organization } from '@/components/seo/organization';
 import { WebSite } from '@/components/seo/website';
 import { defineMetadata } from '@/lib/seo/metadata';
@@ -50,8 +51,12 @@ export default function HomePage() {
               <Badge variant="cyan">Robotics · IoT · Engineered in Bangladesh</Badge>
 
               <h1 className="text-steel-100 font-display max-w-4xl text-4xl leading-[1.04] font-semibold tracking-tight text-balance sm:text-5xl md:text-6xl lg:text-7xl">
-                Building the Robotics Ecosystem{' '}
-                <span className="text-cyan-gradient">of Bangladesh.</span>
+                Building the{' '}
+                <ScrambleWord
+                  words={['Robotics', 'Automation', 'Intelligence', 'Engineering']}
+                  className="text-cyan-gradient"
+                />{' '}
+                Ecosystem <span className="text-cyan-gradient">of Bangladesh.</span>
               </h1>
 
               <p className="text-steel-200 max-w-2xl text-base sm:text-lg md:text-xl">
