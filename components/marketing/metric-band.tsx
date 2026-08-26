@@ -16,7 +16,7 @@ interface MetricBandProps {
 }
 
 /**
- * MetricBand — 3–6 large monospace digits with cyan accents.
+ * MetricBand — 3–6 large monospace digits with navy values + orange accent.
  *
  * Description list semantics keep the value/label relationship explicit
  * for assistive technology: <dd> for the number, <dt> for the label.
@@ -35,7 +35,7 @@ export function MetricBand({ metrics, className }: MetricBandProps) {
           <dt className="text-steel-400 font-mono text-[11px] tracking-[0.18em] uppercase">
             {metric.label}
           </dt>
-          <dd className="font-display text-4xl font-semibold tracking-tight text-cyan-400 tabular-nums md:text-5xl">
+          <dd className="font-display text-steel-100 text-4xl font-semibold tracking-tight tabular-nums md:text-5xl">
             {metric.value}
           </dd>
         </Reveal>

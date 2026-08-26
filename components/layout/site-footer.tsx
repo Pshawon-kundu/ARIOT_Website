@@ -41,9 +41,9 @@ const LEGAL_LINKS = [
 ] as const;
 
 const footerLinkClass = cn(
-  'rounded-sm text-sm text-steel-200 hover:text-cyan-400',
+  'rounded-sm text-sm text-white/70 hover:text-brand-orange',
   'transition-colors duration-200 ease-out-quart',
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base',
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy',
 );
 
 /**
@@ -60,10 +60,10 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer role="contentinfo" className="border-steel-800 bg-bg-base relative border-t">
+    <footer role="contentinfo" className="border-brand-navy bg-brand-navy relative border-t">
       <span
         aria-hidden
-        className="via-steel-600/50 pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent"
+        className="via-brand-orange pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent"
       />
       <Container className="py-16 md:py-20">
         {/* Brand + contact CTA */}
@@ -72,21 +72,21 @@ export function SiteFooter() {
             <Link
               href="/"
               aria-label="ARIOT — home"
-              className="focus-visible:ring-offset-bg-base inline-flex items-center rounded-sm transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:outline-none"
+              className="focus-visible:ring-offset-bg-base focus-visible:ring-brand-orange inline-flex items-center rounded-sm transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
             >
               <BrandMark logoClassName="h-9 w-9" />
             </Link>
-            <p className="text-steel-300 max-w-md text-sm">
+            <p className="max-w-md text-sm text-white/70">
               ARIOT Technologies researches autonomous robotics, develops connected IoT products,
               and is building the engineering workspace and component supply that local innovators
               need — engineered in Bangladesh for South Asia.
             </p>
           </div>
           <div className="flex flex-col gap-4 lg:items-end">
-            <h3 className="text-steel-400 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+            <h3 className="font-mono text-xs font-medium tracking-[0.18em] text-white/60 uppercase">
               Get in touch
             </h3>
-            <p className="text-steel-300 max-w-md text-sm lg:text-right">
+            <p className="max-w-md text-sm text-white/70 lg:text-right">
               Tell us what you are automating, monitoring, or prototyping — we will route you to the
               right engineer.
             </p>
@@ -94,7 +94,12 @@ export function SiteFooter() {
               <Button asChild variant="primary" size="md">
                 <Link href="/quote">Request a quote</Link>
               </Button>
-              <Button asChild variant="secondary" size="md">
+              <Button
+                asChild
+                variant="secondary"
+                size="md"
+                className="border-white/40 bg-transparent text-white hover:border-white/60 hover:bg-white/10"
+              >
                 <Link href="/contact">Contact ARIOT</Link>
               </Button>
             </div>
@@ -114,10 +119,10 @@ export function SiteFooter() {
         {/* Newsletter */}
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-[1.1fr_1fr] md:items-end">
           <div className="flex flex-col gap-2">
-            <h3 className="text-steel-400 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+            <h3 className="font-mono text-xs font-medium tracking-[0.18em] text-white/60 uppercase">
               Newsletter
             </h3>
-            <p className="text-steel-300 max-w-md text-sm">
+            <p className="max-w-md text-sm text-white/70">
               Quiet engineering notes from the ARIOT team — build logs, IoT field notes, and the
               occasional product update.
             </p>
@@ -128,7 +133,7 @@ export function SiteFooter() {
         <Separator className="my-10" />
 
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <p className="text-steel-400 font-mono text-xs">
+          <p className="font-mono text-xs text-white/60">
             © {year} ARIOT Technologies. All rights reserved.
           </p>
           <ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
@@ -136,7 +141,7 @@ export function SiteFooter() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={cn(footerLinkClass, 'text-steel-400 hover:text-steel-200 text-xs')}
+                  className={cn(footerLinkClass, 'text-steel-400 text-xs hover:text-white/80')}
                 >
                   {item.label}
                 </Link>
@@ -151,7 +156,7 @@ export function SiteFooter() {
 
 function FooterColumnTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="text-steel-400 font-mono text-xs font-medium tracking-[0.18em] uppercase">
+    <h3 className="font-mono text-xs font-medium tracking-[0.18em] text-white/60 uppercase">
       {children}
     </h3>
   );

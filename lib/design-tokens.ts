@@ -18,30 +18,37 @@
 export const colors = {
   bg: {
     base: '#FFFFFF',
-    raised: '#F5F7FA',
+    raised: '#F6F7F9',
     elevated: '#FFFFFF',
-    sunken: '#EEF1F6',
+    sunken: '#EEF2F7',
     overlay: 'rgba(15, 23, 42, 0.42)',
-    grid: 'rgba(15, 23, 42, 0.035)',
+    grid: 'rgba(0, 53, 122, 0.05)',
+  },
+  brand: {
+    navy: '#00357A',
+    orange: '#FF751F',
+    orangeHover: '#E25F0E',
+    navyForeground: '#FFFFFF',
+    orangeForeground: '#FFFFFF',
   },
   steel: {
     50: '#FFFFFF',
-    100: '#0B1220',
-    200: '#1F2A37',
-    300: '#475569',
-    400: '#64748B',
+    100: '#00357A',
+    200: '#0B1220',
+    300: '#5D6878',
+    400: '#7A8694',
     500: '#94A3B8',
-    600: '#C2CBD8',
-    700: '#DDE3EC',
-    800: '#EAF0F6',
-    900: '#F4F7FA',
+    600: '#C6D0DD',
+    700: '#DCE3EC',
+    800: '#EEF2F7',
+    900: '#F6F7F9',
   },
   cyan: {
-    300: '#0E8FA8',
-    400: '#0E7490',
-    500: '#0C5E73',
-    600: '#0B4A5A',
-    faint: 'rgba(13, 148, 160, 0.1)',
+    300: '#FF8C42',
+    400: '#FF751F',
+    500: '#E25F0E',
+    600: '#C24E00',
+    faint: 'rgba(255, 117, 31, 0.1)',
   },
   semantic: {
     success: '#15803D',
@@ -63,8 +70,8 @@ export const shadows = {
   s1: '0 1px 2px rgba(15, 23, 42, 0.05)',
   s2: '0 6px 16px rgba(15, 23, 42, 0.07)',
   s3: '0 14px 40px rgba(15, 23, 42, 0.1)',
-  cyan: '0 10px 30px rgba(13, 148, 160, 0.18)',
-  cyanStrong: '0 12px 34px rgba(13, 148, 160, 0.24)',
+  cyan: '0 10px 30px rgba(0, 53, 122, 0.12)',
+  cyanStrong: '0 12px 34px rgba(0, 53, 122, 0.16)',
   inset: 'inset 0 1px 0 rgba(255, 255, 255, 0.9)',
 } as const;
 
@@ -77,7 +84,8 @@ export const metal = {
 export const gradient = {
   metal: 'linear-gradient(180deg, #FFFFFF 0%, #E7ECF3 52%, #CFD7E2 100%)',
   metalLine: 'linear-gradient(90deg, transparent 0%, #C2CBD8 18%, #C2CBD8 82%, transparent 100%)',
-  cyan: 'linear-gradient(120deg, #0E7490 0%, #0E8FA8 60%, #0C5E73 100%)',
+  cyan: 'linear-gradient(120deg, #00357A 0%, #FF751F 55%, #E25F0E 100%)',
+  brand: 'linear-gradient(120deg, #00357A 0%, #FF751F 55%, #E25F0E 100%)',
 } as const;
 
 export const space = {

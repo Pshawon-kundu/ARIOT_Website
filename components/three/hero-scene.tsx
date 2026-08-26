@@ -30,8 +30,8 @@ export default function HeroScene() {
       <ambientLight intensity={0.25} />
       {/* Key light — warm white from upper-left */}
       <directionalLight position={[3, 4, 2]} intensity={0.8} color="#e4e8ee" castShadow={false} />
-      {/* Cyan accent fill — restrained ARIOT signal light */}
-      <pointLight position={[-2, 1, 2]} intensity={4} color="#0e8fa8" distance={8} decay={2} />
+      {/* ARIOT orange accent fill — restrained signal light */}
+      <pointLight position={[-2, 1, 2]} intensity={4} color="#ff751f" distance={8} decay={2} />
 
       {/* Procedural environment — no CDN dependency, avoids fetch errors for HDR files */}
       {/* Metalness reduced on scene materials since no env map is available for reflections.
@@ -76,7 +76,7 @@ function ScrollDolly() {
  * asset pipeline produces a Draco-compressed model (step 1.13).
  *
  * Shape rationale: disc body on top of a low chassis, sensor ring on top,
- * subtle cyan emissive highlight on the sensor ring.
+ * subtle orange emissive highlight (ARIOT accent) on the sensor ring.
  */
 function RobotPlaceholder() {
   const groupRef = useRef<Group>(null);
@@ -101,12 +101,12 @@ function RobotPlaceholder() {
         <meshStandardMaterial color="#334155" metalness={0.1} roughness={0.5} />
       </mesh>
 
-      {/* Sensor ring — emissive cyan */}
+      {/* Sensor ring — navy base, orange emissive ARIOT accent */}
       <mesh position={[0, 0.22, 0]} rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[0.52, 0.045, 12, 48]} />
         <meshStandardMaterial
-          color="#0e7490"
-          emissive="#0e8fa8"
+          color="#00357a"
+          emissive="#ff751f"
           emissiveIntensity={0.5}
           metalness={0.2}
           roughness={0.1}

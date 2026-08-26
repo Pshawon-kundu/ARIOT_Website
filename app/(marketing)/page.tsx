@@ -54,9 +54,9 @@ export default function HomePage() {
                 Building the{' '}
                 <ScrambleWord
                   words={['Robotics', 'Automation', 'Intelligence', 'Engineering']}
-                  className="text-cyan-gradient"
+                  className="text-brand-orange"
                 />{' '}
-                Ecosystem <span className="text-cyan-gradient">of Bangladesh.</span>
+                Ecosystem <span className="text-steel-100">of Bangladesh.</span>
               </h1>
 
               <p className="text-steel-200 max-w-2xl text-base sm:text-lg md:text-xl">
@@ -168,8 +168,8 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* 5 — Robotics workspace */}
-      <Section bg="base" spacing="default">
+      {/* 5 — Robotics workspace (navy contrast section) */}
+      <Section bg="navy" spacing="default">
         <Container>
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_0.8fr] lg:items-center">
             <div className="flex flex-col gap-6">
@@ -185,7 +185,12 @@ export default function HomePage() {
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 </Button>
-                <Button asChild variant="secondary" size="lg">
+                <Button
+                  asChild
+                  variant="secondary"
+                  size="lg"
+                  className="border-white/40 bg-transparent text-white hover:border-white/60 hover:bg-white/10"
+                >
                   <Link href="/contact">Register interest</Link>
                 </Button>
               </div>

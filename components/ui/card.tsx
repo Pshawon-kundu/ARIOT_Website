@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils/cn';
  * showcases and lands with the catalog work in a later sub-turn.
  */
 const cardVariants = cva(
-  'relative overflow-hidden before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-steel-600/50 before:to-transparent',
+  'relative overflow-hidden before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-brand-orange before:to-transparent before:opacity-0 before:transition-opacity duration-200',
   {
     variants: {
       variant: {
@@ -20,7 +20,7 @@ const cardVariants = cva(
         glass: 'glass-panel-strong rounded-xl',
       },
       interactive: {
-        true: 'transition-shadow transition-transform duration-200 ease-out-quart hover:-translate-y-0.5 hover:shadow-2 hover:border-steel-600',
+        true: 'group transition-shadow transition-transform duration-200 ease-out-quart hover:-translate-y-0.5 hover:shadow-2 hover:border-steel-600 group-hover:before:opacity-100',
         false: '',
       },
     },

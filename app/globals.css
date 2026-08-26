@@ -135,6 +135,11 @@
   --color-warning: var(--warning);
   --color-danger: var(--danger);
   --color-info: var(--info);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-orange-hover: var(--brand-orange-hover);
+  --color-brand-navy-foreground: var(--brand-navy-foreground);
+  --color-brand-orange-foreground: var(--brand-orange-foreground);
 
   /* Fonts — variables come from next/font/google in app/layout.tsx */
   --font-display: var(--font-space-grotesk), system-ui, sans-serif;
@@ -177,36 +182,45 @@
    touching admin/auth/RBAC logic.
    ============================================================================ */
 .theme-light {
-  /* ── Surfaces: premium off-white engineering canvas ─────────────────────── */
+  /* ── Surfaces: premium white / off-white engineering canvas ─────────────── */
   --bg-base: #ffffff;
-  --bg-raised: #f5f7fa;
+  --bg-raised: #f6f7f9;
   --bg-elevated: #ffffff;
-  --bg-sunken: #eef1f6;
+  --bg-sunken: #eef2f7;
   --bg-overlay: rgba(15, 23, 42, 0.42);
-  --bg-grid: rgba(15, 23, 42, 0.035);
+  --bg-grid: rgba(0, 53, 122, 0.05);
 
-  /* ── Steel neutral scale (charcoal foreground + brushed-metal borders) ─────
-     steel-100 is the near-black primary text on the light canvas. The scale
-     inverts at steel-600: below it are text tones, above it are border/hairline
-     tones that read as brushed-aluminium edges on white. */
+  /* ── ARIOT brand palette ─────────────────────────────────────────────────── */
+  --brand-navy: #00357a;
+  --brand-orange: #ff751f;
+  --brand-orange-hover: #e25f0e;
+  --brand-navy-foreground: #ffffff;
+  --brand-orange-foreground: #ffffff;
+
+  /* ── Steel neutral scale (charcoal/muted text + brushed-metal borders) ─────
+     steel-100 is ARIOT navy — the colour of headings and primary text on the
+     light canvas. steel-200 is charcoal for body text. The scale inverts at
+     steel-600: below it are text tones, above it are border/hairline tones
+     that read as brushed-aluminium edges on white. */
   --steel-50: #ffffff;
-  --steel-100: #0b1220;
-  --steel-200: #1f2a37;
-  --steel-300: #475569;
-  --steel-400: #64748b;
+  --steel-100: #00357a;
+  --steel-200: #0b1220;
+  --steel-300: #5d6878;
+  --steel-400: #7a8694;
   --steel-500: #94a3b8;
-  --steel-600: #c2cbd8;
-  --steel-700: #dde3ec;
-  --steel-800: #eaf0f6;
-  --steel-900: #f4f7fa;
+  --steel-600: #c6d0dd;
+  --steel-700: #dce3ec;
+  --steel-800: #eef2f7;
+  --steel-900: #f6f7f9;
 
-  /* ── Restrained ARIOT cyan — a precise teal-cyan, not SaaS blue ────────────
-     Used sparingly: eyebrows, links, focus, sensor accents, status dots. */
-  --cyan-300: #0e8fa8;
-  --cyan-400: #0e7490;
-  --cyan-500: #0c5e73;
-  --cyan-600: #0b4a5a;
-  --cyan-faint: rgba(13, 148, 160, 0.1);
+  /* ── ARIOT orange — the single accent (CTAs, eyebrows, focus, sensor dots) ──
+     Reuses the previous cyan token names so every existing component that
+     referenced a cyan utility re-skins to orange automatically. */
+  --cyan-300: #ff8c42;
+  --cyan-400: #ff751f;
+  --cyan-500: #e25f0e;
+  --cyan-600: #c24e00;
+  --cyan-faint: rgba(255, 117, 31, 0.1);
 
   /* ── Brushed-metal gradient + hairline (engineering detailing) ──────────── */
   --metal-1: #ffffff;
@@ -240,8 +254,8 @@
   --shadow-1: 0 1px 2px rgba(15, 23, 42, 0.05);
   --shadow-2: 0 6px 16px rgba(15, 23, 42, 0.07);
   --shadow-3: 0 14px 40px rgba(15, 23, 42, 0.1);
-  --shadow-cyan: 0 10px 30px rgba(13, 148, 160, 0.18);
-  --shadow-cyan-strong: 0 12px 34px rgba(13, 148, 160, 0.24);
+  --shadow-cyan: 0 10px 30px rgba(0, 53, 122, 0.12);
+  --shadow-cyan-strong: 0 12px 34px rgba(0, 53, 122, 0.16);
   --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
   --gradient-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(241, 245, 249, 0.7));
@@ -388,14 +402,38 @@
   background: var(--gradient-metal);
   border: 1px solid var(--steel-700);
 }
+/* Dark contrast section tone — re-binds the light tokens to light-on-navy so
+   existing SectionHeader / Card / Eyebrow components render correctly inside a
+   deep-navy section without per-component overrides. Applied via the `tone-navy`
+   class (e.g. <Section bg="navy">). */
+.tone-navy {
+  --bg-raised: rgba(255, 255, 255, 0.04);
+  --bg-elevated: rgba(255, 255, 255, 0.06);
+  --bg-sunken: rgba(255, 255, 255, 0.03);
+  --bg-grid: rgba(255, 255, 255, 0.05);
+  --steel-100: #ffffff;
+  --steel-200: rgba(255, 255, 255, 0.92);
+  --steel-300: rgba(255, 255, 255, 0.72);
+  --steel-400: rgba(255, 255, 255, 0.6);
+  --steel-500: rgba(255, 255, 255, 0.5);
+  --steel-600: rgba(255, 255, 255, 0.28);
+  --steel-700: rgba(255, 255, 255, 0.18);
+  --steel-800: rgba(255, 255, 255, 0.14);
+  --steel-900: rgba(255, 255, 255, 0.08);
+  --cyan-faint: rgba(255, 117, 31, 0.16);
+  --shadow-cyan: 0 10px 30px rgba(0, 0, 0, 0.3);
+  --shadow-cyan-strong: 0 12px 34px rgba(0, 0, 0, 0.36);
+  --shadow-2: 0 6px 16px rgba(0, 0, 0, 0.28);
+  --shadow-3: 0 14px 40px rgba(0, 0, 0, 0.34);
+}
 
-/* Cyan-to-steel gradient for hero keyword accents — restrained, not neon. */
-.text-cyan-gradient {
+/* Brand gradient for hero keyword accents — navy into ARIOT orange. */
+.text-brand-gradient {
   background: linear-gradient(
     120deg,
-    var(--cyan-400) 0%,
-    var(--cyan-300) 60%,
-    var(--cyan-500) 100%
+    var(--brand-navy) 0%,
+    var(--brand-orange) 55%,
+    var(--brand-orange-hover) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
