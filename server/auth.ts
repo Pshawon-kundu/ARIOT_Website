@@ -61,73 +61,97 @@ function resolveTrustedOrigins(): string[] {
 
 const googleEnabled = Boolean(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET);
 
-export const auth = betterAuth({
-  database: prismaAdapter(prisma, {
-    provider: 'postgresql',
-  }),
-  secret: env.BETTER_AUTH_SECRET,
-  baseURL: resolveBaseURL(),
-  trustedOrigins: resolveTrustedOrigins(),
-  user: {
-    modelName: 'User',
-    fields: {
-      image: 'avatarUrl',
+function createAuth() {
+  return betterAuth({
+    database: prismaAdapter(prisma, {
+      provider: 'postgresql',
+    }),
+    secret: env.BETTER_AUTH_SECRET,
+    baseURL: resolveBaseURL(),
+    trustedOrigins: resolveTrustedOrigins(),
+    user: {
+      modelName: 'User',
+      fields: {
+        image: 'avatarUrl',
+      },
     },
-  },
-  session: {
-    modelName: 'Session',
-    fields: {
-      token: 'tokenHash',
-      ipAddress: 'ip',
+    session: {
+      modelName: 'Session',
+      fields: {
+        token: 'tokenHash',
+        ipAddress: 'ip',
+      },
     },
-  },
-  account: {
-    modelName: 'Account',
-    /**
-     * Encrypt OAuth tokens at rest using AES-256-GCM (Step 2.2.5, D-040).
-     *
-     * Stored OAuth tokens (access, refresh, ID) are encrypted with the same
-     * BETTER_AUTH_SECRET used for session signing. This protects token data
-     * if the database is ever compromised. No additional key is introduced.
-     * Tokens are never logged or exposed to the client.
-     */
-    encryptOAuthTokens: true,
-    /**
-     * Account-linking policy (Step 2.2.5, D-039).
-     *
-     * The bootstrap pre-provisions a User with the approved admin email but
-     * no OAuth Account row. When the admin signs in with Google for the first
-     * time, Better Auth must automatically link that Google account to the
-     * pre-provisioned User — this requires implicit linking to be enabled.
-     *
-     * - enabled: true              — account linking is allowed
-     * - disableImplicitLinking: false — automatic link on matching-email sign-in
-     * - allowDifferentEmails: false — a different Google email MUST NOT link
-     * - updateUserInfoOnLink: false — do not overwrite our admin's name/avatar
-     */
-    accountLinking: {
-      enabled: true,
-      disableImplicitLinking: false,
-      allowDifferentEmails: false,
-      updateUserInfoOnLink: false,
+    account: {
+      modelName: 'Account',
+      /**
+       * Encrypt OAuth tokens at rest using AES-256-GCM (Step 2.2.5, D-040).
+       *
+       * Stored OAuth tokens (access, refresh, ID) are encrypted with the same
+       * BETTER_AUTH_SECRET used for session signing. This protects token data
+       * if the database is ever compromised. No additional key is introduced.
+       * Tokens are never logged or exposed to the client.
+       */
+      encryptOAuthTokens: true,
+      /**
+       * Account-linking policy (Step 2.2.5, D-039).
+       *
+       * The bootstrap pre-provisions a User with the approved admin email but
+       * no OAuth Account row. When the admin signs in with Google for the first
+       * time, Better Auth must automatically link that Google account to the
+       * pre-provisioned User — this requires implicit linking to be enabled.
+       *
+       * - enabled: true              — account linking is allowed
+       * - disableImplicitLinking: false — automatic link on matching-email sign-in
+       * - allowDifferentEmails: false — a different Google email MUST NOT link
+       * - updateUserInfoOnLink: false — do not overwrite our admin's name/avatar
+       */
+      accountLinking: {
+        enabled: true,
+        disableImplicitLinking: false,
+        allowDifferentEmails: false,
+        updateUserInfoOnLink: false,
+      },
     },
+    verification: {
+      modelName: 'Verification',
+    },
+    socialProviders: googleEnabled
+      ? {
+          google: {
+            clientId: env.GOOGLE_CLIENT_ID as string,
+            clientSecret: env.GOOGLE_CLIENT_SECRET as string,
+            // Identity scopes only — do not request Drive/Calendar/Gmail/contacts.
+            scope: ['openid', 'email', 'profile'],
+            // Unknown Google users must not be able to create ARIOT accounts.
+            disableSignUp: true,
+          },
+        }
+      : {},
+  });
+}
+
+/**
+ * Lazily-constructed Better Auth instance.
+ *
+ * `betterAuth()` is invoked on first property access, never at module import.
+ * This keeps the Phase 1 static build green when auth env vars (notably
+ * `BETTER_AUTH_SECRET`) are absent — Next.js still evaluates this module graph
+ * for `/sign-in` and `/admin` during "collect page data", but it must not
+ * throw merely from importing it. The clear configuration error surfaces the
+ * moment authentication is actually used at runtime.
+ */
+let authInstance: ReturnType<typeof createAuth> | undefined;
+function getAuthInstance(): ReturnType<typeof createAuth> {
+  if (!authInstance) authInstance = createAuth();
+  return authInstance;
+}
+
+export const auth = new Proxy({} as ReturnType<typeof createAuth>, {
+  get(_target, prop) {
+    return getAuthInstance()[prop as keyof ReturnType<typeof createAuth>];
   },
-  verification: {
-    modelName: 'Verification',
-  },
-  socialProviders: googleEnabled
-    ? {
-        google: {
-          clientId: env.GOOGLE_CLIENT_ID as string,
-          clientSecret: env.GOOGLE_CLIENT_SECRET as string,
-          // Identity scopes only — do not request Drive/Calendar/Gmail/contacts.
-          scope: ['openid', 'email', 'profile'],
-          // Unknown Google users must not be able to create ARIOT accounts.
-          disableSignUp: true,
-        },
-      }
-    : {},
-});
+}) as ReturnType<typeof createAuth>;
 
 /**
  * Minimal server-side session read — Step 2.2.3 (TASK 9), reused by 2.2.4 RBAC.

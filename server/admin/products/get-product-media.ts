@@ -60,8 +60,14 @@ export interface AdminProductMediaDto {
 
 // ── Mapper ───────────────────────────────────────────────────────────────────
 
-/** Provider-resolved public URL authority (D-068). */
-const mediaStorageProvider = getMediaStorageProvider();
+/** Provider-resolved public URL authority (D-068). Lazily resolved so that
+ *  merely importing this module does not require media-storage env vars to be
+ *  present at build time (Phase 1 static deploy has no media storage). */
+let cachedProvider: ReturnType<typeof getMediaStorageProvider> | null = null;
+function mediaStorageProvider() {
+  if (!cachedProvider) cachedProvider = getMediaStorageProvider();
+  return cachedProvider;
+}
 
 function mapMediaKind(kind: string): 'IMAGE' | 'VIDEO' | 'DOCUMENT' | 'OTHER' {
   if (kind === 'IMAGE') return 'IMAGE';
@@ -89,7 +95,7 @@ function toMediaDto(asset: {
     filename: asset.storageKey.split('/').pop() ?? asset.storageKey,
     mimeType: asset.mime,
     mediaType: mapMediaKind(asset.kind),
-    url: mediaStorageProvider.getPublicUrl(asset.storageKey, asset.cdnUrl),
+    url: mediaStorageProvider().getPublicUrl(asset.storageKey, asset.cdnUrl),
     altText: asset.altText,
     caption: asset.caption,
     width: asset.width,
