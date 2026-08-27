@@ -28,12 +28,42 @@
   --steel-800: #1b1f25;
   --steel-900: #11141a;
 
-  /* Cyan accent */
+  /* Cyan accent — NOTE: publicly re-skinned to ARIOT orange in `.theme-light`.
+     The raw cyan values here only affect the untouched dark admin theme. */
   --cyan-300: #7ce9ff;
   --cyan-400: #3dd8f7;
   --cyan-500: #10b6d9;
   --cyan-600: #0c8daa;
   --cyan-faint: rgba(61, 216, 247, 0.08);
+
+  /* ARIOT brand palette — sampled from the supplied official logo asset.
+     Semantic tokens for public-brand usage (see DESIGN_SYSTEM §brand). */
+  --brand-navy: #093879;
+  --brand-orange: #f57323;
+  --brand-orange-hover: #d85c12;
+  --brand-navy-foreground: #ffffff;
+  --brand-orange-foreground: #ffffff;
+  --ariot-orange: #f57323;
+  --ariot-orange-deep: #d85c12;
+  --ariot-blue: #093879;
+  --ariot-blue-deep: #062a5c;
+  --ariot-gradient: linear-gradient(120deg, #f57323 0%, #e25f0e 50%, #093879 100%);
+  --ariot-white: #ffffff;
+
+  /* ── Technical-diagram panel palette (engineering animations) ─────────────
+     Deliberately separate from the re-skinned --cyan-* (orange) tokens so the
+     PCB / IoT diagrams keep a true cyan signal + charcoal panel per spec.
+     Components reference these tokens only (no raw hex in components). */
+  --tech-panel-bg: #0b0e13;
+  --tech-panel-bg-2: #0e131b;
+  --tech-grid: rgba(125, 211, 252, 0.06);
+  --tech-cyan: #38e1ff;
+  --tech-cyan-soft: rgba(56, 225, 255, 0.16);
+  --tech-line: rgba(148, 163, 184, 0.28);
+  --tech-line-strong: rgba(186, 200, 216, 0.5);
+  --tech-text: #d3dbe6;
+  --tech-text-dim: #8b97a8;
+  --tech-orange: #f57323;
 
   /* Semantic states */
   --success: #34d399;
@@ -140,6 +170,11 @@
   --color-brand-orange-hover: var(--brand-orange-hover);
   --color-brand-navy-foreground: var(--brand-navy-foreground);
   --color-brand-orange-foreground: var(--brand-orange-foreground);
+  --color-ariot-orange: var(--ariot-orange);
+  --color-ariot-orange-deep: var(--ariot-orange-deep);
+  --color-ariot-blue: var(--ariot-blue);
+  --color-ariot-blue-deep: var(--ariot-blue-deep);
+  --color-ariot-white: var(--ariot-white);
 
   /* Fonts — variables come from next/font/google in app/layout.tsx */
   --font-display: var(--font-space-grotesk), system-ui, sans-serif;
@@ -190,12 +225,18 @@
   --bg-overlay: rgba(15, 23, 42, 0.42);
   --bg-grid: rgba(0, 53, 122, 0.05);
 
-  /* ── ARIOT brand palette ─────────────────────────────────────────────────── */
-  --brand-navy: #00357a;
-  --brand-orange: #ff751f;
-  --brand-orange-hover: #e25f0e;
+  /* ── ARIOT brand palette — sampled from the supplied official logo ────────── */
+  --brand-navy: #093879;
+  --brand-orange: #f57323;
+  --brand-orange-hover: #d85c12;
   --brand-navy-foreground: #ffffff;
   --brand-orange-foreground: #ffffff;
+  --ariot-orange: #f57323;
+  --ariot-orange-deep: #d85c12;
+  --ariot-blue: #093879;
+  --ariot-blue-deep: #062a5c;
+  --ariot-gradient: linear-gradient(120deg, #f57323 0%, #e25f0e 50%, #093879 100%);
+  --ariot-white: #ffffff;
 
   /* ── Steel neutral scale (charcoal/muted text + brushed-metal borders) ─────
      steel-100 is ARIOT navy — the colour of headings and primary text on the
@@ -259,6 +300,297 @@
   --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
   --gradient-glass: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(241, 245, 249, 0.7));
+}
+
+/* ============================================================================
+   Technical-diagram panel animations (engineering PCB / IoT visuals)
+   SVG transform / opacity / stroke only. The static (no-animation) state
+   shows the complete, fully-visible diagram, so reduced-motion users and
+   paused panels still read clearly. `@media (prefers-reduced-motion:
+   no-preference)` gates every animation; `.tech-paused` freezes them when
+   the panel scrolls out of view (set by EngineeringAnimationPanel).
+   ============================================================================ */
+@keyframes tech-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes tech-in {
+  0% {
+    transform: translate(24px, 125px);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  22% {
+    transform: translate(170px, 125px);
+    opacity: 1;
+  }
+  28% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(170px, 125px);
+    opacity: 0;
+  }
+}
+@keyframes tech-br1 {
+  0%,
+  30% {
+    transform: translate(235px, 110px);
+    opacity: 0;
+  }
+  38% {
+    opacity: 1;
+  }
+  52% {
+    transform: translate(302px, 70px);
+    opacity: 1;
+  }
+  58% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(302px, 70px);
+    opacity: 0;
+  }
+}
+@keyframes tech-br2 {
+  0%,
+  34% {
+    transform: translate(235px, 140px);
+    opacity: 0;
+  }
+  42% {
+    opacity: 1;
+  }
+  56% {
+    transform: translate(302px, 180px);
+    opacity: 1;
+  }
+  62% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(302px, 180px);
+    opacity: 0;
+  }
+}
+@keyframes tech-mcu {
+  0%,
+  24% {
+    opacity: 0.15;
+  }
+  40% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0.15;
+  }
+}
+@keyframes tech-led {
+  0%,
+  18% {
+    opacity: 0.35;
+  }
+  30% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0.35;
+  }
+}
+@keyframes tech-scan {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.5;
+  }
+  46% {
+    transform: translateX(380px);
+    opacity: 0.5;
+  }
+  54% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes tech-devled {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes tech-arc {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  40% {
+    opacity: 0;
+  }
+}
+@keyframes tech-up {
+  0% {
+    transform: translate(77px, 125px);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  36% {
+    transform: translate(328px, 125px);
+    opacity: 1;
+  }
+  44% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(328px, 125px);
+    opacity: 0;
+  }
+}
+@keyframes tech-ack {
+  0%,
+  52% {
+    transform: translate(328px, 125px);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  82% {
+    transform: translate(33px, 125px);
+    opacity: 1;
+  }
+  90% {
+    opacity: 0;
+  }
+  100% {
+    transform: translate(33px, 125px);
+    opacity: 0;
+  }
+}
+@keyframes tech-cloud {
+  0%,
+  44% {
+    opacity: 0;
+  }
+  52% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes tech-online {
+  0%,
+  84% {
+    opacity: 0;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tech-trace {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: tech-draw 1.4s ease-out both;
+  }
+  .tech-trace.d1 {
+    animation-delay: 0.2s;
+  }
+  .tech-trace.d2 {
+    animation-delay: 0.5s;
+  }
+  .tech-trace.d3 {
+    animation-delay: 0.8s;
+  }
+  .tech-trace.d4 {
+    animation-delay: 1.1s;
+  }
+
+  .tech-pkt-in {
+    animation: tech-in 7s ease-in-out infinite;
+  }
+  .tech-pkt-b1 {
+    animation: tech-br1 7s ease-in-out infinite;
+  }
+  .tech-pkt-b2 {
+    animation: tech-br2 7s ease-in-out infinite;
+  }
+  .tech-mcu-glow {
+    animation: tech-mcu 7s ease-in-out infinite;
+  }
+  .tech-led-anim {
+    animation: tech-led 7s ease-in-out infinite;
+  }
+  .tech-scan-anim {
+    animation: tech-scan 6s ease-in-out infinite;
+  }
+
+  .tech-devled-anim {
+    animation: tech-devled 2.4s ease-in-out infinite;
+  }
+  .tech-arc-anim {
+    animation: tech-arc 3s ease-in-out infinite;
+  }
+  .tech-arc-anim.a2 {
+    animation-delay: 0.4s;
+  }
+  .tech-arc-anim.a3 {
+    animation-delay: 0.8s;
+  }
+  .tech-up-anim {
+    animation: tech-up 8s ease-in-out infinite;
+  }
+  .tech-ack-anim {
+    animation: tech-ack 8s ease-in-out infinite;
+  }
+  .tech-cloud-anim {
+    animation: tech-cloud 8s ease-in-out infinite;
+  }
+  .tech-online-anim {
+    animation: tech-online 8s ease-in-out infinite;
+  }
+}
+
+/* Static defaults — visible complete diagram when motion is off / paused */
+.tech-pkt-in,
+.tech-pkt-b1,
+.tech-pkt-b2,
+.tech-up-anim,
+.tech-ack-anim {
+  opacity: 0;
+}
+.tech-cloud-anim,
+.tech-online-anim {
+  opacity: 1;
+}
+.tech-paused * {
+  animation-play-state: paused !important;
 }
 
 /* ============================================================================
@@ -438,6 +770,29 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* ARIOT orange→navy brand gradient surface (CTAs, accent rules, nodes). */
+.bg-ariot-gradient {
+  background: var(--ariot-gradient);
+}
+
+/* ARIOT brand line — short orange→navy rule used as an eyebrow marker,
+   timeline current state, active-tab indicator, or progress line. */
+.brand-line {
+  height: 2px;
+  width: 56px;
+  background: var(--ariot-gradient);
+  border-radius: 9999px;
+}
+
+/* Engineering accent dot — small orange active indicator / sensor node. */
+.brand-node {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--ariot-orange);
+  box-shadow: 0 0 0 4px rgba(245, 115, 35, 0.16);
 }
 
 /* Faint blueprint grid — engineering texture for hero/section backgrounds. */

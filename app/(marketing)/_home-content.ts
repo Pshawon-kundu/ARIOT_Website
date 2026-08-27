@@ -172,6 +172,7 @@ export const ENGINEERING_PILLARS: ReadonlyArray<FeatureStackItem> = [
     description:
       'We design control loops, planning, and obstacle handling that work on real floors and real factory aisles. Our systems are tested in environments where surfaces, lighting, and layout change.',
     chips: ['ROS 2', 'LiDAR', 'SLAM'],
+    media: 'autonomy',
   },
   {
     eyebrow: '02 · EMBEDDED CONTROL',

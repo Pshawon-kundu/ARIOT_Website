@@ -141,10 +141,10 @@ export function MobileDrawer({ navItems }: MobileDrawerProps) {
           <Link
             href="/"
             onClick={close}
-            aria-label="ARIOT — home"
-            className="inline-flex items-center rounded-md transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:outline-none"
+            aria-label="ARIoT Technologies — home"
+            className="focus-visible:ring-brand-orange inline-flex items-center rounded-md transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:outline-none"
           >
-            <BrandMark logoClassName="h-9 w-9" />
+            <BrandMark logoClassName="w-[150px]" />
           </Link>
           <button
             type="button"

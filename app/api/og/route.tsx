@@ -3,8 +3,8 @@ import type { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
-const SITE_NAME = 'ARIOT';
-const SITE_FULL_NAME = 'ARIOT — Autonomous Robotics and IoT';
+const SITE_NAME = 'ARIoT';
+const SITE_FULL_NAME = 'ARIoT Technologies — Autonomous Robotics and IoT';
 
 const colors = {
   bg: '#08090B',
@@ -14,8 +14,8 @@ const colors = {
   steel400: '#7C8593',
   steel600: '#3F4753',
   steel700: '#2A3038',
-  cyan400: '#3DD8F7',
-  cyan500: '#10B6D9',
+  ariotOrange: '#F57323',
+  ariotNavy: '#093879',
 };
 
 const fonts = {
@@ -40,7 +40,7 @@ function escapeHtml(text: string): string {
 function getBadgeColor(type: string): string {
   switch (type) {
     case 'product':
-      return colors.cyan400;
+      return colors.ariotOrange;
     case 'blog':
       return '#34D399';
     case 'solution':
@@ -117,7 +117,7 @@ export async function GET(request: NextRequest) {
                 width: '40px',
                 height: '40px',
                 borderRadius: '10px',
-                background: `linear-gradient(135deg, ${colors.cyan400}, ${colors.cyan500})`,
+                background: `linear-gradient(135deg, ${colors.ariotOrange}, ${colors.ariotNavy})`,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -198,11 +198,11 @@ export async function GET(request: NextRequest) {
             gap: '16px',
           }}
         >
-          {/* Cyan accent line */}
+          {/* ARIoT brand accent line */}
           <div
             style={{
               height: '2px',
-              background: `linear-gradient(90deg, ${colors.cyan400}, transparent)`,
+              background: `linear-gradient(90deg, ${colors.ariotOrange}, transparent)`,
               borderRadius: '1px',
             }}
           />

@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
@@ -15,8 +18,6 @@ const NAV_ITEMS = [
   { label: 'About', href: '/about' },
 ] as const;
 
-// Mobile drawer includes the secondary routes (Blog, Support) too, since
-// there is room to scroll and they must remain reachable on small screens.
 const MOBILE_NAV_ITEMS = [
   ...NAV_ITEMS,
   { label: 'Blog', href: '/blog' },
@@ -26,35 +27,51 @@ const MOBILE_NAV_ITEMS = [
 /**
  * SiteHeader — sticky public-website header.
  *
- * Server component. The two interactive bits (active link detection,
- * mobile drawer, More menu) are isolated client islands (NavLink,
- * MobileDrawer, MoreMenu) so the header itself ships zero client JS.
+ * Clean, premium white surface with a subtle bottom border. On scroll the
+ * header height eases down slightly and a backdrop blur + soft shadow engage,
+ * keeping the ARIoT logo perfectly readable. The logo is width-sized (not
+ * boxed in a square) so the full lockup fills its visual area.
  *
- * Primary navigation follows the approved public IA:
- *   Home · R&D · Workspace · Components · Solutions · About
- * Blog and Support live under the "More" menu (secondary navigation),
- * with footer links as a second entry point.
- *
- * Translucent bg + backdrop blur reads premium over light hero stills;
- * a 1px steel border keeps the boundary visible (DESIGN_SYSTEM §13).
+ * The two interactive bits (active link detection, mobile drawer, More menu)
+ * remain isolated client islands; this shell only adds scroll state.
  */
 export function SiteHeader() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <header
       role="banner"
-      className="border-steel-800 bg-bg-base/80 sticky top-0 z-30 border-b backdrop-blur-md"
+      className={[
+        'ease-out-quart sticky top-0 z-30 border-b backdrop-blur-md transition-[height,box-shadow,background-color] duration-300',
+        scrolled ? 'border-steel-800 shadow-2 bg-white/85' : 'border-steel-800/70 bg-white/90',
+      ].join(' ')}
     >
-      <Container className="relative flex h-[60px] items-center justify-between gap-3 md:h-[72px]">
+      <Container
+        className={[
+          'ease-out-quart relative flex items-center justify-between gap-3 transition-[height] duration-300',
+          scrolled ? 'h-[56px] md:h-[64px]' : 'h-[64px] md:h-[76px]',
+        ].join(' ')}
+      >
         <span
           aria-hidden
-          className="via-steel-600/50 pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent to-transparent"
+          className={[
+            'via-brand-orange pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent to-transparent transition-opacity duration-300',
+            scrolled ? 'opacity-100' : 'opacity-0',
+          ].join(' ')}
         />
         <Link
           href="/"
-          aria-label="ARIOT — home"
-          className="ease-out-quart focus-visible:ring-offset-bg-base inline-flex items-center rounded-sm transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:outline-none"
+          aria-label="ARIoT Technologies — home"
+          className="focus-visible:ring-offset-bg-base focus-visible:ring-brand-orange inline-flex items-center rounded-sm transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
         >
-          <BrandMark logoClassName="h-10 w-10 md:h-12 md:w-12" />
+          <BrandMark />
         </Link>
 
         <nav aria-label="Primary" className="hidden items-center gap-1 md:flex">

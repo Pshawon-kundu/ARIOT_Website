@@ -22,7 +22,7 @@ const buttonVariants = cva(
   [
     'inline-flex items-center justify-center gap-2 rounded-md',
     'font-medium tracking-tight whitespace-nowrap',
-    'transition-colors duration-200 ease-out-quart',
+    'transition-[transform,color,background-color,border-color,box-shadow] duration-200 ease-out-quart',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base',
     'disabled:pointer-events-none disabled:opacity-40',
   ].join(' '),
@@ -31,11 +31,16 @@ const buttonVariants = cva(
       variant: {
         primary:
           'bg-brand-orange text-brand-orange-foreground hover:bg-brand-orange-hover active:bg-[#c24e00] hover:shadow-2',
+        navy: 'bg-brand-navy text-brand-navy-foreground hover:bg-brand-orange hover:text-brand-orange-foreground active:bg-[#c24e00] hover:shadow-2',
         secondary:
           'bg-brand-navy text-brand-navy-foreground hover:bg-[#002a63] active:bg-[#00214d] hover:shadow-2',
         ghost: 'bg-transparent text-steel-200 hover:text-steel-100 hover:bg-bg-elevated',
         subtle:
           'bg-bg-elevated text-steel-100 border border-steel-800 hover:bg-bg-raised hover:border-steel-700',
+        outline:
+          'border border-brand-navy bg-white text-brand-navy hover:bg-bg-raised hover:border-brand-navy active:bg-bg-sunken',
+        outlineOrange:
+          'border border-brand-orange bg-white text-brand-orange hover:bg-brand-orange/5 hover:border-brand-orange-hover active:bg-brand-orange/10',
         danger: 'bg-danger text-bg-base hover:opacity-90 active:opacity-80',
         link: 'bg-transparent text-brand-orange hover:text-brand-orange-hover underline-offset-4 hover:underline',
       },

@@ -13,8 +13,11 @@ import { HeroShell } from '@/components/marketing/hero-shell';
 import { LogoStrip } from '@/components/marketing/logo-strip';
 import { MetricBand } from '@/components/marketing/metric-band';
 import { SectionHeader } from '@/components/marketing/section-header';
-import { Hero3DClient } from '@/components/three/hero-3d-client';
-import { ScrambleWord } from '@/components/motion/scramble-word';
+import { HeroCopy } from '@/components/marketing/hero-copy';
+import { HeroVisual } from '@/components/marketing/hero-visual';
+import { CleanBotHowItWorks } from '@/components/marketing/cleanbot-how-it-works';
+import { BackgroundVideo } from '@/components/media/background-video';
+import { Reveal } from '@/components/motion/reveal';
 import { Organization } from '@/components/seo/organization';
 import { WebSite } from '@/components/seo/website';
 import { defineMetadata } from '@/lib/seo/metadata';
@@ -45,69 +48,10 @@ export default function HomePage() {
 
       {/* 1 — Hero */}
       <HeroShell>
-        <Section bg="base" spacing="loose">
-          <Container className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_0.7fr] lg:items-center">
-            <div className="flex flex-col gap-8">
-              <Badge variant="cyan">Robotics · IoT · Engineered in Bangladesh</Badge>
-
-              <h1 className="text-steel-100 font-display max-w-4xl text-4xl leading-[1.04] font-semibold tracking-tight text-balance sm:text-5xl md:text-6xl lg:text-7xl">
-                Building the{' '}
-                <ScrambleWord
-                  words={['Robotics', 'Automation', 'Intelligence', 'Engineering']}
-                  className="text-brand-orange"
-                />{' '}
-                Ecosystem <span className="text-steel-100">of Bangladesh.</span>
-              </h1>
-
-              <p className="text-steel-200 max-w-2xl text-base sm:text-lg md:text-xl">
-                ARIOT Technologies researches autonomous robotics, develops connected IoT products,
-                and is building the engineering workspace and component supply that local innovators
-                need.
-              </p>
-
-              <div className="flex flex-wrap items-center gap-3">
-                <Button asChild size="xl" variant="primary">
-                  <Link href="/quote">
-                    Request a quote
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button asChild size="xl" variant="secondary">
-                  <Link href="/research">Explore R&amp;D</Link>
-                </Button>
-              </div>
-
-              <div
-                aria-hidden
-                className="text-steel-500 flex items-center gap-3 font-mono text-[11px] tracking-[0.18em] uppercase"
-              >
-                <span className="bg-steel-700 h-px w-12" />
-                Scroll
-              </div>
-            </div>
-
-            {/* 3D hero — lazy-loaded, mobile fallback at < 768px.
-                Wrapped in a relative container so the glass status card
-                can overlay as an absolute-positioned panel. */}
-            <div className="relative hidden h-[420px] overflow-hidden rounded-2xl md:block lg:h-[520px]">
-              <Hero3DClient className="h-full w-full" />
-              {/* Glass engineering status overlay — frames the 3D as a
-                  live prototype, not a finished product. */}
-              <div className="glass-panel absolute right-4 bottom-4 left-4 flex items-start gap-3 px-4 py-3">
-                <span
-                  className="mt-1 flex h-2.5 w-2.5 shrink-0 rounded-full bg-cyan-400"
-                  aria-hidden
-                />
-                <div className="min-w-0">
-                  <p className="text-steel-400 font-mono text-[10px] font-medium tracking-[0.16em] uppercase">
-                    Active R&amp;D · Prototype stage
-                  </p>
-                  <p className="font-display text-steel-100 mt-0.5 truncate text-sm font-semibold">
-                    Autonomous floor-cleaning system
-                  </p>
-                </div>
-              </div>
-            </div>
+        <Section bg="base" spacing="loose" className="py-14 md:py-20">
+          <Container className="grid grid-cols-1 gap-10 lg:grid-cols-[48fr_52fr] lg:items-center lg:gap-12">
+            <HeroCopy />
+            <HeroVisual />
           </Container>
         </Section>
       </HeroShell>
@@ -115,7 +59,9 @@ export default function HomePage() {
       {/* 2 — Capability strip */}
       <Section bg="raised" spacing="compact">
         <Container>
-          <LogoStrip eyebrow="What we do" items={CAPABILITIES} />
+          <Reveal>
+            <LogoStrip eyebrow="What we do" items={CAPABILITIES} />
+          </Reveal>
         </Container>
       </Section>
 
@@ -169,7 +115,16 @@ export default function HomePage() {
       </Section>
 
       {/* 5 — Robotics workspace (navy contrast section) */}
-      <Section bg="navy" spacing="default">
+      <Section bg="navy" spacing="default" className="relative isolate overflow-hidden">
+        {/* Ambient premium-robot background loop (asset dropped per
+            AI_ASSET_PIPELINE — degrades to nothing until present). */}
+        <BackgroundVideo
+          webm="/media/home/home-hero-cinematic-arm-01-21x9.webm"
+          mp4="/media/home/home-hero-cinematic-arm-01-21x9.mp4"
+          poster="/media/home/home-hero-cinematic-arm-01-poster-21x9.avif"
+          className="absolute inset-0 -z-10 hidden h-full w-full object-cover opacity-30 md:block"
+          imgClassName="absolute inset-0 -z-10 h-full w-full object-cover opacity-30 md:hidden"
+        />
         <Container>
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_0.8fr] lg:items-center">
             <div className="flex flex-col gap-6">
@@ -273,6 +228,9 @@ export default function HomePage() {
         </Container>
       </Section>
 
+      {/* 7b — CleanBot scroll storytelling (real product) */}
+      <CleanBotHowItWorks />
+
       {/* Solutions sub-section */}
       <Section bg="raised" spacing="default">
         <Container className="flex flex-col gap-12">
@@ -325,6 +283,11 @@ export default function HomePage() {
         subtitle="Whether it is a quote request, a workspace enquiry, a component order, or a research collaboration — get in touch and we will route you to the right person."
         primary={{ label: 'Request a quote', href: '/quote' }}
         secondary={{ label: 'Contact ARIOT', href: '/contact' }}
+        backgroundVideo={{
+          webm: '/media/home/home-hero-cinematic-arm-01-21x9.webm',
+          mp4: '/media/home/home-hero-cinematic-arm-01-21x9.mp4',
+          poster: '/media/home/home-hero-cinematic-arm-01-poster-21x9.avif',
+        }}
       />
     </>
   );

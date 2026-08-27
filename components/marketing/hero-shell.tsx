@@ -62,6 +62,16 @@ export function HeroShell({ className, children, ...props }: HeroShellProps) {
           WebkitMaskImage: 'radial-gradient(ellipse at center, #000 45%, transparent 80%)',
         }}
       />
+      {/* ARIoT symbol watermark — large, very low opacity, part of the brand
+          architecture behind the hero visual (DESIGN_SYSTEM §brand). */}
+      <Image
+        src="/media/brand/ariot-logo-symbol.png"
+        alt=""
+        aria-hidden
+        width={1335}
+        height={1194}
+        className="pointer-events-none absolute top-1/2 left-1/2 -z-20 w-[60vw] max-w-[680px] -translate-x-1/2 -translate-y-1/2 opacity-[0.04] select-none"
+      />
       {/* Brushed-metal hairline at the base of the hero */}
       <span
         aria-hidden

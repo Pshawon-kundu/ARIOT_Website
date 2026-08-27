@@ -1,7 +1,9 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Container } from '@/components/ui/container';
 import { Separator } from '@/components/ui/separator';
+import { Reveal } from '@/components/ui/reveal';
 import { BrandMark } from '@/components/layout/brand-mark';
 import { NewsletterForm } from '@/features/forms/newsletter-form';
 import { cn } from '@/lib/utils/cn';
@@ -60,29 +62,52 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer role="contentinfo" className="border-brand-navy bg-brand-navy relative border-t">
+    <footer
+      role="contentinfo"
+      className="border-brand-navy bg-brand-navy relative overflow-hidden border-t"
+    >
       <span
         aria-hidden
         className="via-brand-orange pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent"
       />
-      <Container className="py-16 md:py-20">
+      {/* Oversized ARIoT symbol watermark — partially outside the footer boundary. */}
+      <Image
+        src="/media/brand/ariot-logo-symbol.png"
+        alt=""
+        aria-hidden
+        width={1335}
+        height={1194}
+        className="pointer-events-none absolute -right-28 -bottom-24 w-[460px] opacity-[0.05] select-none md:w-[560px]"
+      />
+      <Container className="relative py-16 md:py-20">
         {/* Brand + contact CTA */}
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-          <div className="flex flex-col gap-4">
+          <Reveal
+            className="ease-out-quart flex translate-y-3 flex-col gap-4 opacity-0 transition-all duration-500"
+            revealClassName="opacity-100 translate-y-0"
+          >
             <Link
               href="/"
-              aria-label="ARIOT — home"
-              className="focus-visible:ring-offset-bg-base focus-visible:ring-brand-orange inline-flex items-center rounded-sm transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+              aria-label="ARIoT Technologies — home"
+              className="focus-visible:ring-offset-bg-base focus-visible:ring-brand-orange inline-flex w-fit items-center rounded-lg transition-opacity duration-200 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
             >
-              <BrandMark logoClassName="h-9 w-9" />
+              <span className="bg-ariot-white shadow-2 inline-flex rounded-xl p-2.5">
+                <BrandMark logoClassName="w-[170px]" />
+              </span>
             </Link>
             <p className="max-w-md text-sm text-white/70">
               ARIOT Technologies researches autonomous robotics, develops connected IoT products,
               and is building the engineering workspace and component supply that local innovators
               need — engineered in Bangladesh for South Asia.
             </p>
-          </div>
+          </Reveal>
           <div className="flex flex-col gap-4 lg:items-end">
+            <Reveal
+              className="ease-out-quart w-0 transition-[width] duration-500"
+              revealClassName="w-14"
+            >
+              <span className="brand-line block" />
+            </Reveal>
             <h3 className="font-mono text-xs font-medium tracking-[0.18em] text-white/60 uppercase">
               Get in touch
             </h3>

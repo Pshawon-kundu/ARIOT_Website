@@ -25,11 +25,19 @@ export const colors = {
     grid: 'rgba(0, 53, 122, 0.05)',
   },
   brand: {
-    navy: '#00357A',
-    orange: '#FF751F',
-    orangeHover: '#E25F0E',
+    navy: '#093879',
+    orange: '#F57323',
+    orangeHover: '#D85C12',
     navyForeground: '#FFFFFF',
     orangeForeground: '#FFFFFF',
+  },
+  ariot: {
+    orange: '#F57323',
+    orangeDeep: '#D85C12',
+    blue: '#093879',
+    blueDeep: '#062A5C',
+    gradient: 'linear-gradient(120deg, #F57323 0%, #E25F0E 50%, #093879 100%)',
+    white: '#FFFFFF',
   },
   steel: {
     50: '#FFFFFF',
@@ -84,8 +92,9 @@ export const metal = {
 export const gradient = {
   metal: 'linear-gradient(180deg, #FFFFFF 0%, #E7ECF3 52%, #CFD7E2 100%)',
   metalLine: 'linear-gradient(90deg, transparent 0%, #C2CBD8 18%, #C2CBD8 82%, transparent 100%)',
-  cyan: 'linear-gradient(120deg, #00357A 0%, #FF751F 55%, #E25F0E 100%)',
-  brand: 'linear-gradient(120deg, #00357A 0%, #FF751F 55%, #E25F0E 100%)',
+  cyan: 'linear-gradient(120deg, #F57323 0%, #E25F0E 50%, #093879 100%)',
+  brand: 'linear-gradient(120deg, #F57323 0%, #E25F0E 50%, #093879 100%)',
+  ariot: 'linear-gradient(120deg, #F57323 0%, #E25F0E 50%, #093879 100%)',
 } as const;
 
 export const space = {

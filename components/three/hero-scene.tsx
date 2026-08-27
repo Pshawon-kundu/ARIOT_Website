@@ -3,56 +3,64 @@
 import { useEffect, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
-import { BackSide, type Group } from 'three';
+import { BackSide, type Group, type Mesh, MeshBasicMaterial, MeshStandardMaterial } from 'three';
 
 /**
- * HeroScene — geometric placeholder scene for the ARIOT hero.
+ * HeroScene — premium precision-robotics visualization for the ARIoT hero.
  *
- * Renders an abstract autonomous robot stand-in (stacked geometric shapes
- * with cyan accent lights) until a real GLB/GLTF model is commissioned
- * (step 1.13 / AI asset pipeline). This satisfies step 1.9.2's requirement
- * for "autonomous robot model (or geometric placeholder)".
+ * A stylized autonomous floor platform rendered with believable materials
+ * (brushed-aluminium chassis, matte-white dome, dark embedded electronics,
+ * LiDAR turret, navy sensor ring). Brand accents are restrained: a subtle
+ * orange sensor pulse + scanning arc, a deep-navy structural ring — the
+ * physical robot stays realistic, never fully orange/blue.
  *
- * Performance constraints (AGENTS.md §8):
- *   - DPR: [1, 1.75]
- *   - ≤ 3 dynamic lights
- *   - useFrame paused when off-screen (via R3FWrapper IntersectionObserver)
- *   - No post-processing in this pass
+ * Motion (all slow + reduced-motion aware):
+ *   - slow turntable rotation (3–8°/s feel, continuous slow spin)
+ *   - small LiDAR arm articulation
+ *   - orange sensor pulse on the LiDAR ring
+ *   - periodic scanning arc every ~5s
+ *   - desktop-only pointer parallax (≤ ~2°, disabled on touch)
+ *
+ * Performance (AGENTS.md §8): DPR [1,1.75], ≤ 3 dynamic lights, useFrame
+ * paused off-screen by the parent IntersectionObserver gate, no post-proc.
  */
 export default function HeroScene() {
+  const reduced =
+    typeof window !== 'undefined' &&
+    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const coarse = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches;
+
   return (
     <Canvas
       dpr={[1, 1.75]}
-      camera={{ position: [0, 0.5, 5], fov: 45, near: 0.1, far: 100 }}
+      camera={{ position: [0, 0.7, 5], fov: 42, near: 0.1, far: 100 }}
       gl={{ antialias: true, alpha: true }}
       style={{ background: 'transparent' }}
     >
-      <ambientLight intensity={0.25} />
-      {/* Key light — warm white from upper-left */}
-      <directionalLight position={[3, 4, 2]} intensity={0.8} color="#e4e8ee" castShadow={false} />
+      <ambientLight intensity={0.4} />
+      {/* Warm key light from upper-left */}
+      <directionalLight position={[3, 4, 2]} intensity={0.9} color="#f1f4f8" castShadow={false} />
       {/* ARIOT orange accent fill — restrained signal light */}
-      <pointLight position={[-2, 1, 2]} intensity={4} color="#ff751f" distance={8} decay={2} />
+      <pointLight position={[-2, 1, 2]} intensity={4} color="#f57323" distance={9} decay={2} />
 
-      {/* Procedural environment — no CDN dependency, avoids fetch errors for HDR files */}
-      {/* Metalness reduced on scene materials since no env map is available for reflections.
-          Light-theme palette: pale steel dome so the robot reads on a white page. */}
+      {/* Pale studio dome so the robot reads on a white page (no env map fetch) */}
       <mesh scale={100}>
         <sphereGeometry args={[1, 32, 32]} />
         <meshBasicMaterial color="#eef2f7" side={BackSide} />
       </mesh>
 
       <ScrollDolly />
-      <Float speed={1.2} rotationIntensity={0.15} floatIntensity={0.3}>
-        <RobotPlaceholder />
+      <Float
+        speed={reduced ? 0 : 1}
+        rotationIntensity={reduced ? 0 : 0.12}
+        floatIntensity={reduced ? 0 : 0.25}
+      >
+        <RobotPlatform reduced={reduced} coarse={coarse} />
       </Float>
     </Canvas>
   );
 }
 
-/**
- * ScrollDolly — moves the camera forward by a small amount during the first
- * 20% of page scroll (AGENTS.md §8.2, step 1.9.2).
- */
 function ScrollDolly() {
   const { camera } = useThree();
   const startZ = useRef(camera.position.z);
@@ -62,7 +70,6 @@ function ScrollDolly() {
       const scrollFraction = Math.min(window.scrollY / (window.innerHeight * 0.2), 1);
       camera.position.z = startZ.current - scrollFraction * 0.8;
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [camera]);
@@ -70,63 +77,148 @@ function ScrollDolly() {
   return null;
 }
 
-/**
- * RobotPlaceholder — stacked geometric shapes standing in for the ARIOT
- * autonomous floor-cleaning robot. Replaced with the real GLTF once the
- * asset pipeline produces a Draco-compressed model (step 1.13).
- *
- * Shape rationale: disc body on top of a low chassis, sensor ring on top,
- * subtle orange emissive highlight (ARIOT accent) on the sensor ring.
- */
-function RobotPlaceholder() {
-  const groupRef = useRef<Group>(null);
+function RobotPlatform({ reduced, coarse }: { reduced: boolean; coarse: boolean }) {
+  const group = useRef<Group>(null);
+  const lidar = useRef<Mesh>(null);
+  const arm = useRef<Group>(null);
+  const scan = useRef<Mesh>(null);
+  const led2 = useRef<Mesh>(null);
+  const { pointer } = useThree();
 
-  useFrame((_, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.15;
+  useFrame((state, delta) => {
+    const t = state.clock.elapsedTime;
+    const g = group.current;
+    if (!g) return;
+
+    if (!reduced) {
+      // Slow turntable — continuous, calm rotation.
+      g.rotation.y += delta * 0.18;
+    }
+
+    // Desktop-only pointer parallax (≤ ~2°). Disabled on touch / reduced.
+    if (!coarse && !reduced) {
+      const targetX = pointer.y * 0.03;
+      const targetY = g.rotation.y + pointer.x * 0.03;
+      g.rotation.x += (targetX - g.rotation.x) * 0.05;
+      // Blend the turntable spin with the pointer offset.
+      g.rotation.y += (targetY - g.rotation.y) * 0.05;
+    }
+
+    // LiDAR orange sensor pulse.
+    if (lidar.current) {
+      const m = lidar.current.material as MeshStandardMaterial;
+      m.emissiveIntensity = reduced ? 0.5 : 0.35 + Math.sin(t * 2) * 0.25;
+    }
+
+    // Secondary blinking indicator on the electronics panel (offset phase).
+    if (led2.current) {
+      const m = led2.current.material as MeshStandardMaterial;
+      const blink = reduced ? 0.5 : 0.25 + Math.max(0, Math.sin(t * 3.2)) * 0.75;
+      m.emissiveIntensity = blink;
+    }
+
+    // Small arm articulation.
+    if (arm.current && !reduced) {
+      arm.current.rotation.z = Math.sin(t * 0.8) * 0.18;
+    }
+
+    // Periodic scanning arc — expands + fades every ~5s.
+    if (scan.current) {
+      const mat = scan.current.material as MeshBasicMaterial;
+      const phase = reduced ? 0 : (t % 5) / 5;
+      const s = 1 + phase * 1.6;
+      scan.current.scale.set(s, s, s);
+      mat.opacity = reduced ? 0 : Math.sin(phase * Math.PI) * 0.5;
     }
   });
 
   return (
-    <group ref={groupRef}>
-      {/* Chassis — flat disc */}
-      <mesh position={[0, -0.6, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[1.1, 1.2, 0.28, 40]} />
-        <meshStandardMaterial color="#1e293b" metalness={0.15} roughness={0.45} />
+    <group ref={group}>
+      {/* Chassis — flat brushed-aluminium disc */}
+      <mesh position={[0, -0.62, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[1.15, 1.25, 0.26, 48]} />
+        <meshStandardMaterial color="#c7d0da" metalness={0.55} roughness={0.35} />
+      </mesh>
+      {/* Dark underside */}
+      <mesh position={[0, -0.78, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[1.05, 1.05, 0.12, 48]} />
+        <meshStandardMaterial color="#1e293b" metalness={0.3} roughness={0.5} />
       </mesh>
 
-      {/* Body dome */}
-      <mesh position={[0, -0.1, 0]}>
-        <sphereGeometry args={[0.82, 32, 32, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial color="#334155" metalness={0.1} roughness={0.5} />
+      {/* Matte-white body dome */}
+      <mesh position={[0, -0.12, 0]}>
+        <sphereGeometry args={[0.84, 40, 40, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshStandardMaterial color="#eef1f4" metalness={0.06} roughness={0.78} />
       </mesh>
 
-      {/* Sensor ring — navy base, orange emissive ARIOT accent */}
-      <mesh position={[0, 0.22, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.52, 0.045, 12, 48]} />
+      {/* Navy sensor ring at the dome base */}
+      <mesh position={[0, 0.2, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.54, 0.045, 14, 56]} />
+        <meshStandardMaterial color="#093879" metalness={0.25} roughness={0.12} />
+      </mesh>
+
+      {/* LiDAR turret — dark cylinder + orange emissive ring */}
+      <mesh position={[0, 0.36, 0]}>
+        <cylinderGeometry args={[0.15, 0.16, 0.2, 24]} />
+        <meshStandardMaterial color="#1b2433" metalness={0.3} roughness={0.45} />
+      </mesh>
+      <mesh ref={lidar} position={[0, 0.46, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.155, 0.018, 10, 32]} />
         <meshStandardMaterial
-          color="#00357a"
-          emissive="#ff751f"
+          color="#f57323"
+          emissive="#f57323"
           emissiveIntensity={0.5}
-          metalness={0.2}
-          roughness={0.1}
+          metalness={0.1}
+          roughness={0.3}
         />
       </mesh>
 
-      {/* LiDAR turret */}
-      <mesh position={[0, 0.34, 0]}>
-        <cylinderGeometry args={[0.14, 0.14, 0.18, 20]} />
-        <meshStandardMaterial color="#475569" metalness={0.15} roughness={0.4} />
+      {/* Small articulating sensing arm */}
+      <group ref={arm} position={[0.62, 0.1, 0]}>
+        <mesh position={[0.18, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <cylinderGeometry args={[0.035, 0.035, 0.42, 16]} />
+          <meshStandardMaterial color="#c7d0da" metalness={0.5} roughness={0.4} />
+        </mesh>
+        <mesh position={[0.4, 0, 0]}>
+          <sphereGeometry args={[0.06, 16, 16]} />
+          <meshStandardMaterial
+            color="#f57323"
+            emissive="#f57323"
+            emissiveIntensity={0.4}
+            roughness={0.3}
+          />
+        </mesh>
+      </group>
+
+      {/* Embedded electronics detail — dark panel with orange status LEDs */}
+      <mesh position={[0, 0.0, 0.82]} rotation={[0.1, 0, 0]}>
+        <boxGeometry args={[0.34, 0.18, 0.03]} />
+        <meshStandardMaterial color="#0f1622" metalness={0.2} roughness={0.6} />
+      </mesh>
+      <mesh ref={led2} position={[0.1, 0.01, 0.84]} rotation={[0.1, 0, 0]}>
+        <sphereGeometry args={[0.022, 12, 12]} />
+        <meshStandardMaterial
+          color="#f57323"
+          emissive="#f57323"
+          emissiveIntensity={0.5}
+          roughness={0.3}
+        />
       </mesh>
 
-      {/* Ground shadow plane — soft neutral disc */}
-      <mesh position={[0, -0.76, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[1.8, 40]} />
+      {/* Scanning arc — orange, expands + fades periodically */}
+      <mesh ref={scan} position={[0, -0.55, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[0.9, 0.96, 48]} />
+        <meshBasicMaterial color="#f57323" transparent opacity={0} />
+      </mesh>
+
+      {/* Soft contact shadow */}
+      <mesh position={[0, -0.85, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.7, 48]} />
         <meshStandardMaterial
           color="#cbd5e1"
           metalness={0.1}
           roughness={0.85}
-          opacity={0.45}
+          opacity={0.4}
           transparent
         />
       </mesh>

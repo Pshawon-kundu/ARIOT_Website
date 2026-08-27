@@ -190,25 +190,60 @@ const clientEnv = clientSchema.safeParse({
   NEXT_PUBLIC_PLAUSIBLE_DOMAIN: process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN,
 });
 
+/**
+ * During `next build`, Next.js evaluates this module while collecting
+ * configuration for every route (including the static `/_not-found` page)
+ * *before* a real request exists. A malformed-but-optional value (or a value
+ * absent in the build environment) must not hard-kill a static deploy — the
+ * Phase 1 public site is fully static and never opens a DB/connection at boot.
+ *
+ * We therefore downgrade validation failures to warnings during the build
+ * phase and only fail fast at actual runtime. This preserves the AGENTS.md §9
+ * security intent (misconfiguration surfaces immediately in production) while
+ * keeping Vercel/static builds green.
+ */
+const isNextBuildPhase = process.env.NEXT_PHASE === 'phase-production-build';
+
 if (!serverEnv.success) {
-  console.error('Invalid server environment variables:', serverEnv.error.flatten().fieldErrors);
-  throw new Error('Invalid server environment variables. See server/env.ts.');
+  if (isNextBuildPhase) {
+    console.warn(
+      '[env] Server environment variables are invalid during build (this is non-fatal for static generation):',
+      serverEnv.error.flatten().fieldErrors,
+    );
+  } else {
+    console.error('Invalid server environment variables:', serverEnv.error.flatten().fieldErrors);
+    throw new Error('Invalid server environment variables. See server/env.ts.');
+  }
 }
 
 if (!clientEnv.success) {
-  console.error('Invalid client environment variables:', clientEnv.error.flatten().fieldErrors);
-  throw new Error('Invalid client environment variables. See server/env.ts.');
+  if (isNextBuildPhase) {
+    console.warn(
+      '[env] Client environment variables are invalid during build (this is non-fatal for static generation):',
+      clientEnv.error.flatten().fieldErrors,
+    );
+  } else {
+    console.error('Invalid client environment variables:', clientEnv.error.flatten().fieldErrors);
+    throw new Error('Invalid client environment variables. See server/env.ts.');
+  }
 }
 
 // Google OAuth credentials must be configured as a pair. A single value present
 // without its counterpart is a misconfiguration that would fail at the provider
 // boundary; fail fast with a clear, non-secret-leaking message.
-const googleId = serverEnv.data.GOOGLE_CLIENT_ID;
-const googleSecret = serverEnv.data.GOOGLE_CLIENT_SECRET;
+// `serverData` falls back to an empty object so the checks below never throw a
+// TypeError during the build phase (when a failed parse leaves `.data` undefined).
+const serverData = (serverEnv.success ? serverEnv.data : {}) as Record<string, unknown>;
+const googleId = serverData.GOOGLE_CLIENT_ID as string | undefined;
+const googleSecret = serverData.GOOGLE_CLIENT_SECRET as string | undefined;
 if ((googleId && !googleSecret) || (!googleId && googleSecret)) {
-  throw new Error(
-    'Google OAuth misconfigured: set both GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET, or neither.',
-  );
+  const message =
+    'Google OAuth misconfigured: set both GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET, or neither.';
+  if (isNextBuildPhase) {
+    console.warn(`[env] ${message}`);
+  } else {
+    throw new Error(message);
+  }
 }
 
 // R2 storage must be configured as a complete set. A partial set (e.g. only
@@ -216,27 +251,47 @@ if ((googleId && !googleSecret) || (!googleId && googleSecret)) {
 // error; fail fast at boot instead. When the full set is present, the upload
 // token secret is required too — completion tokens are part of the same flow.
 const r2Values = [
-  serverEnv.data.R2_ACCOUNT_ID,
-  serverEnv.data.R2_ACCESS_KEY_ID,
-  serverEnv.data.R2_SECRET_ACCESS_KEY,
-  serverEnv.data.R2_BUCKET_NAME,
+  serverData.R2_ACCOUNT_ID,
+  serverData.R2_ACCESS_KEY_ID,
+  serverData.R2_SECRET_ACCESS_KEY,
+  serverData.R2_BUCKET_NAME,
 ] as const;
 const r2PresentCount = r2Values.filter((value) => value !== undefined).length;
 if (r2PresentCount > 0 && r2PresentCount < r2Values.length) {
-  throw new Error(
-    'R2 storage misconfigured: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, and R2_BUCKET_NAME must all be set together.',
-  );
+  const message =
+    'R2 storage misconfigured: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, and R2_BUCKET_NAME must all be set together.';
+  if (isNextBuildPhase) {
+    console.warn(`[env] ${message}`);
+  } else {
+    throw new Error(message);
+  }
 }
-if (r2PresentCount === r2Values.length && !serverEnv.data.MEDIA_UPLOAD_TOKEN_SECRET) {
-  throw new Error(
-    'R2 storage misconfigured: MEDIA_UPLOAD_TOKEN_SECRET is required when R2 storage is enabled.',
-  );
+if (r2PresentCount === r2Values.length && !serverData.MEDIA_UPLOAD_TOKEN_SECRET) {
+  const message =
+    'R2 storage misconfigured: MEDIA_UPLOAD_TOKEN_SECRET is required when R2 storage is enabled.';
+  if (isNextBuildPhase) {
+    console.warn(`[env] ${message}`);
+  } else {
+    throw new Error(message);
+  }
 }
 
-export const env = {
-  ...serverEnv.data,
-  ...clientEnv.data,
-} as const;
+/**
+ * `safeParse(...).data` in zod v4 is typed `Output | undefined`, so a plain
+ * spread would widen every field (including `.default()`-ed ones like
+ * NODE_ENV) to `T | undefined`. We assert the output type instead — at runtime
+ * the data is always present once validation passes (and during the Vercel
+ * build phase we deliberately tolerate a partial/missing object without
+ * throwing, which is safe for static generation).
+ */
+type ServerOutput = z.infer<typeof serverSchema>;
+type ClientOutput = z.infer<typeof clientSchema>;
+
+export const env = (
+  serverEnv.success && clientEnv.success
+    ? { ...serverEnv.data, ...clientEnv.data }
+    : { ...(serverEnv.data ?? {}), ...(clientEnv.data ?? {}) }
+) as ServerOutput & ClientOutput;
 
 export type Env = typeof env;
 

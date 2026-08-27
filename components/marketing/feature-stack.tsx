@@ -2,6 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { Reveal } from '@/components/motion/reveal';
+import { EngineeringAnimationPanel } from './engineering-animation-panel';
+import { AutonomyNarrative } from './autonomy-narrative';
 import { cn } from '@/lib/utils/cn';
 
 export interface FeatureStackItem {
@@ -19,6 +21,9 @@ export interface FeatureStackItem {
   chips?: ReadonlyArray<string>;
   /** Optional alt text for the media tile. Falls back to title. */
   mediaAlt?: string;
+  /** Opt-in media renderer. `autonomy` swaps the row for the interactive
+   *  navigation storytelling experience; others fall back to FeatureMedia. */
+  media?: 'autonomy' | 'embedded' | 'iot';
 }
 
 interface FeatureStackProps {
@@ -40,11 +45,15 @@ interface FeatureStackProps {
 export function FeatureStack({ items, className }: FeatureStackProps) {
   return (
     <div className={cn('flex flex-col gap-16 md:gap-24', className)}>
-      {items.map((item, index) => (
-        <Reveal key={item.title}>
-          <FeatureStackRow item={item} reversed={index % 2 === 1} />
-        </Reveal>
-      ))}
+      {items.map((item, index) =>
+        item.media === 'autonomy' ? (
+          <AutonomyNarrative key={item.title} item={item} />
+        ) : (
+          <Reveal key={item.title}>
+            <FeatureStackRow item={item} reversed={index % 2 === 1} />
+          </Reveal>
+        ),
+      )}
     </div>
   );
 }
@@ -102,11 +111,21 @@ function FeatureMedia({ alt }: { alt: string }) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '');
-  // Map known pillar titles to their asset filenames
-  const assetMap: Record<string, string> = {
-    'real-room-autonomy-not-lab-perfect-demos': 'navigation',
+  // Map known pillar titles to their animated panel variant
+  const variantMap: Record<string, 'embedded' | 'iot'> = {
     'custom-boards-tuned-for-the-duty-cycle': 'embedded',
     'devices-that-report-without-surprising-operators': 'iot',
+  };
+  const variant = variantMap[slug];
+
+  // The two engineering panels get the polished animated technical diagrams.
+  if (variant) {
+    return <EngineeringAnimationPanel variant={variant} />;
+  }
+
+  // Navigation pillar (and any unmapped item) keeps the original behaviour.
+  const assetMap: Record<string, string> = {
+    'real-room-autonomy-not-lab-perfect-demos': 'navigation',
   };
   const assetName = assetMap[slug];
   const src = assetName ? `/media/home/home-engineering-${assetName}-01-16x9.svg` : null;

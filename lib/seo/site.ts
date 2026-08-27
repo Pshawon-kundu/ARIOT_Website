@@ -8,8 +8,8 @@ import { env } from '@/server/env';
  * before public launch (Phase 1 follow-up).
  */
 export const siteConfig = {
-  name: 'ARIOT',
-  fullName: 'ARIOT — Autonomous Robotics and IoT',
+  name: 'ARIoT',
+  fullName: 'ARIoT Technologies',
   description:
     '[ARIOT engineers autonomous robotics and intelligent IoT systems for industry, smart cities, education, and prosumers across South Asia.]',
   url: env.NEXT_PUBLIC_SITE_URL,

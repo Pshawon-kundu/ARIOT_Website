@@ -3,6 +3,7 @@ import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/layout/site-header';
 import { SkipLink } from '@/components/ui/skip-link';
 import { CommandPalette } from '@/components/layout/command-palette';
+import { BrandIntro } from '@/components/brand/brand-intro';
 
 /**
  * Marketing route-group layout.
@@ -21,6 +22,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
       </main>
       <SiteFooter />
       <CommandPalette />
+      <BrandIntro />
     </div>
   );
 }
